@@ -1,5 +1,5 @@
 {
-    "hash": "b008f288e2a4be8a7b279ace0342d77b",
+    "hash": "52df971275e373d3659e33a0cc8e481a",
     "packages": [
 
     ],
@@ -44,10 +44,10 @@
             ],
             "description": "Unit testing for PHP",
             "keywords": [
-                "testing",
+                "SimpleTest",
                 "test",
-                "unittest",
-                "SimpleTest"
+                "testing",
+                "unittest"
             ]
         }
     ],
