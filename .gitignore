@@ -1,2 +1,8 @@
+# Composer puts its dependencies in this folder.
 /vendor
+
+# PHP Storm IDE folder.
 /.idea
+
+# I render "ReadMe.md" to "ReadMe.html" locally to see what it looks like.
+/ReadMe.html
