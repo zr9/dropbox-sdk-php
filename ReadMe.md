@@ -8,7 +8,7 @@ Requirements:
   * PHP 5.3+
   * PHP [cURL extension](http://php.net/manual/en/curl.installation.php) with SSL enabled (it's usually built-in).
 
-## 1. Setup
+## Setup
 
 If you're using [Composer](http://getcomposer.org/) for your project's dependencies, add the following to your "composer.json":
 
@@ -29,7 +29,7 @@ If you're not using Composer, download the code, copy the "lib/" folder into you
 require_once "dropbox-sdk/Dropbox/autoload.php";
 ```
 
-## 2. Get a Dropbox API key
+## Get a Dropbox API key
 
 You need a Dropbox API key to make API requests.
   * Go to: [https://dropbox.com/developers/apps](https://dropbox.com/developers/apps)
@@ -48,20 +48,7 @@ This SDK comes with a function to load an API key and secret from a JSON file.  
 }
 ```
 
-To load this information:
-
-```php
-use \Dropbox as dbx;
-
-try {
-    $appInfo = dbx\AppInfo::loadFromJsonFile("test.app");
-} catch (dbx\AppInfoLoadException $ex) {
-    fwrite(STDERR, "Error loading app info file: " . $ex->getMessage() . "\n");
-    exit(1);
-}
-```
-
-## 3. OAuth authorization flow
+## Using the Dropbox API
 
 Before your app can access a Dropbox user's files, the user must authorize your application.  Dropbox uses the web-based "3-legged" OAuth flow for app authorization.  Successfully completing this flow gives you an _access token_ for the user's Dropbox account, which grants you the ability to make Dropbox API calls to access their files.
 
@@ -109,47 +96,48 @@ $accountInfo = $client->getAccountInfo();
 print_r($accountInfo);
 ```
 
-## 4. Make Dropbox API Calls
-
 The [`Dropbox\Client`](lib/Dropbox/Client.php) class has methods for most of the public Dropbox API calls.  The documentation comments in that file has an overview of each API call.
 
-## Running the Examples
+## Running the Examples and Tests
 
-First make sure you have completed the steps in section 2 ("Get a Dropbox API key").  Let's say you've saved that information in a file named "test.app".
+1. Download this repository.
+2. run: `composer install --dev` to download the dependencies.  (You'll need [Composer](http://getcomposer.org/download/).)
+3. Save your Dropbox API key in, say, "test.app".  (See: [Get a Dropbox API key](#get-a-dropbox-api-key), above.)
 
-### "authorize.php"
+### authorize.php
 
 This example runs through the OAuth authorization flow.
 
-```bash
+```
 ./examples/authorize.php test.app test.auth
 ```
 
-This produces a file named "test.auth" that has the access token.  This file can be used with the other examples.
+This produces a file named "test.auth" that has the access token.  This file can passed in to the other examples.
 
-### "account-info.php"
+### account-info.php
 
-```bash
+```
 ./examples/account-info.php test.auth
 ```
 
 (You can generate "test.auth" using the "authorize.php" example script.)
 
-### "web-file-browser.php"
+### web-file-browser.php
 
-This is a minimal web app that does the OAuth authorization flow and then uses Dropbox API calls to let users browse their Dropbox files.  If you have PHP 5.4+, you can run it using PHP's built-in web server:
+A tiny web app that runs through the OAuth authorization flow and then uses Dropbox API calls to let the user browse their Dropbox files.  If you have PHP 5.4+, you can run it using PHP's built-in web server:
 
-```bash
+```
 cp test.app examples/web-file-browser.app
 php -S localhost:8080 examples/web-file-browser.php
 ```
 
-## Running the Tests
+### Running the Tests
 
-First put an "auth info" file in "test/test.auth", then run:
+Put an "auth info" file in "test/test.auth", then run:
 
-```bash
+```
 php test/main.php
 ```
 
 (You can generate "test/test.auth" using the "authorize.php" example script.)
+
