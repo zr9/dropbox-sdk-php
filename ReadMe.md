@@ -5,26 +5,20 @@ A PHP library to access [Dropbox's HTTP-based API](http://dropbox.com/developers
 License: [MIT](License.txt)
 
 Requirements:
-  * PHP version 5.3 or greater.
-  * The [cURL extension](http://php.net/manual/en/curl.installation.php) for PHP (usually built-in).
+  * PHP 5.3+
+  * PHP [cURL extension](http://php.net/manual/en/curl.installation.php) with SSL enabled (it's usually built-in).
 
 ## 1. Setup
 
 If you're using [Composer](http://getcomposer.org/) for your project's dependencies, add the following to your "composer.json":
 
 ```
-"repositories": [
-  {
-    "type": "vcs",
-    "url": "https://github.com/dropbox/dropbox-sdk-php"
-  }
-],
 "require": {
   "dropbox/dropbox-sdk": "dev-master",
 }
 ```
 
-NOTE: This SDK is currently in the early stages of development, which is why you need to use "dev-master" as the version.  In the future, we'll put versioned releases on Packagist.
+NOTE: This SDK is currently in the early stages of development, which is why you need to use "dev-master" as the version.  In the future, we'll make versioned releases.
 
 ### Without Composer
 
