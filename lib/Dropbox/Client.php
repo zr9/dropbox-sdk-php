@@ -18,8 +18,8 @@ final class Client
     private $config;
 
     /**
-     * The access token that gives this client permission to make API calls.  You can get an
-     * access token via {@link WebAuth::start} and {@link Config::start}.
+     * The access token used by this client to make authenticated API calls.  You can get an
+     * access token via {@link WebAuth}.
      *
      * @return AccessToken
      */
@@ -554,7 +554,7 @@ final class Client
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
         $metadata = RequestUtil::parseResponseJson($response->body);
-        if ($metadata["is_deleted"]) return null;
+        if (array_key_exists("is_deleted", $metadata) && $metadata["is_deleted"]) return null;
         return $metadata;
     }
 
@@ -589,7 +589,7 @@ final class Client
         if ($response->statusCode !== 404) throw RequestUtil::unexpectedStatus($response);
 
         $metadata = RequestUtil::parseResponseJson($response->body);
-        if ($metadata["is_deleted"]) return array(true, null);
+        if (array_key_exists("is_deleted", $metadata) && $metadata["is_deleted"]) return array(true, null);
         return array(true, $metadata);
     }
 
