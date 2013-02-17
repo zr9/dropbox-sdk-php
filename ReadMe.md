@@ -36,9 +36,7 @@ You need a Dropbox API key to make API requests.
   * If you've already registered an app, click on the "Options" link to see the app's API key and secret.
   * Otherwise, click "Create an app" to get register an app.  Choose "Full Dropbox" or "App Folder" [depending on your needs](https://www.dropbox.com/developers/start/core).
 
-### Save your API key and secret in a JSON file
-
-This SDK comes with a function to load an API key and secret from a JSON file.  For example, create a file called "test.app" with the following contents:
+Save the API key to a JSON file called, say, "test.app":
 
 ```
 {
