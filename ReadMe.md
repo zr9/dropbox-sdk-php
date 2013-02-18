@@ -99,8 +99,7 @@ The [`Dropbox\Client`](lib/Dropbox/Client.php) class has methods for most of the
 ## Running the Examples and Tests
 
 1. Download this repository.
-2. run: `composer install --dev` to download the dependencies.  (You'll need [Composer](http://getcomposer.org/download/).)
-3. Save your Dropbox API key in, say, "test.app".  (See: [Get a Dropbox API key](#get-a-dropbox-api-key), above.)
+2. Save your Dropbox API key in, say, "test.app".  (See: [Get a Dropbox API key](#get-a-dropbox-api-key), above.)
 
 ### authorize.php
 
@@ -131,11 +130,9 @@ php -S localhost:8080 examples/web-file-browser.php
 
 ### Running the Tests
 
-Put an "auth info" file in "test/test.auth", then run:
+1. run: `composer install --dev` to download the dependencies.  (You'll need [Composer](http://getcomposer.org/download/).)
+2. Put an "auth info" file in "test/test.auth".  (You can generate "test/test.auth" using the "authorize.php" example script.)
 
 ```
-php test/main.php
+./vendor/bin/phpunit test/
 ```
-
-(You can generate "test/test.auth" using the "authorize.php" example script.)
-

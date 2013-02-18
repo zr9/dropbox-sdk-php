@@ -1,23 +1,13 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
-require_once __DIR__.'/../vendor/vierbergenlars/simpletest/autorun.php';
+require_once __DIR__.'/strict.php';
 
 use \Dropbox as dbx;
 
-// Override the exception reporter to print the full stack trace instead of just
-// the first line.
-class MyReporter extends TextReporter
-{
-    function paintException(\Exception $ex)
-    {
-        parent::paintException($ex);
-        echo $ex->getTraceAsString();
-    }
-}
-SimpleTest::prefer(new MyReporter());
+PHPUnit_Framework_Error_Notice::$enabled = true;
+PHPUnit_Framework_Error_Warning::$enabled = true;
 
-class ApiTest extends UnitTestCase
+class ClientTest extends PHPUnit_Framework_TestCase
 {
     var $client;
     var $basePath;
@@ -46,7 +36,7 @@ class ApiTest extends UnitTestCase
         return "{$this->testFolder}/$path";
     }
 
-    function setUp()
+    protected function setUp()
     {
         // Create a new folder for the tests to work with.
         $timestamp = \date('Y-M-d H.i.s', \time());
@@ -58,10 +48,8 @@ class ApiTest extends UnitTestCase
         while ($result == null) {
             $tryPath = "$basePath ($i)";
             $i++;
-            if ($i >= 100) {
-                fwrite(STDERR, "Unable to create folder \"$basePath\"");
-                die;
-            }
+            if ($i >= 100) throw new Exception("Unable to create folder \"$basePath\"");
+            $result = $this->client->createFolder($basePath);
         }
 
         $this->testFolder = $tryPath;
@@ -70,8 +58,6 @@ class ApiTest extends UnitTestCase
     function tearDown()
     {
         @unlink("test-dest.txt");
-        @unlink("test-media.txt");
-        @unlink("test-shared.txt");
         @unlink("test-source.txt");
 
         $this->client->delete($this->testFolder);
@@ -98,7 +84,7 @@ class ApiTest extends UnitTestCase
 
         $fd = $this->writeTempFile($size);
         $result = $this->client->uploadFile($path, $writeMode, $fd, $size);
-        $this->assertEqual($size, $result['bytes']);
+        $this->assertEquals($size, $result['bytes']);
 
         return $result;
     }
@@ -140,9 +126,9 @@ class ApiTest extends UnitTestCase
         $down = $this->client->getFile($remotePath, $fd);
         fclose($fd);
 
-        $this->assertEqual($up['size'], $down['size']);
-        $this->assertEqual($up['size'], filesize($localPathSource));
-        $this->assertEqual(filesize($localPathDest), filesize($localPathSource));
+        $this->assertEquals($up['bytes'], $down['bytes']);
+        $this->assertEquals($up['bytes'], filesize($localPathSource));
+        $this->assertEquals(filesize($localPathDest), filesize($localPathSource));
     }
 
     function testDelta()
@@ -162,8 +148,8 @@ class ApiTest extends UnitTestCase
 
         $this->addFile($path, 100);
         $result = $this->client->getDelta($start);
-        $this->assertEqual(1, count($result['entries']));
-        $this->assertEqual($path, $result['entries'][0][1]["path"]);
+        $this->assertEquals(1, count($result['entries']));
+        $this->assertEquals($path, $result['entries'][0][1]["path"]);
     }
 
     function testRevisions()
@@ -174,12 +160,12 @@ class ApiTest extends UnitTestCase
         $this->addFile($path, 300, dbx\WriteMode::force());
 
         $revs = $this->client->getRevisions($path);
-        $this->assertTrue(count($revs) > 2);
+        $this->assertEquals(count($revs), 3);
 
         $revs = $this->client->getRevisions($path, 2);
-        $this->assertEqual(2, count($revs));
-        $this->assertEqual(300, $revs[0]['size']);
-        $this->assertEqual(200, $revs[1]['size']);
+        $this->assertEquals(count($revs), 2);
+        $this->assertEquals(300, $revs[0]['bytes']);
+        $this->assertEquals(200, $revs[1]['bytes']);
     }
 
     function testRestore()
@@ -189,10 +175,10 @@ class ApiTest extends UnitTestCase
         $resultB = $this->addFile($path, 200);
 
         $result = $this->client->restoreFile($path, $resultA['rev']);
-        $this->assertEqual(100, $result['size']);
+        $this->assertEquals(100, $result['bytes']);
 
         $final = $this->client->getMetadata($path);
-        $this->assertEqual(100, $final['size']);
+        $this->assertEquals(100, $final['bytes']);
     }
 
     function testSearch()
@@ -204,16 +190,16 @@ class ApiTest extends UnitTestCase
         $this->client->delete($this->p("search - c.txt"));
 
         $result = $this->client->searchFileNames($this->p(), "search");
-        $this->assertEqual(2, count($result));
+        $this->assertEquals(2, count($result));
 
         $result = $this->client->searchFileNames($this->p(), "search", 1);
-        $this->assertEqual(1, count($result));
+        $this->assertEquals(1, count($result));
 
         $result = $this->client->searchFileNames($this->p("sub"), "search");
-        $this->assertEqual(1, count($result));
+        $this->assertEquals(1, count($result));
 
         $result = $this->client->searchFileNames($this->p(), "search", null, true);
-        $this->assertEqual(3, count($result));
+        $this->assertEquals(3, count($result));
     }
 
     function testShares()
@@ -224,7 +210,7 @@ class ApiTest extends UnitTestCase
 
         $short = $this->client->createShareableLink($remotePath, true);
         $long = $this->client->createShareableLink($remotePath);
-        $this->assertTrue(strlen($short['url']) < strlen($long['url']));
+        $this->assertLessThan(strlen($long['url']), strlen($short['url']));
         $fetchedStr = $this->fetchUrl($long['url']);
         assert(strlen($fetchedStr) > 5 * strlen($contents)); //should get a big page back
     }
@@ -239,7 +225,7 @@ class ApiTest extends UnitTestCase
         $result = $this->client->createTemporaryDirectLink($remotePath);
         $fetchedStr = $this->fetchUrl($result['url']);
 
-        $this->assertEqual($contents, $fetchedStr);
+        $this->assertEquals($contents, $fetchedStr);
     }
 
     function testCopyRef()
@@ -253,10 +239,10 @@ class ApiTest extends UnitTestCase
         $ref = $result['copy_ref'];
 
         $result = $this->client->copyFromCopyRef($ref, $dest);
-        $this->assertEqual($size, $result['bytes']);
+        $this->assertEquals($size, $result['bytes']);
 
         $result = $this->client->getMetadataWithChildren($this->p());
-        $this->assertEqual(2, count($result['contents']));
+        $this->assertEquals(2, count($result['contents']));
     }
 
     function testThumbnail()
@@ -270,7 +256,7 @@ class ApiTest extends UnitTestCase
 
         list($md2, $data2) = $this->client->getThumbnail($remotePath, "jpeg", "s");
         $this->assertTrue(self::isJpeg($data1));
-        $this->assertTrue(strlen($data2) > strlen($data1));
+        $this->assertGreaterThan(strlen($data1), strlen($data2));
 
         list($md3, $data3) = $this->client->getThumbnail($remotePath, "png", "s");
         $this->assertTrue(self::isPng($data3));
@@ -303,7 +289,7 @@ class ApiTest extends UnitTestCase
         $fetched = stream_get_contents($fd);
         fclose($fd);
 
-        $this->assertEqual($contents, $fetched);
+        $this->assertEquals($contents, $fetched);
     }
 
     // --------------- Test File Operations -------------------
@@ -315,21 +301,21 @@ class ApiTest extends UnitTestCase
 
         $this->addFile($source, $size);
         $result = $this->client->copy($source, $dest);
-        $this->assertEqual($size, $result['bytes']);
+        $this->assertEquals($size, $result['bytes']);
 
         $result = $this->client->getMetadataWithChildren($this->p());
-        $this->assertEqual(2, count($result['contents']));
+        $this->assertEquals(2, count($result['contents']));
     }
 
     function testCreateFolder()
     {
         $result = $this->client->getMetadataWithChildren($this->p());
-        $this->assertEqual(0, count($result['contents']));
+        $this->assertEquals(0, count($result['contents']));
 
         $this->client->createFolder($this->p("a"));
 
         $result = $this->client->getMetadataWithChildren($this->p());
-        $this->assertEqual(1, count($result['contents']));
+        $this->assertEquals(1, count($result['contents']));
 
         $result = $this->client->getMetadata($this->p("a"));
         $this->assertTrue($result['is_dir']);
@@ -344,7 +330,7 @@ class ApiTest extends UnitTestCase
         $this->client->delete($path);
 
         $result = $this->client->getMetadataWithChildren($this->p());
-        $this->assertEqual(0, count($result['contents']));
+        $this->assertEquals(0, count($result['contents']));
     }
 
     function testMove()
@@ -355,12 +341,12 @@ class ApiTest extends UnitTestCase
 
         $this->addFile($source, $size);
         $result = $this->client->getMetadataWithChildren($this->p());
-        $this->assertEqual(1, count($result['contents']));
+        $this->assertEquals(1, count($result['contents']));
 
         $result = $this->client->move($source, $dest);
-        $this->assertEqual($size, $result['bytes']);
+        $this->assertEquals($size, $result['bytes']);
 
         $result = $this->client->getMetadataWithChildren($this->p());
-        $this->assertEqual(1, count($result['contents']));
+        $this->assertEquals(1, count($result['contents']));
     }
 }
