@@ -30,20 +30,19 @@ catch (dbx\AuthInfoLoadException $ex) {
 $dbxConfig = new dbx\Config($appInfo, "examples-authorize");
 $webAuth = new dbx\WebAuth($dbxConfig);
 
-$authStart = $webAuth->start(null);
+list($requestToken, $authorizeUrl) = $webAuth->start(null);
 
-echo "1. Go to: ".$authStart->getAuthorizeUrl()."\n";
+echo "1. Go to: $authorizeUrl\n";
 echo "2. Click \"Allow\" (you might have to log in first).\n";
 echo "3. Hit ENTER to continue.\n";
 fgets(STDIN);
 
-$authFinish = $webAuth->finish($authStart->getRequestToken());
-$accessToken = $authFinish->getAccessToken();
+list($accessToken, $dropboxUserId) = $webAuth->finish($requestToken);
 $serializedAccessToken = $accessToken->serialize();
 
 echo "Authorization complete.\n";
-echo "- User ID: ".$authFinish->getUserId()."\n";
-echo "- Serialized Access Token: ".$serializedAccessToken."\n";
+echo "- User ID: $dropboxUserId\n";
+echo "- Serialized Access Token: $serializedAccessToken\n";
 
 $authArr = array(
     "app" => $appInfoJson,

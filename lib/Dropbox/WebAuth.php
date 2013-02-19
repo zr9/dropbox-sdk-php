@@ -30,12 +30,11 @@ final class WebAuth
     }
 
     /**
-     * Tells Dropbox that you want to start authorization and returns a
-     * {@link WebAuthStart} object that contains the information necessary to
-     * continue authorization.  This corresponds to step 1 of the three-step OAuth web flow.
+     * Tells Dropbox that you want to start authorization and returns the information necessary
+     * to continue authorization.  This corresponds to step 1 of the three-step OAuth web flow.
      *
      * <p>
-     * After this function returns, direct your user to the {@link WebAuthStart},
+     * After this function returns, direct your user to the returned $authorizeUrl,
      * which gives them a chance to grant your application access to their Dropbox account.  This
      * corresponds to step 2 of the three-step OAuth web flow.
      * </p>
@@ -53,7 +52,10 @@ final class WebAuth
      *
      * @throws Exception
      *
-     * @return WebAuthStart
+     * @return array
+     *    A pair of (RequestToken $requestToken, string $authorizeUrl).  Redirect the user's
+     *    browser to $authorizeUrl.  When they're done authorizing, call {@link finish()} with
+     *    $requestToken.
      */
     function start($callbackUrl)
     {
@@ -96,7 +98,7 @@ final class WebAuth
                 "oauth_callback" => $callbackUrl,
             ));
 
-        return new WebAuthStart($requestToken, $authorizeUrl);
+        return array($requestToken, $authorizeUrl);
     }
 
     /**
@@ -105,11 +107,12 @@ final class WebAuth
      * step 3 of the three-step OAuth web flow.
      *
      * @param RequestToken $requestToken
-     *    The {@link WebAuthStart::getRequestToken()} returned by {@link start()}.
+     *    The <code>RequestToken</code> returned by {@link start()}.
      *
-     * @return AuthFinish
-     *    This object contains an access token, which you can then use with {@link Client}
-     *    to make API requests.
+     * @return array
+     *    A pair of (RequestToken $requestToken, string $dropboxUserId).  Use $requestToken to
+     *    construct a {@link Client} object and start making API calls.  $dropboxUserId is the
+     *    user's "user ID" on Dropbox and is for your own reference.
      */
     function finish($requestToken)
     {
@@ -136,6 +139,6 @@ final class WebAuth
         }
 
         $accessToken = new AccessToken($parts['oauth_token'], $parts['oauth_token_secret']);
-        return new AuthFinish($accessToken, $parts['uid']);
+        return array($accessToken, $parts['uid']);
     }
 }

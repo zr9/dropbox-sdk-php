@@ -42,11 +42,11 @@ else if ($req == "/oauth-start") {
 
     $webAuth = new dbx\WebAuth($dbxConfig);
     $callbackUrl = getBaseUrl()."/oauth_callback";
-    $authStart = $webAuth->start($callbackUrl);
+    list($requestToken, $authorizeUrl) = $webAuth->start($callbackUrl);
 
-    $_SESSION['requestToken'] = $authStart->getRequestToken()->serialize();
+    $_SESSION['requestToken'] = $requestToken->serialize();
 
-    header("Location: ".$authStart->getAuthorizeUrl());
+    header("Location: $authorizeUrl");
     exit;
 }
 else if ($req == "/oauth_callback") {
@@ -59,8 +59,7 @@ else if ($req == "/oauth_callback") {
     }
 
     $requestToken = dbx\RequestToken::deserialize($_SESSION['requestToken']);
-    $authFinish = $webAuth->finish($requestToken);
-    $accessToken = $authFinish->getAccessToken();
+    list($accessToken, $dropboxUserId) = $webAuth->finish($requestToken);
 
     $_SESSION['accessToken'] = $accessToken->serialize();
 
