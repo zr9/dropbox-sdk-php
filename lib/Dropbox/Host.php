@@ -33,6 +33,8 @@ final class Host
     private $web;
 
     /**
+     * Constructor.
+     *
      * @param string $api
      *     {@link getApi()}
      * @param string $content
@@ -71,11 +73,22 @@ final class Host
      */
     function getWeb() { return $this->web; }
 
+    /**
+     * Check that a function argument is of type <code>Host</code>.
+     *
+     * @internal
+     */
     static function checkArg($argName, $argValue)
     {
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 
+    /**
+     * Check that a function argument is either <code>null</code> or of type
+     * <code>Host</code>.
+     *
+     * @internal
+     */
     static function checkArgOrNull($argName, $argValue)
     {
         if ($argValue === null) return;

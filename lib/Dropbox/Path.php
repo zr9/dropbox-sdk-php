@@ -7,6 +7,8 @@ namespace Dropbox;
 final class Path
 {
     /**
+     * Return whether the given path is a valid Dropbox path.
+     *
      * @param string $path
      * @return bool
      */
@@ -17,6 +19,9 @@ final class Path
     }
 
     /**
+     * If the given path is a valid Dropbox path, return <code>null</code>, otherwise
+     * return an English string error message describing what is wrong with the path.
+     *
      * @param string $path
      * @return string|null
      */
@@ -34,6 +39,8 @@ final class Path
     }
 
     /**
+     * @internal
+     *
      * @param string $argName
      * @param mixed $value
      * @throws \InvalidArgumentException
@@ -47,6 +54,8 @@ final class Path
     }
 
     /**
+     * @internal
+     *
      * @param string $argName
      * @param mixed $value
      * @throws \InvalidArgumentException

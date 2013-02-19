@@ -12,11 +12,13 @@ abstract class Token
     /** @var string */
     private $secret;
 
-    const SERIALIZE_DIVIDER = '|';
+    private static $SERIALIZE_DIVIDER = '|';
 
     /**
      * @param string $key
      * @param string $secret
+     *
+     * @internal
      */
     function __construct($key, $secret)
     {
@@ -47,20 +49,32 @@ abstract class Token
      */
     function getSecret() { return $this->secret; }
 
+    /**
+     * Returns a string representation of this token.
+     *
+     * @return string
+     */
     function __toString()
     {
         return "{key=\"" . $this->key . "\", secret=\"" . $this->secret . "\"}";
     }
 
+    /**
+     * Returns a serialized string representation of this token.
+     *
+     * @return string
+     */
     abstract function serialize();
 
     /**
      * @param string $typeTag
      * @return string
+     *
+     * @internal
      */
     protected function serializeWithTag($typeTag)
     {
-        return $typeTag . $this->key . self::SERIALIZE_DIVIDER . $this->secret;
+        return $typeTag . $this->key . self::$SERIALIZE_DIVIDER . $this->secret;
     }
 
     /**
@@ -70,6 +84,8 @@ abstract class Token
      *
      * @throws DeserializeException
      *    If the format of the input message isn't correct.
+     *
+     * @internal
      */
     static protected function deserializeWithTag($typeTag, $data)
     {
@@ -77,8 +93,8 @@ abstract class Token
         if ($prefix !== $typeTag) throw new DeserializeException("expecting prefix \"" . $typeTag . "\"");
 
         $rest = substr($data, strlen($typeTag));
-        $divPos = strpos($rest, self::SERIALIZE_DIVIDER);
-        if ($divPos === false) throw new DeserializeException("missing \"".self::SERIALIZE_DIVIDER."\" divider");
+        $divPos = strpos($rest, self::$SERIALIZE_DIVIDER);
+        if ($divPos === false) throw new DeserializeException("missing \"".self::$SERIALIZE_DIVIDER."\" divider");
 
         $key = substr($rest, 0, $divPos);
         $secret = substr($rest, $divPos+1, strlen($rest) - $divPos - 1);
@@ -91,15 +107,17 @@ abstract class Token
         return array($key, $secret);
     }
 
+    /** @internal */
     static function getTokenPartError($s)
     {
         if ($s === null) return "can't be null";
         if (strlen($s) === 0) return "can't be empty";
         if (strstr($s, ' ')) return "can't contain a space";
-        if (strstr($s, self::SERIALIZE_DIVIDER)) return "can't contain a \"".self::SERIALIZE_DIVIDER."\"";
+        if (strstr($s, self::$SERIALIZE_DIVIDER)) return "can't contain a \"".self::$SERIALIZE_DIVIDER."\"";
         return null;  // 'null' means "no error"
     }
 
+    /** @internal */
     static function checkKeyArg($key)
     {
         $error = self::getTokenPartError($key);
@@ -107,6 +125,7 @@ abstract class Token
         throw new \InvalidArgumentException("Bad 'key': \"$key\": $error.");
     }
 
+    /** @internal */
     static function checkSecretArg($secret)
     {
         $error = self::getTokenPartError($secret);
@@ -114,11 +133,22 @@ abstract class Token
         throw new \InvalidArgumentException("Bad 'secret': \"$secret\": $error.");
     }
 
+    /**
+     * Check that a function argument is of type <code>Token</code>.
+     *
+     * @internal
+     */
     static function checkArg($argName, $argValue)
     {
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 
+    /**
+     * Check that a function argument is either <code>null</code> or of type
+     * <code>Token</code>.
+     *
+     * @internal
+     */
     static function checkArgOrNull($argName, $argValue)
     {
         if ($argValue === null) return;

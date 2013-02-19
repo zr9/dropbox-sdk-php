@@ -206,12 +206,10 @@ class ClientTest extends PHPUnit_Framework_TestCase
     {
         $contents = "A shared text file";
         $remotePath = $this->p("share-me.txt");
-        $up = $this->client->uploadFileFromString($remotePath, dbx\WriteMode::add(), $contents);
+        $this->client->uploadFileFromString($remotePath, dbx\WriteMode::add(), $contents);
 
-        $short = $this->client->createShareableLink($remotePath, true);
-        $long = $this->client->createShareableLink($remotePath);
-        $this->assertLessThan(strlen($long['url']), strlen($short['url']));
-        $fetchedStr = $this->fetchUrl($long['url']);
+        $url = $this->client->createShareableLink($remotePath);
+        $fetchedStr = $this->fetchUrl($url);
         assert(strlen($fetchedStr) > 5 * strlen($contents)); //should get a big page back
     }
 
@@ -235,8 +233,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $size = 1024;
 
         $this->addFile($source, $size);
-        $result = $this->client->createCopyRef($source);
-        $ref = $result['copy_ref'];
+        $ref = $this->client->createCopyRef($source);
 
         $result = $this->client->copyFromCopyRef($ref, $dest);
         $this->assertEquals($size, $result['bytes']);

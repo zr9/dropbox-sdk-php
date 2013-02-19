@@ -88,9 +88,11 @@ final class Config
     function getUserLocale() { return $this->userLocale; }
 
     /** @var string */
-    var $userLocale;
+    private $userLocale;
 
     /**
+     * Constructor.
+     *
      * @param AppInfo $appInfo
      *     {@link getAppInfo()}
      * @param string $clientIdentifier
@@ -107,14 +109,24 @@ final class Config
         $this->appInfo = $appInfo;
         $this->clientIdentifier = $clientIdentifier;
         $this->userLocale = self::getClosestSupportedLocale($userLocale);
-
     }
 
+    /**
+     * Check that a function argument is of type <code>Config</code>.
+     *
+     * @internal
+     */
     static function checkArg($argName, $argValue)
     {
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 
+    /**
+     * Use this to check that a function argument is either <code>null</code> or of type
+     * <code>Config</code>.
+     *
+     * @internal
+     */
     static function checkArgOrNull($argName, $argValue)
     {
         if ($argValue === null) return;

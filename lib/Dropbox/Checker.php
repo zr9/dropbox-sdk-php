@@ -3,6 +3,8 @@ namespace Dropbox;
 
 /**
  * Helper functions to validate arguments.
+ *
+ * @internal
  */
 class Checker
 {

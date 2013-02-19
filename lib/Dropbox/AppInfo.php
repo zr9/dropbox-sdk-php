@@ -1,13 +1,16 @@
 <?php
 namespace Dropbox;
 
+/**
+ * Information about how you've registered your application with the Dropbox API.
+ */
 final class AppInfo
 {
     /**
      * Your Dropbox <em>app key</em> (OAuth calls this the <em>consumer key</em>).  You can
      * create an app key and secret on the <a href="http://dropbox.com/developers/apps">Dropbox developer website</a>.
      *
-     * @returns string
+     * @return string
      */
     function getKey() { return $this->key; }
 
@@ -43,7 +46,8 @@ final class AppInfo
     private $accessType;
 
     /**
-     * The set of servers your app will use.
+     * The set of servers your app will use.  This defaults to the standard Dropbox servers
+     * {@link Host::getDefault}.
      *
      * @return Host
      */
@@ -53,10 +57,16 @@ final class AppInfo
     private $host;
 
     /**
+     * Constructor.
+     *
      * @param string $key
+     *    {@link getKey()}
      * @param string $secret
+     *    {@link getSecret()}
      * @param string $accessType
+     *    {@link getAccessType()}
      * @param Host $host
+     *    {@link getHost()}
      */
     function __construct($key, $secret, $accessType, $host = null)
     {
@@ -82,11 +92,11 @@ final class AppInfo
      * for details about what this file should look like.
      *
      * @param string $path Path to a JSON file
-     * @returns AppInfo
+     * @return AppInfo
      */
     static function loadFromJsonFile($path)
     {
-        list($jsonArr, $appInfo) = self::loadFromJsonFileWithRaw($path);
+        list($rawJson, $appInfo) = self::loadFromJsonFileWithRaw($path);
         return $appInfo;
     }
 
@@ -96,9 +106,12 @@ final class AppInfo
      * for details about what this file should look like.
      *
      * @param string $path Path to a JSON file
-     * @returns list
+     *
+     * @return array
      *    A list of two items.  The first is a PHP array representation of the raw JSON, the second
      *    is an AppInfo object that is the parsed version of the JSON.
+     *
+     * @internal
      */
     static function loadFromJsonFileWithRaw($path)
     {
@@ -119,11 +132,14 @@ final class AppInfo
     }
 
     /**
-     *  Parses a JSON object to build an AppInfo object.  If you would like to load this from a file,
-     *  use the loadFromJsonFile() method.
+     * Parses a JSON object to build an AppInfo object.  If you would like to load this from a file,
+     * use the loadFromJsonFile() method.
      *
-     *  @param array $jsonArr Output from json_decode($str, TRUE)
-     *  @returns AppInfo
+     * @param array $jsonArr Output from json_decode($str, TRUE)
+     *
+     * @return AppInfo
+     *
+     * @throws AppInfoLoadException
      */
     static function loadFromJson($jsonArr)
     {
@@ -188,11 +204,22 @@ final class AppInfo
         return new AppInfo($appKey, $appSecret, $accessType, $host);
     }
 
+    /**
+     * Use this to check that a function argument is of type <code>AppInfo</code>
+     *
+     * @internal
+     */
     static function checkArg($argName, $argValue)
     {
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 
+    /**
+     * Use this to check that a function argument is either <code>null</code> or of type
+     * <code>AppInfo</code>.
+     *
+     * @internal
+     */
     static function checkArgOrNull($argName, $argValue)
     {
         if ($argValue === null) return;

@@ -22,9 +22,16 @@ namespace Dropbox;
  */
 final class RequestToken extends Token
 {
-    const TypeTag = "r|";
+    /**
+     * Tacked on to the front of the serialized string to distinguish it from other token types.
+     *
+     * @var string
+     */
+    private static $TypeTag = "r|";
 
     /**
+     * @internal
+     *
      * @param string $key
      * @param string $value
      */
@@ -41,7 +48,7 @@ final class RequestToken extends Token
      */
     function serialize()
     {
-        return $this->serializeWithTag(self::TypeTag);
+        return $this->serializeWithTag(self::$TypeTag);
     }
 
     /**
@@ -54,15 +61,26 @@ final class RequestToken extends Token
      */
     static function deserialize($data)
     {
-        $parts = parent::deserializeWithTag(self::TypeTag, $data);
+        $parts = parent::deserializeWithTag(self::$TypeTag, $data);
         return new RequestToken($parts[0], $parts[1]);
     }
 
+    /**
+     * Check that a function argument is of type <code>RequestToken</code>.
+     *
+     * @internal
+     */
     static function checkArg($argName, $argValue)
     {
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 
+    /**
+     * Check that a function argument is either <code>null</code> or of type
+     * <code>RequestToken</code>.
+     *
+     * @internal
+     */
     static function checkArgOrNull($argName, $argValue)
     {
         if ($argValue === null) return;

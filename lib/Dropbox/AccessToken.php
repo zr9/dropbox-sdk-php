@@ -30,11 +30,18 @@ namespace Dropbox;
  */
 final class AccessToken extends Token
 {
-    const TypeTag = "a|";
+    /**
+     * Tacked on to the front of the serialized string to distinguish it from other token types.
+     *
+     * @var string
+     */
+    private static $TypeTag = "a|";
 
     /**
      * @param string $key
      * @param string $value
+     *
+     * @internal
      */
     function __construct($key, $value)
     {
@@ -49,7 +56,7 @@ final class AccessToken extends Token
      */
     function serialize()
     {
-        return $this->serializeWithTag(self::TypeTag);
+        return $this->serializeWithTag(self::$TypeTag);
     }
 
     /**
@@ -58,19 +65,30 @@ final class AccessToken extends Token
      *
      * @param string $data
      * @return AccessToken
-     * @throws DeserializeException_
+     * @throws DeserializeException
      */
     static function deserialize($data)
     {
-        $parts = parent::deserializeWithTag(self::TypeTag, $data);
+        $parts = parent::deserializeWithTag(self::$TypeTag, $data);
         return new AccessToken($parts[0], $parts[1]);
     }
 
+    /**
+     * Check that a function argument is of type <code>AccessToken</code>.
+     *
+     * @internal
+     */
     static function checkArg($argName, $argValue)
     {
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 
+    /**
+     * Check that a function argument is either <code>null</code> or of type
+     * <code>AccessToken</code>.
+     *
+     * @internal
+     */
     static function checkArgOrNull($argName, $argValue)
     {
         if ($argValue === null) return;

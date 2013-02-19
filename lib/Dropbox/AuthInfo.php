@@ -2,8 +2,10 @@
 namespace Dropbox;
 
 /**
- * This class is used to simplify the example apps, but devs might find it useful.  It contains
- * methods to load an AppInfo and AccessToken from a JSON file.
+ * This class contains methods to load an AppInfo and AccessToken from a JSON file.
+ * This can help simplify simple scripts (such as the example programs that come with the
+ * SDK) but is probably not useful in typical Dropbox API apps.
+ *
  */
 final class AuthInfo
 {
@@ -11,8 +13,12 @@ final class AuthInfo
      * Loads a JSON file containing authorization information for your app. 'php authorize.php'
      * in the examples directory for details about what this file should look like.
      *
-     * @param string $path Path to a JSON file
+     * @param string $path
+     *    Path to a JSON file
      * @return array
+     *    A pair of (AppInfo $appInfo, AccessToken $accessToken).
+     *
+     * @throws AuthInfoLoadException
      */
     static function loadFromJsonFile($path)
     {
@@ -34,8 +40,12 @@ final class AuthInfo
      * Parses a JSON object to build an AuthInfo object.  If you would like to load this from a file,
      * please use the @see loadFromJsonFile method.
      *
-     * @param array $jsonArr Output from json_decode($str, TRUE)
+     * @param array $jsonArr
+     *    A parsed JSON object, typcally the result of json_decode(..., TRUE).
      * @return array
+     *    A list(AppInfo $appInfo, AccessToken $accessToken).
+     *
+     * @throws AuthInfoLoadException
      */
     private static function loadFromJson($jsonArr)
     {
@@ -70,16 +80,5 @@ final class AuthInfo
         $accessToken = AccessToken::deserialize($accessTokenString);
 
         return array($appInfo, $accessToken);
-    }
-
-    static function checkArg($argName, $argValue)
-    {
-        if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
-    }
-
-    static function checkArgOrNull($argName, $argValue)
-    {
-        if ($argValue === null) return;
-        if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 }

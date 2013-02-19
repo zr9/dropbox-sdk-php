@@ -6,3 +6,6 @@
 
 # I render "ReadMe.md" to "ReadMe.html" locally to see what it looks like.
 /ReadMe.html
+
+# Build output (API docs, code coverage, etc)
+/build

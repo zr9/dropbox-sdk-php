@@ -15,6 +15,9 @@ if (strlen((string) PHP_INT_MAX) < 19) {
     throw new \Exception("The Dropbox SDK at least a 64-bit build of PHP, but it looks like we're running a 32-bit build (PHP_INT_MAX=" . ((string) PHP_INT_MAX) . ").  Library: \"" . __FILE__ . "\"");
 }
 
+/**
+ * @internal
+ */
 final class RequestUtil
 {
     /**

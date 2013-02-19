@@ -8,6 +8,9 @@ namespace Dropbox;
 //
 //     require_once "<path-to-here>/Dropbox/autoload.php"
 
+/**
+ * @internal
+ */
 function autoload($name)
 {
     // If the name doesn't start with "Dropbox\", then its not once of our classes.

@@ -4,6 +4,8 @@ namespace Dropbox;
 /**
  * The class used to make most Dropbox API calls.  You can use this once you've gotten an
  * {@link AccessToken} via {@link WebAuth}.
+ *
+ * This class is stateless so it can be shared/reused.
  */
 final class Client
 {
@@ -29,6 +31,8 @@ final class Client
     private $accessToken;
 
     /**
+     * Constructor.
+     *
      * @param Config $config
      *     {@link getConfig()}
      * @param AccessToken $accessToken
@@ -64,9 +68,10 @@ final class Client
     /**
      * Returns a basic account and quota information.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#account-info">/account/info</a> API endpoint.
-     * </p>
+     * @return array
+     *    See <a href="https://www.dropbox.com/developers/core/api#account-info">/account/info</a>.
+     *
+     * @throws Exception
      */
     function getAccountInfo()
     {
@@ -76,11 +81,11 @@ final class Client
     }
 
     /**
-     * Downloads a file at the given Dropbox $path.  The file's contents are written to the
+     * Downloads a file from Dropbox.  The file's contents are written to the
      * given $outStream and the file's metadata is returned.
      *
      * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#files-GET">/files (GET)</a> API endpoint.
+     * This maps to the <a href="https://www.dropbox.com/developers/core/api#files-GET">/files (GET)</a> API endpoint.
      * </p>
      *
      * @param string $path
@@ -94,8 +99,10 @@ final class Client
      *   If you want a specific version of a file, pass in value of the file metadata's "rev" field.
      *
      * @return null|array
-     *   The metadata object for the file at the given $path and $rev.  If the file doesn't exist,
-     *   you'll get back <code>null</code>.
+     *   The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *   for the file at the given $path and $rev.  If the file doesn't exist, <code>null</code>.
+     *
+     * @throws Exception
      */
     function getFile($path, $outStream, $rev = null)
     {
@@ -128,13 +135,18 @@ final class Client
     /**
      * Calling 'uploadFile' with $numBytes less than this value, will cause this SDK to use the standard
      * /files_put endpoint.  When $numBytes is greater than this value, we'll use the /chunked_upload endpoint.
+     *
+     * @var int
      */
-    const AUTO_CHUNKED_UPLOAD_THRESHOLD = 9863168;  // 8 MB
-
-    const DEFAULT_CHUNK_SIZE = 4194304;  // 4 MB
+    private static $AUTO_CHUNKED_UPLOAD_THRESHOLD = 9863168;  // 8 MB
 
     /**
-     * Creates a file on Dropbox consisting of all the data from $inStream.
+     * @var int
+     */
+    private static $DEFAULT_CHUNK_SIZE = 4194304;  // 4 MB
+
+    /**
+     * Creates a file on Dropbox, using the data from $inStream for the file contents.
      *
      * @param string $path
      *    The Dropbox path to save the file to.
@@ -149,7 +161,10 @@ final class Client
      *    slightly more efficient upload (fewer network round-trips) for files smaller than 8 MB.
      *
      * @return mixed
-     *    The metadata object for the newly-added file.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    for the newly-added file.
+     *
+     * @throws Exception
      */
     function uploadFile($path, $writeMode, $inStream, $numBytes = null)
     {
@@ -162,8 +177,8 @@ final class Client
             // If we don't know how many bytes are coming, we have to use chunked upload.
             // If $numBytes is large, we elect to use chunked upload.
             // In all other cases, use regular upload.
-            if ($numBytes === null || $numBytes > self::AUTO_CHUNKED_UPLOAD_THRESHOLD) {
-                $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes, self::DEFAULT_CHUNK_SIZE);
+            if ($numBytes === null || $numBytes > self::$AUTO_CHUNKED_UPLOAD_THRESHOLD) {
+                $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes, self::$DEFAULT_CHUNK_SIZE);
             } else {
                 $metadata = $this->_uploadFile($path, $writeMode, function(Curl $curl) use ($inStream, $numBytes) {
                     $curl->set(CURLOPT_PUT, true);
@@ -181,6 +196,24 @@ final class Client
         return $metadata;
     }
 
+    /**
+     * Creates a file on Dropbox, using the given $data string as the file contents.
+     *
+     * @param string $path
+     *    The Dropbox path to save the file to.
+     *
+     * @param WriteMode $writeMode
+     *    What to do if there's already a file at the given path.
+     *
+     * @param string $data
+     *    The data to use for the contents of the file.
+     *
+     * @return mixed
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    for the newly-added file.
+     *
+     * @throws Exception
+     */
     function uploadFileFromString($path, $writeMode, $data)
     {
         Path::checkArgNonRoot("path", $path);
@@ -194,9 +227,41 @@ final class Client
         });
     }
 
-    function uploadFileChunked($path, $writeMode, $inStream, $numBytes = null, $chunkSize = self::DEFAULT_CHUNK_SIZE)
+    /**
+     * Creates a file on Dropbox, using the data from $inStream as the file contents.
+     *
+     * This version of <code>uploadFile</code> splits uploads the file ~4MB chunks at a time and
+     * will retry a few times if one chunk fails to upload.
+     *
+     * @param string $path
+     *    The Dropbox path to save the file to.
+     *
+     * @param WriteMode $writeMode
+     *    What to do if there's already a file at the given path.
+     *
+     * @param resource $inStream
+     *
+     * @param int|null $numBytes
+     *    The number of bytes available from $inStream.
+     *    You can pass in <code>null</code> if you don't know.
+     *
+     * @param int|null $chunkSize
+     *    The number of bytes to upload in each chunk.  You can omit this (or pass in
+     *    <code>null</code> and the library will use a reasonable default.
+     *
+     * @return mixed
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    for the newly-added file.
+     *
+     * @throws Exception
+     */
+    function uploadFileChunked($path, $writeMode, $inStream, $numBytes = null, $chunkSize = null)
     {
         try {
+            if ($chunkSize === null) {
+                $chunkSize = self::$DEFAULT_CHUNK_SIZE;
+            }
+
             Path::checkArgNonRoot("path", $path);
             WriteMode::checkArg("writeMode", $writeMode);
             Checker::argResource("inStream", $inStream);
@@ -231,7 +296,8 @@ final class Client
      * @param int $chunkSize
      *
      * @return array
-     *    The metadata object for the newly-added file.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    for the newly-added file.
      */
     private function _uploadFileChunked($path, $writeMode, $inStream, $numBytes, $chunkSize)
     {
@@ -346,6 +412,8 @@ final class Client
      *     A pair of (string $uploadId, int $byteOffset).  $uploadId is a unique identifier for this chunked
      *     upload session.  You pass this in to {@link chunkedUploadContinue} and {@link chuunkedUploadFinish}.
      *     $byteOffset is the number of bytes that have been successfully uploaded.
+     *
+     * @throws Exception
      */
     function chunkedUploadStart($data)
     {
@@ -392,6 +460,8 @@ final class Client
      *     If true, the chunk was successfully uploaded.
      *     If an integer, it means you and the server don't agree on the current $byteOffset.  The returned integer is
      *     the server's internal byte offset for the chunked upload session.  You need to adjust your input to match.
+     *
+     * @throws Exception
      */
     function chunkedUploadContinue($uploadId, $byteOffset, $data)
     {
@@ -475,7 +545,11 @@ final class Client
      *
      * @return array|null
      *    If <code>null</code>, it means the Dropbox server wasn't aware of the uploadId you gave it.
-     *    Otherwise, you get back the metadata object for the newly-created file.
+     *    Otherwise, you get back the
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    for the newly-created file.
+     *
+     * @throws Exception
      */
     function chunkedUploadFinish($uploadId, $path, $writeMode)
     {
@@ -517,8 +591,17 @@ final class Client
     }
 
     /**
-     * @param $path
-     * @return array
+     * Returns the metadata for whatever file or folder is at the given path.
+     *
+     * @param string $path
+     *    The Dropbox path to a file or folder.
+     *
+     * @return array|null
+     *    If there is a file or folder at the given path, you'll get back the
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    for that file or folder.  If not, you'll get back <code>null</code>.
+     *
+     * @throws Exception
      */
     function getMetadata($path)
     {
@@ -528,8 +611,19 @@ final class Client
     }
 
     /**
-     * @param $path
-     * @return array
+     * Returns the metadata for whatever file or folder is at the given path and, if it's a folder,
+     * also include the metadata for all the immediate children of that folder.
+     *
+     * @param string $path
+     *    The Dropbox path to a file or folder.
+     *
+     * @return array|null
+     *    If there is a file or folder at the given path, you'll get back the
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a> for
+     *    that file or folder, along with all immediate children if it's a folder.  If not, you'll
+     *    get back <code>null</code>.
+     *
+     * @throws Exception
      */
     function getMetadataWithChildren($path)
     {
@@ -559,18 +653,23 @@ final class Client
     }
 
     /**
-     * If you've previously retrieved the metadata for a folder and its children, this method will retrieve updated
-     * metadata only if something has changed.
+     * If you've previously retrieved the metadata for a folder and its children, this method will
+     * retrieve updated metadata only if something has changed.  This can be more efficient than
+     * simply calling {@link getMetadataWithChildren} every time.
      *
      * @param string $path
+     *    The Dropbox path to a folder.
      *
      * @param string $previousFolderHash
      *    The "hash" field from the previously retrieved folder metadata.
      *
      * @return array
-     *    An <code>array(boolean $changed, array $metadata)</code>.  If the metadata hasn't changed,
-     *    you'll get <code>array(false, null)</code>.  If the metadata has changed, you'll get
-     *    <code>array(true, $newMetadata)</code>.
+     *    A <code>list(boolean $changed, array $metadata)</code>.  If the metadata hasn't changed,
+     *    you'll get <code>list(false, null)</code>.  If the metadata of the folder or any of its
+     *    children has changed, you'll get <code>list(true, $newMetadata)</code>.  $metadata is
+     *    a <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>.
+     *
+     * @throws Exception
      */
     function getMetadataWithChildrenIfChanged($path, $previousFolderHash)
     {
@@ -596,9 +695,19 @@ final class Client
     /**
      * A way of letting you keep up with changes to files and folders in a user's Dropbox.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#delta">/delta</a> API endpoint.
-     * </p>
+     * @param string|null $cursor
+     *    If this is the first time you're calling this, pass in <code>null</code>.  Otherwise,
+     *    pass in whatever cursor was returned by the previous call.
+     *
+     * @return array
+     *    A <a href="https://www.dropbox.com/developers/core/api#delta">delta page</a>, which
+     *    contains a list of changes to apply along with a new "cursor" that should be passed into
+     *    future <code>getDelta</code> calls.  If the "reset" field is <code>true</code>, you
+     *    should clear your local state before applying the changes.  If the "has_more" field is
+     *    <code>true</code>, call <code>getDelta</code> immediately to get more results, otherwise
+     *    wait a while (at least 5 minutes) before calling <code>getDelta</code> again.
+     *
+     * @throws Exception
      */
     function getDelta($cursor = null)
     {
@@ -612,11 +721,22 @@ final class Client
     }
 
     /**
-     * Obtains metadata for the previous revisions of a file.
+     * Gets the metadata for all the file revisions (up to a limit) for a given path.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#revisions">/revisions</a> API endpoint.
-     * </p>
+     * See <a href="https://www.dropbox.com/developers/core/api#revisions">/revisions</a>.
+     *
+     * @param string path
+     *    The Dropbox path that you want file revision metadata for.
+     *
+     * @param int|null limit
+     *    The maximum number of revisions to return.
+     *
+     * @return array|null
+     *    A list of <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata objects</a>,
+     *    one for each file revision.  The later revisions appear first in the list.  If <code>null</code>,
+     *    then there were too many revisions at that path.
+     *
+     * @throws Exception
      */
     function getRevisions($path, $limit = null)
     {
@@ -635,11 +755,21 @@ final class Client
     }
 
     /**
-     * Restores a file path to a previous revision.
+     * Takes a copy of the file at the given revision and saves it over the current copy.  This
+     * will create a new revision, but the file contents will match the revision you specified.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#restore">/restore</a> API endpoint.
-     * </p>
+     * See <a href="https://www.dropbox.com/developers/core/api#restore">/restore</a>.
+     *
+     * @param string $path
+     *    The Dropbox path of the file to restore.
+     *
+     * @param string $rev
+     *    The revision to restore the contents to.
+     *
+     * @return mixed
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *
+     * @throws Exception
      */
     function restoreFile($path, $rev)
     {
@@ -658,11 +788,26 @@ final class Client
     }
 
     /**
-     * Returns metadata for all files and folders whose filename contains the given search string as a substring.
+     * Returns metadata for all files and folders whose filename matches the query string.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#search">/search</a> API endpoint.
-     * </p>
+     * @param string $basePath
+     *    The path to limit the search to.  Pass in "/" to search everything.
+     *
+     * @param string $query
+     *    A space-separated list of substrings to search for.  A file matches only if it contains
+     *    all the substrings.
+     *
+     * @param int|null $limit
+     *    The maximum number of results to return.
+     *
+     * @param bool $includeDeleted
+     *    Whether to include deleted files in the results.
+     *
+     * @return mixed
+     *    A list of <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    objects</a> of files that match the search query.
+     *
+     * @throws Exception
      */
     function searchFileNames($basePath, $query, $limit = null, $includeDeleted = false)
     {
@@ -686,36 +831,51 @@ final class Client
     }
 
     /**
-     * Creates and returns a Dropbox link to files or folders users can use to view a preview of the file in a web browser.
+     * Creates and returns a public link to a file or folder's "preview page".  This link can be
+     * used without authentication.  The preview page may contain a thumbnail or some other
+     * preview of the file, along with a download link to download the actual file.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#shares">/shares</a> API endpoint.
-     * </p>
+     * See <a href="https://www.dropbox.com/developers/core/api#shares">/shares</a>.
+     *
+     * @param string $path
+     *    The Dropbox path to the file or folder you want to create a shareable link to.
+     *
+     * @return string
+     *    The URL of the preview page.
+     *
+     * @throws Exception
      */
-    function createShareableLink($path, $shortUrl = false)
+    function createShareableLink($path)
     {
         Path::checkArg("path", $path);
-        Checker::argBool("shortUrl", $shortUrl);
 
         $response = $this->doPost(
             $this->apiHost,
             $this->appendFilePath("1/shares", $path),
             array(
-                "short_url" => $shortUrl,
+                "short_url" => "false",
             ));
 
         if ($response->statusCode === 404) return null;
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
-        return RequestUtil::parseResponseJson($response->body);
+        $j = RequestUtil::parseResponseJson($response->body);
+        if (!array_key_exists("url", $j)) throw new Exception_BadRequest("response didn't have \"url\" field: ".$response->body);
+        return $j["url"];
     }
 
     /**
-     * Returns a link directly to a file.
+     * Creates and returns a direct link to a file.  This link can be used without authentication.
+     * This link will expire in a few hours.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#media">/media</a> API endpoint.
-     * </p>
+     * @param string $path
+     *    The Dropbox path to a file or folder.
+     *
+     * @return array
+     *    A URL and an expiration time.
+     *    See <a href="https://www.dropbox.com/developers/core/api#media">/media</a>.
+     *
+     * @throws Exception
      */
     function createTemporaryDirectLink($path)
     {
@@ -732,11 +892,21 @@ final class Client
     }
 
     /**
-     * Creates and returns a copy_ref to a file.
+     * Creates and returns a "copy ref" to a file.  A copy ref can be used to copy a file across
+     * different Dropbox accounts without downloading and re-uploading.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#copy_ref">/copy_ref</a> API endpoint.
-     * </p>
+     * For example: Create a <code>Client</code> using the access token from one account and call
+     * <code>createCopyRef</code>.  Then, create a <code>Client</code> using the access token for
+     * another account and call <code>copyFromCopyRef</code> using the copy ref.  (You need to use
+     * the same app key both times.)
+     *
+     * @param string path
+     *    The Dropbox path of the file or folder you want to create a copy ref for.
+     *
+     * @return string
+     *    The copy ref (just a string that you keep track of).
+     *
+     * @throws Exception
      */
     function createCopyRef($path)
     {
@@ -749,7 +919,9 @@ final class Client
         if ($response->statusCode === 404) return null;
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
-        return RequestUtil::parseResponseJson($response->body);
+        $j = RequestUtil::parseResponseJson($response->body);
+        if (!array_key_exists("copy_ref", $j)) throw new Exception_BadResponse("missing field \"copy_ref\"");
+        return $j["copy_ref"];
     }
 
     /**
@@ -773,6 +945,8 @@ final class Client
      * @return array
      *    A list of (array $metadata, string $data).  $metadata is the original file's metadata.
      *    $data is the raw data for the thumbnail image.
+     *
+     * @throws Exception
      */
     function getThumbnail($path, $format, $size)
     {
@@ -808,9 +982,16 @@ final class Client
     /**
      * Copies a file or folder to a new location
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#fileops-copy">/fileops/copy</a> API endpoint.
-     * </p>
+     * @param string $fromPath
+     *    The Dropbox path of the file or folder you want to copy.
+     * @param string $toPath
+     *    The destination Dropbox path.
+     *
+     * @return mixed
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    for the new file or folder.
+     *
+     * @throws Exception
      */
     function copy($fromPath, $toPath)
     {
@@ -831,6 +1012,21 @@ final class Client
         return RequestUtil::parseResponseJson($response->body);
     }
 
+    /**
+     * Copies a copy ref (possibly from a different Dropbox account), which could represent a file
+     * or folder, to the given path.
+     *
+     * @param string $copyRef
+     *    A copy ref obtained via the {@link createCopyRef()} call.
+     * @param string $toPath
+     *    The Dropbox path you want to copy the file or folder to.
+     *
+     * @return mixed
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    for the new file or folder.
+     *
+     * @throws Exception
+     */
     function copyFromCopyRef($copyRef, $toPath)
     {
         Checker::argStringNonEmpty("copyRef", $copyRef);
@@ -854,15 +1050,15 @@ final class Client
     /**
      * Creates a folder.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#fileops-create-folder">/fileops/create_folder</a> API endpoint.
-     * </p>
-     *
      * @param string $path
+     *    The Dropbox path at which to create the folder.
      *
      * @return array|null
-     *    If successful, you'll get back the metadata object for the newly-created folder.
-     *    If not successful, you'll get back <code>null</code>.
+     *    If successful, you'll get back the
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    for the newly-created folder.  If not successful, you'll get <code>null</code>.
+     *
+     * @throws Exception
      */
     function createFolder($path)
     {
@@ -885,9 +1081,16 @@ final class Client
     /**
      * Deletes a file or folder
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#fileops-delete">/fileops/delete</a> API endpoint.
-     * </p>
+     * See <a href="https://www.dropbox.com/developers/core/api#fileops-delete">/fileops/delete</a>.
+     *
+     * @param string $path
+     *    The Dropbox path of the file or folder to delete.
+     *
+     * @return mixed
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    for the deleted file or folder.
+     *
+     * @throws Exception
      */
     function delete($path)
     {
@@ -909,9 +1112,19 @@ final class Client
     /**
      * Moves a file or folder to a new location.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/reference/api#fileops-move">/fileops/move</a> API endpoint.
-     * </p>
+     * See <a href="https://www.dropbox.com/developers/core/api#fileops-move">/fileops/move</a>.
+     *
+     * @param string $fromPath
+     *    The source Dropbox path.
+     *
+     * @param string $toPath
+     *    The destination Dropbox path.
+     *
+     * @return mixed
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    for the destination file or folder.
+     *
+     * @throws Exception
      */
     function move($fromPath, $toPath)
     {
@@ -937,8 +1150,10 @@ final class Client
      * @param string $path
      * @param array|null $params
      * @return HttpResponse
+     *
+     * @throws Exception
      */
-    public function doGet($host, $path, $params = null)
+    private function doGet($host, $path, $params = null)
     {
         Checker::argString("host", $host);
         Checker::argString("path", $path);
@@ -950,8 +1165,10 @@ final class Client
      * @param string $path
      * @param array|null $params
      * @return HttpResponse
+     *
+     * @throws Exception
      */
-    public function doPost($host, $path, $params = null)
+    private function doPost($host, $path, $params = null)
     {
         Checker::argString("host", $host);
         Checker::argString("path", $path);
@@ -962,7 +1179,7 @@ final class Client
      * @param string $url
      * @return Curl
      */
-    public function mkCurl($url)
+    private function mkCurl($url)
     {
         return RequestUtil::mkCurl($this->config, $url, $this->accessToken);
     }

@@ -1,6 +1,10 @@
 <?php
 namespace Dropbox;
 
+/**
+ * An enum for the two categories of Dropbox API apps: {@link FullDropbox} and
+ * {@link AppFolder}.
+ */
 final class AccessType
 {
     /**
@@ -11,6 +15,9 @@ final class AccessType
      */
     private $urlPart;
 
+    /**
+     * @param string $urlPart
+     */
     private function __construct($urlPart)
     {
         $this->urlPart = $urlPart;
@@ -46,16 +53,32 @@ final class AccessType
         return self::$appFolder;
     }
 
+    /**
+     * @internal
+     *
+     * @return string
+     */
     function getUrlPart()
     {
         return $this->urlPart;
     }
 
+    /**
+     * Use this to check that a function argument is of type <code>AccessType</code>
+     *
+     * @internal
+     */
     static function checkArg($argName, $argValue)
     {
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 
+    /**
+     * Use this to check that a function argument is either <code>AccessType</code> or of type
+     * <code>AppInfo</code>.
+     *
+     * @internal
+     */
     static function checkArgOrNull($argName, $argValue)
     {
         if ($argValue === null) return;

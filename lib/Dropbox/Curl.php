@@ -1,6 +1,11 @@
 <?php
 namespace Dropbox;
 
+/**
+ * A minimal wrapper around a cURL handle.
+ *
+ * @internal
+ */
 final class Curl
 {
     /** @var resource */
@@ -27,6 +32,9 @@ final class Curl
         $this->set(CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTPS);
     }
 
+    /**
+     * @param string $header
+     */
     function addHeader($header)
     {
         $this->headers[] = $header;

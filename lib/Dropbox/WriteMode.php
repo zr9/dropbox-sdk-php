@@ -14,11 +14,17 @@ final class WriteMode
      */
     private $extraParams;
 
+    /**
+     * @internal
+     */
     private function __construct($extraParams)
     {
         $this->extraParams = $extraParams;
     }
 
+    /**
+     * @internal
+     */
     function getExtraParams()
     {
         return $this->extraParams;
@@ -49,6 +55,8 @@ final class WriteMode
      * Returns a {@link WriteMode} for forcing a file to be at a certain path.  If there's already
      * a file at that path, the existing file will be overwritten.  If there's a folder at that
      * path, however, it will not be overwritten and the API call will fail.
+     *
+     * @return WriteMode
      */
     static function force()
     {
@@ -84,11 +92,22 @@ final class WriteMode
         return new WriteMode(array("parent_rev" => $revToReplace));
     }
 
+    /**
+     * Check that a function argument is of type <code>WriteMode</code>.
+     *
+     * @internal
+     */
     static function checkArg($argName, $argValue)
     {
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
 
+    /**
+     * Check that a function argument is either <code>null</code> or of type
+     * <code>WriteMode</code>.
+     *
+     * @internal
+     */
     static function checkArgOrNull($argName, $argValue)
     {
         if ($argValue === null) return;

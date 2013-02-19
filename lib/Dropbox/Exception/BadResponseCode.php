@@ -7,11 +7,13 @@ namespace Dropbox;
 final class Exception_BadResponseCode extends Exception_BadResponse
 {
     /** @var int */
-    var $statusCode;
+    private $statusCode;
 
     /**
      * @param string $message
      * @param int $statusCode
+     *
+     * @internal
      */
     function __construct($message, $statusCode)
     {
@@ -20,6 +22,8 @@ final class Exception_BadResponseCode extends Exception_BadResponse
     }
 
     /**
+     * The HTTP status code returned by the Dropbox server.
+     *
      * @return int
      */
     public function getStatusCode()

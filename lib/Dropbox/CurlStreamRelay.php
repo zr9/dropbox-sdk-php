@@ -5,6 +5,8 @@ namespace Dropbox;
  * A CURLOPT_WRITEFUNCTION that will write HTTP response data to $outStream if
  * it's an HTTP 200 response.  For all other HTTP status codes, it'll save the
  * output in a string, which you can retrieve it via {@link getErrorBody}.
+ *
+ * @internal
  */
 class CurlStreamRelay
 {

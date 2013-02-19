@@ -6,6 +6,8 @@ namespace Dropbox;
  * user through the process of giving your app access to their Dropbox account.  At the end, you
  * will have a {@link AccessToken}, which you can pass to {@link Client} and start making
  * API calls.
+ *
+ * This class is stateless so it can be shared/reused.
  */
 final class WebAuth
 {
@@ -20,6 +22,8 @@ final class WebAuth
     private $config;
 
     /**
+     * Constructor.
+     *
      * @param Config $config
      *     {@link getConfig()}
      */
@@ -50,12 +54,12 @@ final class WebAuth
      *    authorizing your app.  If this is <code>null</code>, the user
      *    will not be redirected.
      *
-     * @throws Exception
-     *
      * @return array
-     *    A pair of (RequestToken $requestToken, string $authorizeUrl).  Redirect the user's
-     *    browser to $authorizeUrl.  When they're done authorizing, call {@link finish()} with
-     *    $requestToken.
+     *    A <code>list(RequestToken $requestToken, string $authorizeUrl)</code>.  Redirect the
+     *    user's browser to $authorizeUrl.  When they're done authorizing, call {@link finish()}
+     *    with $requestToken.
+     *
+     * @throws Exception
      */
     function start($callbackUrl)
     {
@@ -110,9 +114,11 @@ final class WebAuth
      *    The <code>RequestToken</code> returned by {@link start()}.
      *
      * @return array
-     *    A pair of (RequestToken $requestToken, string $dropboxUserId).  Use $requestToken to
-     *    construct a {@link Client} object and start making API calls.  $dropboxUserId is the
+     *    A <code>list(RequestToken $requestToken, string $dropboxUserId)</code>.  Use $requestToken
+     *    to construct a {@link Client} object and start making API calls.  $dropboxUserId is the
      *    user's "user ID" on Dropbox and is for your own reference.
+     *
+     * @throws Exception
      */
     function finish($requestToken)
     {
