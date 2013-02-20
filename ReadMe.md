@@ -69,12 +69,12 @@ $webAuth = new dbx\WebAuth($config);
 
 // OAuth, part 1: Get a request token.
 $callbackUrl = null;  // NOTE: A real web app would have a callback URL.
-$webAuthStart = $webAuth->start($callbackUrl);
+list($requestToken, $authorizeUrl) = $webAuth->start($callbackUrl);
 
 // OAuth, part 2: Send the user to the Dropbox app authorization page.
 // NOTE: A real web app would redirect the user's browser.
 // the URL.
-echo "1. Go to " . $webAuthStart->getAuthorizeUrl() . "\n";
+echo "1. Go to $authorizeUrl\n";
 echo "2. Click \"Allow\" (you might have to log in first).\n";
 echo "3. Press ENTER to continue.\n";
 fgets(STDIN);
@@ -82,8 +82,7 @@ fgets(STDIN);
     // We just tell the user to press ENTER so we know when to continue.
 
 // OAuth, part 3: Get an access token.
-$authFinish = $webAuth->finish($webAuthStart->getRequestToken());
-$accessToken = $authFinish->getAccessToken();
+list($accessToken, $dropboxUserId) = $webAuth->finish($requestToken);
 echo "Access Token (serialized): ".$accessToken->serialize();
     // NOTE: A real web app would save the access token in a database.
 
