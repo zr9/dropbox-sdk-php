@@ -4,35 +4,10 @@
 // NOTE: You should be using Composer's global autoloader.  But just so these examples
 // work for people who don't have Composer, we'll use the library's "autoload.php".
 require_once __DIR__.'/../lib/Dropbox/autoload.php';
+require_once __DIR__.'/helper.php';
 
-use \Dropbox as dbx;
+list($client) = example_init("account-info", $argv);
 
-if ($argc == 1) {
-    echo "\n";
-    echo "Usage: ".$argv[0]." <auth-file>\n";
-    echo "\n";
-    echo "<auth-file>: A file with authorization information.  You can use the\n";
-    echo "  \"examples/authorize.php\" program to generate this file.\n";
-    echo "\n";
-    die;
-}
-else if ($argc != 2) {
-    echo "Expecting exactly 1 argument, got ".($argc - 1)."\n";
-    echo "Run with no arguments for help\n";
-    die;
-}
-
-try {
-    list($appInfo, $accessToken) = dbx\AuthInfo::loadFromJsonFile($argv[1]);
-}
-catch (dbx\AuthInfoLoadException $ex) {
-    echo "Error loading <auth-file>: ".$ex->getMessage()."\n";
-    die;
-}
-
-$dbxConfig = new dbx\Config($appInfo, "examples-account-info");
-$dbxClient = new dbx\Client($dbxConfig, $accessToken);
-
-$accountInfo = $dbxClient->getAccountInfo();
+$accountInfo = $client->getAccountInfo();
 
 print_r($accountInfo);
