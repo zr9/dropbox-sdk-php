@@ -10,7 +10,7 @@ namespace Dropbox;
 final class Client
 {
     /**
-     * The Config used when making Dropbox API calls.
+     * The config used when making requests to the Dropbox server.
      *
      * @return Config
      */
@@ -34,9 +34,9 @@ final class Client
      * Constructor.
      *
      * @param Config $config
-     *     {@link getConfig()}
+     *     See {@link getConfig()}
      * @param AccessToken $accessToken
-     *     {@link getAccessToken()}
+     *     See {@link getAccessToken()}
      */
     function __construct($config, $accessToken)
     {
@@ -68,6 +68,12 @@ final class Client
     /**
      * Returns a basic account and quota information.
      *
+     * <pre>
+     * $client = ...
+     * $accountInfo = $client->getAccountInfo();
+     * print_r($accountInfo);
+     * </pre>
+     *
      * @return array
      *    See <a href="https://www.dropbox.com/developers/core/api#account-info">/account/info</a>.
      *
@@ -82,14 +88,17 @@ final class Client
 
     /**
      * Downloads a file from Dropbox.  The file's contents are written to the
-     * given $outStream and the file's metadata is returned.
+     * given <code>$outStream</code> and the file's metadata is returned.
      *
-     * <p>
-     * This maps to the <a href="https://www.dropbox.com/developers/core/api#files-GET">/files (GET)</a> API endpoint.
-     * </p>
+     * <pre>
+     * $client = ...;
+     * $metadata = $client->getFile("/Photos/Frog.jpeg",
+     *                              fopen("./Frog.jpeg", "wb"));
+     * print_r($metadata);
+     * </pre>
      *
      * @param string $path
-     *   The path to the file on Dropbox. 
+     *   The path to the file on Dropbox (UTF-8).
      *
      * @param resource $outStream
      *   If the file exists, the file contents will be written to this stream.
@@ -99,8 +108,9 @@ final class Client
      *   If you want a specific version of a file, pass in value of the file metadata's "rev" field.
      *
      * @return null|array
-     *   The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
-     *   for the file at the given $path and $rev.  If the file doesn't exist, <code>null</code>.
+     *   The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *   object</a> for the file at the given $path and $rev, or <code>null</code> if the file
+     *   doesn't exist,
      *
      * @throws Exception
      */
@@ -133,8 +143,9 @@ final class Client
     }
 
     /**
-     * Calling 'uploadFile' with $numBytes less than this value, will cause this SDK to use the standard
-     * /files_put endpoint.  When $numBytes is greater than this value, we'll use the /chunked_upload endpoint.
+     * Calling 'uploadFile' with <code>$numBytes</code> less than this value, will cause this SDK
+     * to use the standard /files_put endpoint.  When <code>$numBytes</code> is greater than this
+     * value, we'll use the /chunked_upload endpoint.
      *
      * @var int
      */
@@ -146,10 +157,26 @@ final class Client
     private static $DEFAULT_CHUNK_SIZE = 4194304;  // 4 MB
 
     /**
-     * Creates a file on Dropbox, using the data from $inStream for the file contents.
+     * Creates a file on Dropbox, using the data from <code>$inStream</code> for the file contents.
+     *
+     * <pre>
+     * use \Dropbox as dbx;
+     * $client = ...;
+     * $md1 = $client->uploadFile("/Photos/Frog.jpeg",
+     *                            dbx\WriteMode::add(), 
+     *                            fopen("./frog.jpeg", "rb"));
+     * print_r($md1);
+     *
+     * // Re-upload with WriteMode::update(...), which will overwrite the file if it hasn't been
+     * // modified from our original upload.
+     * $md2 = $client->uploadFile("/Photos/Frog.jpeg",
+     *                            dbx\WriteMode::update($md1["rev"]),
+     *                            fopen("./frog-new.jpeg", "rb"));
+     * print_r($md2);
+     * </pre>
      *
      * @param string $path
-     *    The Dropbox path to save the file to.
+     *    The Dropbox path to save the file to (UTF-8).
      *
      * @param WriteMode $writeMode
      *    What to do if there's already a file at the given path.
@@ -157,12 +184,13 @@ final class Client
      * @param resource $inStream
      *
      * @param int|null $numBytes
-     *    You can pass in <code>null</code> if you don't know.  If you do provide the size, we can perform a
-     *    slightly more efficient upload (fewer network round-trips) for files smaller than 8 MB.
+     *    You can pass in <code>null</code> if you don't know.  If you do provide the size, we can
+     *    perform a slightly more efficient upload (fewer network round-trips) for files smaller
+     *    than 8 MB.
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
-     *    for the newly-added file.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    object</a> for the newly-added file.
      *
      * @throws Exception
      */
@@ -199,8 +227,17 @@ final class Client
     /**
      * Creates a file on Dropbox, using the given $data string as the file contents.
      *
+     * <code>
+     * use \Dropbox as dbx;
+     * $client = ...;
+     * $md = $client->uploadFile("/Grocery List.txt",
+     *                           dbx\WriteMode::add(), 
+     *                           "1. Coke\n2. Popcorn\n3. Toothpaste\n");
+     * print_r($md);
+     * </code>
+     *
      * @param string $path
-     *    The Dropbox path to save the file to.
+     *    The Dropbox path to save the file to (UTF-8).
      *
      * @param WriteMode $writeMode
      *    What to do if there's already a file at the given path.
@@ -209,8 +246,8 @@ final class Client
      *    The data to use for the contents of the file.
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
-     *    for the newly-added file.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    object</a> for the newly-added file.
      *
      * @throws Exception
      */
@@ -231,10 +268,11 @@ final class Client
      * Creates a file on Dropbox, using the data from $inStream as the file contents.
      *
      * This version of <code>uploadFile</code> splits uploads the file ~4MB chunks at a time and
-     * will retry a few times if one chunk fails to upload.
+     * will retry a few times if one chunk fails to upload.  Uses {@link chunkedUploadStart()},
+     * {@link chunkedUploadContinue()}, and {@link chunkedUploadFinish()}.
      *
      * @param string $path
-     *    The Dropbox path to save the file to.
+     *    The Dropbox path to save the file to (UTF-8).
      *
      * @param WriteMode $writeMode
      *    What to do if there's already a file at the given path.
@@ -283,7 +321,7 @@ final class Client
      * @param string $path
      *
      * @param WriteMode $writeMode
-     *    What to do if there's already a file at the given path.
+     *    What to do if there's already a file at the given path (UTF-8).
      *
      * @param resource $inStream
      *    The source of data to upload.
@@ -409,9 +447,10 @@ final class Client
      *     The data to start off the chunked upload session.
      *
      * @return array
-     *     A pair of (string $uploadId, int $byteOffset).  $uploadId is a unique identifier for this chunked
-     *     upload session.  You pass this in to {@link chunkedUploadContinue} and {@link chuunkedUploadFinish}.
-     *     $byteOffset is the number of bytes that have been successfully uploaded.
+     *     A pair of <code>(string $uploadId, int $byteOffset)</code>.  <code>$uploadId</code>
+     *     is a unique identifier for this chunked upload session.  You pass this in to
+     *     {@link chunkedUploadContinue} and {@link chuunkedUploadFinish}.  <code>$byteOffset</code>
+     *     is the number of bytes that were successfully uploaded.
      *
      * @throws Exception
      */
@@ -445,21 +484,24 @@ final class Client
      * Append another chunk data to a previously-started chunked upload session.
      *
      * @param string $uploadId
-     *     The unique identifier for the chunked upload session.  This is obtained via {@link chunkedUploadStart}.
+     *     The unique identifier for the chunked upload session.  This is obtained via
+     *     {@link chunkedUploadStart}.
      *
      * @param int $byteOffset
-     *     The number of bytes you think you've already uploaded to the given chunked upload session.  The server will
-     *     append the new chunk of data after that point.
+     *     The number of bytes you think you've already uploaded to the given chunked upload
+     *     session.  The server will append the new chunk of data after that point.
      *
      * @param string $data
      *     The data to append to the existing chunked upload session.
      *
      * @return int|bool
-     *     If false, it means the server didn't know about the given $uploadId.  This may be because the chunked
-     *     upload session has expired (they last around 24 hours).
-     *     If true, the chunk was successfully uploaded.
-     *     If an integer, it means you and the server don't agree on the current $byteOffset.  The returned integer is
-     *     the server's internal byte offset for the chunked upload session.  You need to adjust your input to match.
+     *     If <code>false</code>, it means the server didn't know about the given
+     *     <code>$uploadId</code>.  This may be because the chunked upload session has expired
+     *     (they last around 24 hours).
+     *     If <code>true</code>, the chunk was successfully uploaded.  If an integer, it means
+     *     you and the server don't agree on the current <code>$byteOffset</code>.  The returned
+     *     integer is the server's internal byte offset for the chunked upload session.  You need
+     *     to adjust your input to match.
      *
      * @throws Exception
      */
@@ -535,16 +577,18 @@ final class Client
      * Creates a file on Dropbox using the accumulated contents of the given chunked upload session.
      *
      * @param string $uploadId
-     *     The unique identifier for the chunked upload session.  This is obtained via {@link chunkedUploadStart}.
+     *     The unique identifier for the chunked upload session.  This is obtained via
+     *     {@link chunkedUploadStart}.
      *
      * @param string $path
-     *    The Dropbox path to save the file to.
+     *    The Dropbox path to save the file to ($path).
      *
      * @param WriteMode $writeMode
      *    What to do if there's already a file at the given path.
      *
      * @return array|null
-     *    If <code>null</code>, it means the Dropbox server wasn't aware of the uploadId you gave it.
+     *    If <code>null</code>, it means the Dropbox server wasn't aware of the
+     *    <code>$uploadId</code> you gave it.
      *    Otherwise, you get back the
      *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
      *    for the newly-created file.
@@ -593,8 +637,14 @@ final class Client
     /**
      * Returns the metadata for whatever file or folder is at the given path.
      *
+     * <code>
+     * $client = ...;
+     * $md = $client->getMetadata("/Photos/Frog.jpeg");
+     * print_r($md);
+     * </code>
+     *
      * @param string $path
-     *    The Dropbox path to a file or folder.
+     *    The Dropbox path to a file or folder (UTF-8).
      *
      * @return array|null
      *    If there is a file or folder at the given path, you'll get back the
@@ -614,8 +664,14 @@ final class Client
      * Returns the metadata for whatever file or folder is at the given path and, if it's a folder,
      * also include the metadata for all the immediate children of that folder.
      *
+     * <code>
+     * $client = ...;
+     * $md = $client->getMetadataWithChildren("/Photos");
+     * print_r($md);
+     * </code>
+     *
      * @param string $path
-     *    The Dropbox path to a file or folder.
+     *    The Dropbox path to a file or folder (UTF-8).
      *
      * @return array|null
      *    If there is a file or folder at the given path, you'll get back the
@@ -654,11 +710,17 @@ final class Client
 
     /**
      * If you've previously retrieved the metadata for a folder and its children, this method will
-     * retrieve updated metadata only if something has changed.  This can be more efficient than
-     * simply calling {@link getMetadataWithChildren} every time.
+     * retrieve updated metadata only if something has changed.  This is more efficient than
+     * calling {@link getMetadataWithChildren} if you have a cache of previous results.
+     *
+     * <code>
+     * $client = ...;
+     * $md = $client->getMetadataWithChildren("/Photos");
+     * print_r($md);
+     * </code>
      *
      * @param string $path
-     *    The Dropbox path to a folder.
+     *    The Dropbox path to a folder (UTF-8).
      *
      * @param string $previousFolderHash
      *    The "hash" field from the previously retrieved folder metadata.
@@ -726,7 +788,7 @@ final class Client
      * See <a href="https://www.dropbox.com/developers/core/api#revisions">/revisions</a>.
      *
      * @param string path
-     *    The Dropbox path that you want file revision metadata for.
+     *    The Dropbox path that you want file revision metadata for (UTF-8).
      *
      * @param int|null limit
      *    The maximum number of revisions to return.
@@ -761,7 +823,7 @@ final class Client
      * See <a href="https://www.dropbox.com/developers/core/api#restore">/restore</a>.
      *
      * @param string $path
-     *    The Dropbox path of the file to restore.
+     *    The Dropbox path of the file to restore (UTF-8).
      *
      * @param string $rev
      *    The revision to restore the contents to.
@@ -791,7 +853,7 @@ final class Client
      * Returns metadata for all files and folders whose filename matches the query string.
      *
      * @param string $basePath
-     *    The path to limit the search to.  Pass in "/" to search everything.
+     *    The path to limit the search to (UTF-8).  Pass in "/" to search everything.
      *
      * @param string $query
      *    A space-separated list of substrings to search for.  A file matches only if it contains
@@ -838,7 +900,7 @@ final class Client
      * See <a href="https://www.dropbox.com/developers/core/api#shares">/shares</a>.
      *
      * @param string $path
-     *    The Dropbox path to the file or folder you want to create a shareable link to.
+     *    The Dropbox path to the file or folder you want to create a shareable link to (UTF-8).
      *
      * @return string
      *    The URL of the preview page.
@@ -869,7 +931,7 @@ final class Client
      * This link will expire in a few hours.
      *
      * @param string $path
-     *    The Dropbox path to a file or folder.
+     *    The Dropbox path to a file or folder (UTF-8).
      *
      * @return array
      *    A URL and an expiration time.
@@ -901,7 +963,7 @@ final class Client
      * the same app key both times.)
      *
      * @param string path
-     *    The Dropbox path of the file or folder you want to create a copy ref for.
+     *    The Dropbox path of the file or folder you want to create a copy ref for (UTF-8).
      *
      * @return string
      *    The copy ref (just a string that you keep track of).
@@ -928,6 +990,7 @@ final class Client
      * Gets a thumbnail image representation of the file at the given path.
      *
      * @param string $path
+     *    The path to the file you want a thumbnail for (UTF-8).
      *
      * @param string $format
      *    One of the two image formats: "jpeg" or "png".
@@ -983,9 +1046,10 @@ final class Client
      * Copies a file or folder to a new location
      *
      * @param string $fromPath
-     *    The Dropbox path of the file or folder you want to copy.
+     *    The Dropbox path of the file or folder you want to copy (UTF-8).
+     *
      * @param string $toPath
-     *    The destination Dropbox path.
+     *    The destination Dropbox path (UTF-8).
      *
      * @return mixed
      *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
@@ -1018,8 +1082,9 @@ final class Client
      *
      * @param string $copyRef
      *    A copy ref obtained via the {@link createCopyRef()} call.
+     *
      * @param string $toPath
-     *    The Dropbox path you want to copy the file or folder to.
+     *    The Dropbox path you want to copy the file or folder to (UTF-8).
      *
      * @return mixed
      *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
@@ -1051,7 +1116,7 @@ final class Client
      * Creates a folder.
      *
      * @param string $path
-     *    The Dropbox path at which to create the folder.
+     *    The Dropbox path at which to create the folder (UTF-8).
      *
      * @return array|null
      *    If successful, you'll get back the
@@ -1084,7 +1149,7 @@ final class Client
      * See <a href="https://www.dropbox.com/developers/core/api#fileops-delete">/fileops/delete</a>.
      *
      * @param string $path
-     *    The Dropbox path of the file or folder to delete.
+     *    The Dropbox path of the file or folder to delete (UTF-8).
      *
      * @return mixed
      *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
@@ -1115,10 +1180,10 @@ final class Client
      * See <a href="https://www.dropbox.com/developers/core/api#fileops-move">/fileops/move</a>.
      *
      * @param string $fromPath
-     *    The source Dropbox path.
+     *    The source Dropbox path (UTF-8).
      *
      * @param string $toPath
-     *    The destination Dropbox path.
+     *    The destination Dropbox path (UTF-8).
      *
      * @return mixed
      *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>

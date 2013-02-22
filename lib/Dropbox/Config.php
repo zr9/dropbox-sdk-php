@@ -22,23 +22,17 @@ final class Config
      * This is used to set the HTTP <code>User-Agent</code> header when making API requests.
      * Example: <code>"PhotoEditServer/1.3"</code>
      *
-     * <p>
      * If you're the author a higher-level library on top of the basic SDK, and the
      * "Photo Edit" app's server code is using your library to access Dropbox, you should append
      * your library's name and version to form the full identifier.  For example,
      * if your library is called "File Picker", you might set this field to:
      * <code>"PhotoEditServer/1.3 FilePicker/0.1-beta"</code>
-     * </p>
      *
-     * <p>
      * The exact format of the <code>User-Agent</code> header is described in
      * <a href="http://tools.ietf.org/html/rfc2616#section-3.8">section 3.8 of the HTTP specification</a>.
-     * </p>
      *
-     * <p>
      * Note that underlying HTTP client may append other things to the <code>User-Agent</code>, such as
      * the name of the library being used to actually make the HTTP request (such as cURL).
-     * </p>
      *
      * @return string
      */
@@ -53,10 +47,8 @@ final class Config
      * Given a locale string, returns the closest supported locale that the Dropbox servers
      * support.  You can then use that locale string as an argument to the constructor.
      *
-     * <p>
      * If you omit the $locale argument (or pass in null), we'll try using the default locale
      * from {@link Locale::getDefault()}.
-     * </p>
      *
      * @param null|string $locale
      * @return string
@@ -94,11 +86,11 @@ final class Config
      * Constructor.
      *
      * @param AppInfo $appInfo
-     *     {@link getAppInfo()}
+     *     See {@link getAppInfo()}
      * @param string $clientIdentifier
-     *     {@link getClientIdentifier()}
+     *     See {@link getClientIdentifier()}
      * @param null|string $userLocale
-     *     {@link get
+     *     See {@link getUseLocale()}
      */
     function __construct($appInfo, $clientIdentifier, $userLocale = null)
     {

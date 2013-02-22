@@ -21,11 +21,9 @@ final class AppInfo
      * Your Dropbox <em>app secret</em> (OAuth calls this the <em>consumer secret</em>).  You can
      * create an app key and secret on the <a href="http://dropbox.com/developers/apps">Dropbox developer website</a>.
      *
-     * <p>
      * Make sure that this is kept a secret.  Someone with your app secret can impesonate your
      * application.  People sometimes ask for help on the Dropbox API forums and
-     * copy/paste their code, which sometimes includes their app secret.  Do not do that.
-     * </p>
+     * copy/paste code that includes their app secret.  Do not do that.
      *
      * @return string
      */
@@ -35,8 +33,8 @@ final class AppInfo
     private $secret;
 
     /**
-     * The type of access your app is configured for.  You can see how your apps are configured
-     * on the {@link http://dropbox.com/developers/apps Dropbox developer website}.
+     * The type of access your app is registered for.  You can see how your apps areregistered
+     * on the <a href="http://dropbox.com/developers/apps">Dropbox developer website</a>.
      *
      * @return AccessType
      */
@@ -50,6 +48,8 @@ final class AppInfo
      * {@link Host::getDefault}.
      *
      * @return Host
+     *
+     * @internal
      */
     function getHost() { return $this->host; }
 
@@ -60,29 +60,33 @@ final class AppInfo
      * Constructor.
      *
      * @param string $key
-     *    {@link getKey()}
+     *    See {@link getKey()}
      * @param string $secret
-     *    {@link getSecret()}
+     *    See {@link getSecret()}
      * @param string $accessType
-     *    {@link getAccessType()}
-     * @param Host $host
-     *    {@link getHost()}
+     *    See {@link getAccessType()}
      */
-    function __construct($key, $secret, $accessType, $host = null)
+    function __construct($key, $secret, $accessType)
     {
         Token::checkKeyArg($key);
         Token::checkSecretArg($secret);
         AccessType::checkArg("accessType", $accessType);
-        Host::checkArgOrNull("host", $host);
 
         $this->key = $key;
         $this->secret = $secret;
         $this->accessType = $accessType;
 
+        // The $host parameter is sort of internal.  We don't include it in the param list because
+        // we don't want it to be included in the documentation.  Use PHP arg list hacks to get at
+        // it.
+        $host = null;
+        if (\func_num_args() == 4) {
+            $host = \func_get_arg(3);
+            Host::checkArgOrNull("host", $host);
+        }
         if ($host === null) {
             $host = Host::getDefault();
         }
-
         $this->host = $host;
     }
 

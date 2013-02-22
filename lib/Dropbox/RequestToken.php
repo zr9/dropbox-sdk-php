@@ -6,19 +6,16 @@ namespace Dropbox;
  * session.  Once authorization is complete and you have an access token, you don't need
  * the request token anymore.
  *
- * <h4>Storing Request Tokens (primarily for web apps)</h4>
- * <p>
+ * Storing Request Tokens
+ *
  * If you are doing the three-step OAuth web flow in a web application, it'll probably
  * span two separate HTTP requests to your app.  In the first request you'll call
  * {@link WebAuth::start()} and get a request token.  You need to store that request
  * token somewhere (browser cookie, server-side session, database, etc.) so that you can
  * pass it to {@link WebAuth::finish()} later.
- * </p>
  *
- * <p>
- * You can convert this object into a single string using {@link RequestToken::serialize() serialize()},
- * and use {@link RequestToken::parse() parse()} to convert that string back into an object.
- * </p>
+ * You can convert this object into a single string using {@link RequestToken::serialize()},
+ * and use {@link RequestToken::parse()} to convert that string back into an object.
  */
 final class RequestToken extends Token
 {

@@ -9,8 +9,10 @@ PHPUnit_Framework_Error_Warning::$enabled = true;
 
 class ClientTest extends PHPUnit_Framework_TestCase
 {
-    var $client;
-    var $basePath;
+    private $client;
+    private $basePath;
+
+    const E_ACCENT = "\xc3\xa9";  # UTF-8 sequence for "e with accute accent"
 
     function __construct()
     {
@@ -28,7 +30,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->client = new dbx\Client($dbxConfig, $accessToken);
     }
 
-    var $testFolder;
+    private $testFolder;
 
     private function p($path = null)
     {
@@ -118,9 +120,10 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $contents = "A simple test file";
         file_put_contents($localPathSource, $contents);
 
-        $remotePath = $this->p("test-file.txt");
+        $remotePath = $this->p("test-fil".self::E_ACCENT.".txt");
 
         $up = $this->client->uploadFile($remotePath, dbx\WriteMode::add(), fopen($localPathSource, "rb"));
+        $this->assertEquals($up["path"], $remotePath);
 
         $fd = fopen($localPathDest, "wb");
         $down = $this->client->getFile($remotePath, $fd);
@@ -292,13 +295,14 @@ class ClientTest extends PHPUnit_Framework_TestCase
     // --------------- Test File Operations -------------------
     function testCopy()
     {
-        $source = $this->p("copy me.txt");
-        $dest = $this->p("ok - copied.txt");
+        $source = $this->p("copy m".self::E_ACCENT.".txt");
+        $dest = $this->p("ok - copi".self::E_ACCENT."d.txt");
         $size = 1024;
 
         $this->addFile($source, $size);
         $result = $this->client->copy($source, $dest);
         $this->assertEquals($size, $result['bytes']);
+        $this->assertEquals($dest, $result['path']);
 
         $result = $this->client->getMetadataWithChildren($this->p());
         $this->assertEquals(2, count($result['contents']));

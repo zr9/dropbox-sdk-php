@@ -2,11 +2,13 @@
 namespace Dropbox;
 
 /**
- * The Dropbox web API accesses three host; this structure holds the
- * names of those three host.  This is primarily for mocking things out
+ * The Dropbox web API accesses three hosts; this structure holds the
+ * names of those three hosts.  This is primarily for mocking things out
  * during testing.  Most of the time you won't have to deal with this class
  * directly, and even when you do, you'll just use the default
  * value: {@link Host::getDefault()}.
+ *
+ * @internal
  */
 final class Host
 {
@@ -36,11 +38,11 @@ final class Host
      * Constructor.
      *
      * @param string $api
-     *     {@link getApi()}
+     *     See {@link getApi()}
      * @param string $content
-     *     {@link getContent()}
+     *     See {@link getContent()}
      * @param string $web
-     *     {@link getWeb()}
+     *     See {@link getWeb()}
      */
     function __construct($api, $content, $web)
     {

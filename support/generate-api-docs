@@ -33,6 +33,8 @@ exec "$top_dir/vendor/bin/apigen.php" \
     --report "$report_path" \
     --charset 'utf8' \
     --source-code yes \
+    --php no \
     --groups none \
+    --access-levels public \
     --update-check no \
     --quiet
