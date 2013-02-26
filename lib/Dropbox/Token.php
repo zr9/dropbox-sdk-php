@@ -36,6 +36,8 @@ abstract class Token
      * the whole object.
      *
      * @return string
+     *
+     * @internal
      */
     function getKey() { return $this->key; }
 
@@ -46,6 +48,8 @@ abstract class Token
      * the whole object.
      *
      * @return string
+     *
+     * @internal
      */
     function getSecret() { return $this->secret; }
 
