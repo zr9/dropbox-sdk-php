@@ -20,6 +20,6 @@ if ($dropboxPath === "/") {
     die;
 }
 
-$metadata = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), fopen($localPath, "rb"));
+$metadata = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), fopen($localPath, "rb"), filesize($localPath));
 
 print_r($metadata);
