@@ -23,7 +23,7 @@ $argAuthFileOutput = $argv[2];
 try {
     list($appInfoJson, $appInfo) = dbx\AppInfo::loadFromJsonFileWithRaw($argAppInfoFile);
 }
-catch (dbx\AuthInfoLoadException $ex) {
+catch (dbx\AppInfoLoadException $ex) {
     fwrite(STDERR, "Error loading <app-json>: ".$ex->getMessage()."\n");
     die;
 }
