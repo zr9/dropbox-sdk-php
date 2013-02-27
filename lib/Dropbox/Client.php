@@ -551,10 +551,8 @@ final class Client
     private static function _chunkedUploadParse200Response($body)
     {
         $j = RequestUtil::parseResponseJson($body);
-        if (!array_key_exists("upload_id", $j)) throw new Exception_BadResponse("Missing field \"upload_id\": $body");
-        if (!array_key_exists("offset", $j)) throw new Exception_BadResponse("Missing field \"offset\": $body");
-        $uploadId = $j["upload_id"];
-        $byteOffset = $j["offset"];
+        $uploadId = self::getField($j, "upload_id");
+        $byteOffset = self::getField($j, "offset");
         return array($uploadId, $byteOffset);
     }
 
@@ -922,8 +920,7 @@ final class Client
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
         $j = RequestUtil::parseResponseJson($response->body);
-        if (!array_key_exists("url", $j)) throw new Exception_BadRequest("response didn't have \"url\" field: ".$response->body);
-        return $j["url"];
+        return self::getField($j, "url");
     }
 
     /**
@@ -952,9 +949,9 @@ final class Client
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
         $j = RequestUtil::parseResponseJson($response->body);
-        if (!array_key_exists("url", $j)) throw new Exception_BadRequest("response didn't have \"url\" field: ".$response->body);
-        if (!array_key_exists("expires", $j)) throw new Exception_BadRequest("response didn't have \"expires\" field: ".$response->body);
-        return array($j["url"], self::parseDateTime($j["expires"]));
+        $url = self::getField($j, "url");
+        $expires = self::parseDateTime(self::getField($j, "expires"));
+        return array($url, $expires);
     }
 
     /**
@@ -986,8 +983,7 @@ final class Client
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
         $j = RequestUtil::parseResponseJson($response->body);
-        if (!array_key_exists("copy_ref", $j)) throw new Exception_BadResponse("missing field \"copy_ref\"");
-        return $j["copy_ref"];
+        return self::getField($j, "copy_ref");
     }
 
     /**
@@ -1278,4 +1274,11 @@ final class Client
     const DATE_TIME_FORMAT = "D, d M Y H:i:s T";
 
     private static function q($object) { return var_export($object, true); }
+
+    private static function getField($j, $fieldName)
+    {
+        if (!array_key_exists($fieldName, $j)) throw new Exception_BadResponse(
+            "missing field \"$fieldName\": $body");
+        return $j[$fieldName];
+    }
 }
