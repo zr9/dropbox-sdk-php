@@ -522,7 +522,7 @@ final class Client
         if ($correction !== null) {
             list($correctedUploadId, $correctedByteOffset) = $correction;
             if ($correctedUploadId !== $uploadId) {
-                throw new Exception_BadResponse("Corrective 400 upload_id mismatch: us=".var_export($uploadId, true)." server=".var_export($correctedUploadId, true));
+                throw new Exception_BadResponse("Corrective 400 upload_id mismatch: us=".self::q($uploadId)." server=".self::q($correctedUploadId));
             }
             if ($correctedByteOffset === $byteOffset) {
                 throw new Exception_BadResponse("Corrective 400 offset is the same as ours: $byteOffset");
@@ -535,7 +535,7 @@ final class Client
 
         $nextByteOffset = $byteOffset + strlen($data);
         if ($uploadId !== $returnedUploadId) {
-            throw new Exception_BadResponse("upload_id mismatch: us=".var_export($uploadId, true).", server=".var_export($uploadId, true));
+            throw new Exception_BadResponse("upload_id mismatch: us=".self::q($uploadId).", server=".self::q($uploadId));
         }
         if ($nextByteOffset !== $returnedByteOffset) {
             throw new Exception_BadResponse("next-offset mismatch: us=$nextByteOffset, server=$returnedByteOffset");
@@ -1021,10 +1021,10 @@ final class Client
         Checker::argString("format", $format);
         Checker::argString("size", $size);
         if (!in_array($format, array("jpeg", "png"))) {
-            throw new \InvalidArgumentException("Invalid 'format': ".var_export($format, true));
+            throw new \InvalidArgumentException("Invalid 'format': ".self::q($format));
         }
         if (!in_array($size, array("xs", "s", "m", "l", "xl"))) {
-            throw new \InvalidArgumentException("Invalid 'size': ".var_export($format, true));
+            throw new \InvalidArgumentException("Invalid 'size': ".self::q($format));
         }
 
         $url = RequestUtil::buildUrl(
@@ -1276,4 +1276,6 @@ final class Client
     }
 
     const DATE_TIME_FORMAT = "D, d M Y H:i:s T";
+
+    private static function q($object) { return var_export($object, true); }
 }
