@@ -23,6 +23,10 @@ if ($dropboxPath === "/") {
 }
 
 $metadata = $client->getFile($dropboxPath, fopen($localPath, "wb"));
+if ($metadata === null) {
+    fwrite(STDERR, "File not found on Dropbox.\n");
+    die;
+}
 
 print_r($metadata);
 echo "File contents written to \"$localPath\"\n";
