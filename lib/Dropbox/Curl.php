@@ -45,7 +45,7 @@ final class Curl
         $this->set(CURLOPT_HTTPHEADER, $this->headers);
 
         $body = curl_exec($this->handle);
-        if (!$body) {
+        if ($body === false) {
             throw new Exception_NetworkIO("Error executing HTTP request: " . curl_error($this->handle));
         }
 
