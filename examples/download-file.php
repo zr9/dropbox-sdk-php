@@ -11,14 +11,9 @@ list($client, $dropboxPath, $localPath) = parseArgs("download-file", $argv,
         array("local-path", "The local path to save the downloaded file contents to."),
     ));
 
-$pathError = dbx\Path::findError($dropboxPath);
+$pathError = dbx\Path::findErrorNonRoot($dropboxPath);
 if ($pathError !== null) {
     fwrite(STDERR, "Invalid <dropbox-path>: $pathError\n");
-    die;
-}
-
-if ($dropboxPath === "/") {
-    fwrite(STDERR, "There's no file at \"/\".\n");
     die;
 }
 

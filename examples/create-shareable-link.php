@@ -10,14 +10,9 @@ list($client, $dropboxPath, $localPath) = parseArgs("get-shareable-link", $argv,
         array("dropbox-path", "The path of the file (on Dropbox) to get a shareable link for."),
     ));
 
-$pathError = dbx\Path::findError($dropboxPath);
+$pathError = dbx\Path::findErrorNonRoot($dropboxPath);
 if ($pathError !== null) {
     fwrite(STDERR, "Invalid <dropbox-path>: $pathError\n");
-    die;
-}
-
-if ($dropboxPath === "/") {
-    fwrite(STDERR, "There's no file at \"/\".\n");
     die;
 }
 

@@ -9,14 +9,9 @@ list($client, $localPath, $dropboxPath) = parseArgs("upload-file", $argv, array(
         array("dropbox-path", "The path (on Dropbox) to save the file to."),
     ));
 
-$pathError = dbx\Path::findError($dropboxPath);
+$pathError = dbx\Path::findErrorNonRoot($dropboxPath);
 if ($pathError !== null) {
     fwrite(STDERR, "Invalid <dropbox-path>: $pathError\n");
-    die;
-}
-
-if ($dropboxPath === "/") {
-    fwrite(STDERR, "Can't upload a file to \"/\".\n");
     die;
 }
 
