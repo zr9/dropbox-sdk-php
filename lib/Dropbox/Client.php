@@ -934,8 +934,9 @@ final class Client
      *    The Dropbox path to a file or folder (UTF-8).
      *
      * @return array
-     *    A URL and an expiration time.
-     *    See <a href="https://www.dropbox.com/developers/core/api#media">/media</a>.
+     *    A <code>list(string $url, \DateTime $expires) where <code>$url</code> is a direct link to
+     *    the requested file and <code>$expires</code> is a standard PHP <code>\DateTime</code>
+     *    representing when <code>$url</code> will stop working.
      *
      * @throws Exception
      */
@@ -950,7 +951,10 @@ final class Client
         if ($response->statusCode === 404) return null;
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
-        return RequestUtil::parseResponseJson($response->body);
+        $j = RequestUtil::parseResponseJson($response->body);
+        if (!array_key_exists("url", $j)) throw new Exception_BadRequest("response didn't have \"url\" field: ".$response->body);
+        if (!array_key_exists("expires", $j)) throw new Exception_BadRequest("response didn't have \"expires\" field: ".$response->body);
+        return array($j["url"], self::parseDateTime($j["expires"]));
     }
 
     /**
@@ -1248,4 +1252,28 @@ final class Client
     {
         return RequestUtil::mkCurl($this->config, $url, $this->accessToken);
     }
+
+    /**
+     * Parses date/time strings returned by the Dropbox API.  The Dropbox API returns date/times
+     * formatted like: <code>"Sat, 21 Aug 2010 22:31:20 +0000"</code>.
+     *
+     * @param string $apiDateTimeString
+     *    A date/time string returned by the API.
+     *
+     * @return \DateTime
+     *    A standard PHP <code>\DateTime</code> instance.
+     *
+     * @throws Exception_BadResponse
+     *    Thrown if <code>$apiDateTimeString</code> isn't correctly formatted.
+     */
+    static function parseDateTime($apiDateTimeString)
+    {
+        $dt = \DateTime::createFromFormat(self::DATE_TIME_FORMAT, $apiDateTimeString);
+        if ($dt === false) {
+            throw new Exception_BadResponse("Bad date/time from server: ".self::q($apiDateTimeString));
+        }
+        return $dt;
+    }
+
+    const DATE_TIME_FORMAT = "D, d M Y H:i:s T";
 }

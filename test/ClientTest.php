@@ -223,8 +223,8 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $remotePath = $this->p("media-me.txt");
         $up = $this->client->uploadFileFromString($remotePath, dbx\WriteMode::add(), $contents);
 
-        $result = $this->client->createTemporaryDirectLink($remotePath);
-        $fetchedStr = $this->fetchUrl($result['url']);
+        list($url, $expires) = $this->client->createTemporaryDirectLink($remotePath);
+        $fetchedStr = $this->fetchUrl($url);
 
         $this->assertEquals($contents, $fetchedStr);
     }
