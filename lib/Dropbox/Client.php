@@ -33,6 +33,13 @@ final class Client
     /**
      * Constructor.
      *
+     * <code>
+     * use \Dropbox as dbx;
+     * $config = new Config(...);
+     * list($accessToken, $dropboxUserId) = $webAuth->finish(...);
+     * $client = new dbx\Client($config, $accessToken);
+     * </code>
+     *
      * @param Config $config
      *     See {@link getConfig()}
      * @param AccessToken $accessToken
@@ -68,11 +75,11 @@ final class Client
     /**
      * Returns a basic account and quota information.
      *
-     * <pre>
+     * <code>
      * $client = ...
      * $accountInfo = $client->getAccountInfo();
      * print_r($accountInfo);
-     * </pre>
+     * </code>
      *
      * @return array
      *    See <a href="https://www.dropbox.com/developers/core/api#account-info">/account/info</a>.
@@ -90,12 +97,12 @@ final class Client
      * Downloads a file from Dropbox.  The file's contents are written to the
      * given <code>$outStream</code> and the file's metadata is returned.
      *
-     * <pre>
+     * <code>
      * $client = ...;
      * $metadata = $client->getFile("/Photos/Frog.jpeg",
      *                              fopen("./Frog.jpeg", "wb"));
      * print_r($metadata);
-     * </pre>
+     * </code>
      *
      * @param string $path
      *   The path to the file on Dropbox (UTF-8).
@@ -159,7 +166,7 @@ final class Client
     /**
      * Creates a file on Dropbox, using the data from <code>$inStream</code> for the file contents.
      *
-     * <pre>
+     * <code>
      * use \Dropbox as dbx;
      * $client = ...;
      * $md1 = $client->uploadFile("/Photos/Frog.jpeg",
@@ -167,13 +174,13 @@ final class Client
      *                            fopen("./frog.jpeg", "rb"));
      * print_r($md1);
      *
-     * // Re-upload with WriteMode::update(...), which will overwrite the file if it hasn't been
-     * // modified from our original upload.
+     * // Re-upload with WriteMode::update(...), which will overwrite the
+     * // file if it hasn't been modified from our original upload.
      * $md2 = $client->uploadFile("/Photos/Frog.jpeg",
      *                            dbx\WriteMode::update($md1["rev"]),
      *                            fopen("./frog-new.jpeg", "rb"));
      * print_r($md2);
-     * </pre>
+     * </code>
      *
      * @param string $path
      *    The Dropbox path to save the file to (UTF-8).
@@ -206,13 +213,15 @@ final class Client
             // If $numBytes is large, we elect to use chunked upload.
             // In all other cases, use regular upload.
             if ($numBytes === null || $numBytes > self::$AUTO_CHUNKED_UPLOAD_THRESHOLD) {
-                $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes, self::$DEFAULT_CHUNK_SIZE);
+                $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes,
+                                                      self::$DEFAULT_CHUNK_SIZE);
             } else {
-                $metadata = $this->_uploadFile($path, $writeMode, function(Curl $curl) use ($inStream, $numBytes) {
-                    $curl->set(CURLOPT_PUT, true);
-                    $curl->set(CURLOPT_INFILE, $inStream);
-                    $curl->set(CURLOPT_INFILESIZE, $numBytes);
-                });
+                $metadata = $this->_uploadFile($path, $writeMode,
+                    function(Curl $curl) use ($inStream, $numBytes) {
+                        $curl->set(CURLOPT_PUT, true);
+                        $curl->set(CURLOPT_INFILE, $inStream);
+                        $curl->set(CURLOPT_INFILESIZE, $numBytes);
+                    });
             }
         }
         catch (\Exception $ex) {
@@ -288,8 +297,8 @@ final class Client
      *    <code>null</code> and the library will use a reasonable default.
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
-     *    for the newly-added file.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    object</a> for the newly-added file.
      *
      * @throws Exception
      */
@@ -306,7 +315,8 @@ final class Client
             Checker::argNatOrNull("numBytes", $numBytes);
             Checker::argIntPositive("chunkSize", $chunkSize);
 
-            $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes, $chunkSize);
+            $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes,
+                                                  $chunkSize);
         }
         catch (\Exception $ex) {
             fclose($inStream);
@@ -327,15 +337,15 @@ final class Client
      *    The source of data to upload.
      *
      * @param int|null $numBytes
-     *    You can pass in <code>null</code>.  But if you know how many bytes you expect, pass in that value and
-     *    this function will do a sanity check at the end to make sure the number of bytes read
-     *    from $inStream matches up.
+     *    You can pass in <code>null</code>.  But if you know how many bytes you expect, pass in
+     *    that value and this function will do a sanity check at the end to make sure the number of
+     *    bytes read from $inStream matches up.
      *
      * @param int $chunkSize
      *
      * @return array
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
-     *    for the newly-added file.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    object</a> for the newly-added file.
      */
     private function _uploadFileChunked($path, $writeMode, $inStream, $numBytes, $chunkSize)
     {
@@ -366,9 +376,10 @@ final class Client
             $len = strlen($data);
 
             while (true) {
-                $r = RequestUtil::runWithRetry(3, function() use ($client, $uploadId, $byteOffset, $data) {
-                    return $client->chunkedUploadContinue($uploadId, $byteOffset, $data);
-                });
+                $r = RequestUtil::runWithRetry(3,
+                    function() use ($client, $uploadId, $byteOffset, $data) {
+                        return $client->chunkedUploadContinue($uploadId, $byteOffset, $data);
+                    });
 
                 if ($r === true) {  // Chunk got uploaded!
                     $byteOffset += $len;
@@ -382,16 +393,14 @@ final class Client
                 // Otherwise, the server is at a different byte offset from us.
                 $serverByteOffset = $r;
                 assert($serverByteOffset !== $byteOffset);  // chunkedUploadContinue ensures this.
-                if ($r < $byteOffset) {
-                    // An earlier byte offset means the server has lost data we sent earlier.
-                    throw new Exception_BadResponse("Server is at an ealier byte offset: us=$byteOffset, server=$serverByteOffset");
-                }
+                // An earlier byte offset means the server has lost data we sent earlier.
+                if ($r < $byteOffset) throw new Exception_BadResponse(
+                    "Server is at an ealier byte offset: us=$byteOffset, server=$serverByteOffset");
                 // The normal case is that the server is a bit further along than us because of a
                 // partially-uploaded chunk.
                 $diff = $serverByteOffset - $byteOffset;
-                if ($diff > $len) {
-                    throw new Exception_BadResponse("Server is more than a chunk ahead: us=$byteOffset, server=$serverByteOffset");
-                }
+                if ($diff > $len) throw new Exception_BadResponse(
+                    "Server is more than a chunk ahead: us=$byteOffset, server=$serverByteOffset");
 
                 // Finish the rest of this chunk.
                 $byteOffset += $diff;
@@ -399,13 +408,13 @@ final class Client
             }
         }
 
-        if ($numBytes !== null && $byteOffset !== $numBytes) {
-            throw new \InvalidArgumentException("You passed numBytes=$numBytes but the stream had $byteOffset bytes.");
-        }
+        if ($numBytes !== null && $byteOffset !== $numBytes) throw new \InvalidArgumentException(
+            "You passed numBytes=$numBytes but the stream had $byteOffset bytes.");
 
-        $metadata = RequestUtil::runWithRetry(3, function() use ($client, $uploadId, $path, $writeMode) {
-            return $client->chunkedUploadFinish($uploadId, $path, $writeMode);
-        });
+        $metadata = RequestUtil::runWithRetry(3,
+            function() use ($client, $uploadId, $path, $writeMode) {
+                return $client->chunkedUploadFinish($uploadId, $path, $writeMode);
+            });
 
         return $metadata;
     }
@@ -465,17 +474,15 @@ final class Client
         }
 
         $correction = self::_chunkedUploadCheckForOffsetCorrection($response);
-        if ($correction !== null) {
-            throw new Exception_BadResponse("Got an offset-correcting 400 response, but we didn't send an offset");
-        }
+        if ($correction !== null) throw new Exception_BadResponse(
+            "Got an offset-correcting 400 response, but we didn't send an offset");
 
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
         list($uploadId, $byteOffset) = self::_chunkedUploadParse200Response($response->body);
         $len = strlen($data);
-        if ($byteOffset !== $len) {
-            throw new Exception_BadResponse("We sent $len bytes, but server returned an offset of $byteOffset");
-        }
+        if ($byteOffset !== $len) throw new Exception_BadResponse(
+            "We sent $len bytes, but server returned an offset of $byteOffset");
 
         return $uploadId;
     }
@@ -511,7 +518,8 @@ final class Client
         Checker::argNat("byteOffset", $byteOffset);
         Checker::argString("data", $data);
 
-        $response = $this->_chunkedUpload(array("upload_id" => $uploadId, "offset" => $byteOffset), $data);
+        $response = $this->_chunkedUpload(
+            array("upload_id" => $uploadId, "offset" => $byteOffset), $data);
 
         if ($response->statusCode === 404) {
             // The server doesn't know our upload ID.  Maybe it expired?
@@ -521,25 +529,22 @@ final class Client
         $correction = self::_chunkedUploadCheckForOffsetCorrection($response);
         if ($correction !== null) {
             list($correctedUploadId, $correctedByteOffset) = $correction;
-            if ($correctedUploadId !== $uploadId) {
-                throw new Exception_BadResponse("Corrective 400 upload_id mismatch: us=".self::q($uploadId)." server=".self::q($correctedUploadId));
-            }
-            if ($correctedByteOffset === $byteOffset) {
-                throw new Exception_BadResponse("Corrective 400 offset is the same as ours: $byteOffset");
-            }
+            if ($correctedUploadId !== $uploadId) throw new Exception_BadResponse(
+                "Corrective 400 upload_id mismatch: us=".
+                self::q($uploadId)." server=".self::q($correctedUploadId));
+            if ($correctedByteOffset === $byteOffset) throw new Exception_BadResponse(
+                "Corrective 400 offset is the same as ours: $byteOffset");
             return $correctedByteOffset;
         }
 
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
-        list($returnedUploadId, $returnedByteOffset) = self::_chunkedUploadParse200Response($response->body);
+        list($retUploadId, $retByteOffset) = self::_chunkedUploadParse200Response($response->body);
 
         $nextByteOffset = $byteOffset + strlen($data);
-        if ($uploadId !== $returnedUploadId) {
-            throw new Exception_BadResponse("upload_id mismatch: us=".self::q($uploadId).", server=".self::q($uploadId));
-        }
-        if ($nextByteOffset !== $returnedByteOffset) {
-            throw new Exception_BadResponse("next-offset mismatch: us=$nextByteOffset, server=$returnedByteOffset");
-        }
+        if ($uploadId !== $retUploadId) throw new Exception_BadResponse(
+                "upload_id mismatch: us=".self::q($uploadId).", server=".self::q($uploadId));
+        if ($nextByteOffset !== $retByteOffset) throw new Exception_BadResponse(
+                "next-offset mismatch: us=$nextByteOffset, server=$retByteOffset");
 
         return true;
     }
@@ -565,7 +570,7 @@ final class Client
         if ($response->statusCode !== 400) return null;
         $j = json_decode($response->body, true);
         if ($j === null) return null;
-        if (!array_key_exists("upload_id", $j) || !array_key_exists("upload_id", $j)) return null;
+        if (!array_key_exists("upload_id", $j) || !array_key_exists("offset", $j)) return null;
         $uploadId = $j["upload_id"];
         $byteOffset = $j["offset"];
         return array($uploadId, $byteOffset);
@@ -619,7 +624,8 @@ final class Client
      */
     private function _chunkedUpload($params, $data)
     {
-        $url = RequestUtil::buildUrl($this->config, $this->contentHost, "1/chunked_upload", $params);
+        $url = RequestUtil::buildUrl(
+            $this->config, $this->contentHost, "1/chunked_upload", $params);
 
         $curl = $this->mkCurl($url);
 
@@ -673,9 +679,9 @@ final class Client
      *
      * @return array|null
      *    If there is a file or folder at the given path, you'll get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a> for
-     *    that file or folder, along with all immediate children if it's a folder.  If not, you'll
-     *    get back <code>null</code>.
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    for that file or folder, along with all immediate children if it's a folder.  If not,
+     *    you'll get back <code>null</code>.
      *
      * @throws Exception
      */
@@ -715,6 +721,19 @@ final class Client
      * $client = ...;
      * $md = $client->getMetadataWithChildren("/Photos");
      * print_r($md);
+     * assert($md["is_dir"], "expecting \"/Photos\" to be a folder");
+     *
+     * sleep(10);
+     *
+     * // Now see if anything changed...
+     * list($changed, $new_md) = $client->getMetadataWithChildrenIfChanged(
+     *                                    "/Photos", $md["hash"]);
+     * if ($changed) {
+     *     echo "Folder changed.\n";
+     *     print_r($new_md);
+     * } else {
+     *     echo "Folder didn't change.\n";
+     * }
      * </code>
      *
      * @param string $path
@@ -726,8 +745,8 @@ final class Client
      * @return array
      *    A <code>list(boolean $changed, array $metadata)</code>.  If the metadata hasn't changed,
      *    you'll get <code>list(false, null)</code>.  If the metadata of the folder or any of its
-     *    children has changed, you'll get <code>list(true, $newMetadata)</code>.  $metadata is
-     *    a <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>.
+     *    children has changed, you'll get <code>list(true, $newMetadata)</code>.  $metadata is a
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>.
      *
      * @throws Exception
      */
@@ -748,7 +767,9 @@ final class Client
         if ($response->statusCode !== 404) throw RequestUtil::unexpectedStatus($response);
 
         $metadata = RequestUtil::parseResponseJson($response->body);
-        if (array_key_exists("is_deleted", $metadata) && $metadata["is_deleted"]) return array(true, null);
+        if (array_key_exists("is_deleted", $metadata) && $metadata["is_deleted"]) {
+            return array(true, null);
+        }
         return array(true, $metadata);
     }
 
@@ -792,9 +813,9 @@ final class Client
      *    The maximum number of revisions to return.
      *
      * @return array|null
-     *    A list of <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata objects</a>,
-     *    one for each file revision.  The later revisions appear first in the list.  If <code>null</code>,
-     *    then there were too many revisions at that path.
+     *    A list of <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    objects</a>, one for each file revision.  The later revisions appear first in the list.
+     *    If <code>null</code>, then there were too many revisions at that path.
      *
      * @throws Exception
      */
@@ -827,7 +848,8 @@ final class Client
      *    The revision to restore the contents to.
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    object</a>
      *
      * @throws Exception
      */
@@ -1052,8 +1074,8 @@ final class Client
      *    The destination Dropbox path (UTF-8).
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
-     *    for the new file or folder.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    object</a> for the new file or folder.
      *
      * @throws Exception
      */
@@ -1077,8 +1099,8 @@ final class Client
     }
 
     /**
-     * Copies a copy ref (possibly from a different Dropbox account), which could represent a file
-     * or folder, to the given path.
+     * Creates a file or folder based on an existing copy ref (possibly from a different Dropbox
+     * account).
      *
      * @param string $copyRef
      *    A copy ref obtained via the {@link createCopyRef()} call.
@@ -1087,8 +1109,8 @@ final class Client
      *    The Dropbox path you want to copy the file or folder to (UTF-8).
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
-     *    for the new file or folder.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    object</a> for the new file or folder.
      *
      * @throws Exception
      */
@@ -1152,8 +1174,8 @@ final class Client
      *    The Dropbox path of the file or folder to delete (UTF-8).
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
-     *    for the deleted file or folder.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    object</a> for the deleted file or folder.
      *
      * @throws Exception
      */
@@ -1186,8 +1208,8 @@ final class Client
      *    The destination Dropbox path (UTF-8).
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
-     *    for the destination file or folder.
+     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    object</a> for the destination file or folder.
      *
      * @throws Exception
      */
@@ -1265,9 +1287,8 @@ final class Client
     static function parseDateTime($apiDateTimeString)
     {
         $dt = \DateTime::createFromFormat(self::DATE_TIME_FORMAT, $apiDateTimeString);
-        if ($dt === false) {
-            throw new Exception_BadResponse("Bad date/time from server: ".self::q($apiDateTimeString));
-        }
+        if ($dt === false) throw new Exception_BadResponse(
+            "Bad date/time from server: ".self::q($apiDateTimeString));
         return $dt;
     }
 

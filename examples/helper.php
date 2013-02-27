@@ -16,7 +16,6 @@ use \Dropbox as dbx;
  */
 function parseArgs($exampleName, $argv, $requiredParams = null, $optionalParams = null)
 {
-
     if ($requiredParams === null) $requiredParams = array();
     if ($optionalParams === null) $optionalParams = array();
 

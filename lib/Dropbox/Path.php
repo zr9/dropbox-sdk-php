@@ -60,13 +60,13 @@ final class Path
     /**
      * Return the last component of a path (the file or folder name).
      *
-     * <pre>
+     * <code>
      * Path::getName("/Misc/Notes.txt") // "Notes.txt"
      * Path::getName("/Misc")           // "Misc"
      * Path::getName("/")               // null
-     * </pre>
+     * </code>
      *
-     * @param $path
+     * @param string $path
      *    The full path you want to get the last component of.
      *
      * @return null|string
