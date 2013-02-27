@@ -42,6 +42,19 @@ abstract class Token
     function getKey() { return $this->key; }
 
     /**
+     * Returns whether the given string is equal to this token's key.  Uses a string
+     * comparison function that is resistant to timing attacks.  This is typically used in
+     * your OAuth callback endpoint to see if the given request token key is the one you
+     * were expecting.
+     *
+     * @param $key
+     */
+    function matchesKey($key)
+    {
+        return RequestUtil::secureStringEquals($key, $this->key);
+    }
+
+    /**
      * Returns the 'secret' part of this token, though there's really no reason for you to
      * deal with just the 'secret' part.  If you want to save the token somewhere,
      * you can call {@link serialize()} to get a single string representation for

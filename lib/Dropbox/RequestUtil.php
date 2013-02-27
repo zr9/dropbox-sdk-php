@@ -268,4 +268,14 @@ final class RequestUtil
         }
         throw new \RuntimeException("unreachable");
     }
+
+    static function secureStringEquals($a, $b)
+    {
+        if (strlen($a) !== strlen($b)) return false;
+        $result = 0;
+        for ($i = 0; $i < strlen($a); $i++) {
+            $result |= ord($a[$i]) ^ ord($b[$i]);
+        }
+        return $result === 0;
+    }
 }

@@ -58,7 +58,16 @@ else if ($req == "/oauth_callback") {
         exit;
     }
 
+    if (!isset($_GET['oauth_token'])) {
+        echo renderHtmlPage("Error", "Dropbox didn't give us an 'oauth_token' parameter.");
+        exit;
+    }
     $requestToken = dbx\RequestToken::deserialize($_SESSION['requestToken']);
+    if (!$requestToken->matchesKey($_GET['oauth_token'])) {
+        echo renderHtmlPage("Error", "Request token mismatch.");
+        exit;
+    }
+
     list($accessToken, $dropboxUserId) = $webAuth->finish($requestToken);
 
     $_SESSION['accessToken'] = $accessToken->serialize();
