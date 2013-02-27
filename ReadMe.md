@@ -50,7 +50,7 @@ Save the API key to a JSON file called, say, "test.app":
 
 Before your app can access a Dropbox user's files, the user must authorize your application.  Dropbox uses the web-based "3-legged" OAuth flow for app authorization.  Successfully completing this flow gives you an _access token_ for the user's Dropbox account, which grants you the ability to make Dropbox API calls to access their files.
 
-You only need to perform the authorization process once per user.  Once you have an access token for a user, save it somewhere persistent, like in a database.  The next time that user visits your app's website, you can skip the authorization process and go straight to making regular API calls.  See: [API documentation](https://dropbox.github.com/dropbox-sdk-php/).
+You only need to perform the authorization process once per user.  Once you have an access token for a user, save it somewhere persistent, like in a database.  The next time that user visits your app's website, you can skip the authorization process and go straight to making regular API calls.  See: [API documentation](http://dropbox.github.com/dropbox-sdk-php/).
 
 ### Command-Line Example
 
