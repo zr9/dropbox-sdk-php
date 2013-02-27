@@ -26,7 +26,9 @@ report_path="$top_dir/$report_path"
 echo "Docs: $out_path"
 echo "Report: $report_path"
 
-exec "$top_dir/vendor/bin/apigen.php" \
+api_gen="$top_dir/vendor/bin/apigen.php"
+
+exec "$api_gen" \
     --title "$title" \
     --source 'lib' \
     --destination "$out_path" \
