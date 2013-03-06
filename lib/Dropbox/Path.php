@@ -22,8 +22,24 @@ final class Path
     }
 
     /**
-     * If the given path is a valid Dropbox path, return <code>null</code>, otherwise
-     * return an English string error message describing what is wrong with the path.
+     * Return whether the given path is a valid non-root Dropbox path.
+     * This is the same as {@link isValid} except <code>"/"</code> is not allowed.
+     *
+     * @param string $path
+     *    The path you want to check for validity.
+     *
+     * @return bool
+     *    Whether the path was valid or not.
+     */
+    static function isValidNonRoot($path)
+    {
+        $error = self::findErrorNonRoot($path);
+        return ($error === null);
+    }
+
+    /**
+     * If the given path is a valid Dropbox path, return <code>null</code>,
+     * otherwise return an English string error message describing what is wrong with the path.
      *
      * @param string $path
      *    The path you want to check for validity.
@@ -55,6 +71,24 @@ final class Path
         // TODO: More checks.
 
         return null;
+    }
+
+    /**
+     * If the given path is a valid non-root Dropbox path, return <code>null</code>,
+     * otherwise return an English string error message describing what is wrong with the path.
+     * This is the same as {@link findError} except <code>"/"</code> will yield an error message.
+     *
+     * @param string $path
+     *    The path you want to check for validity.
+     *
+     * @return string|null
+     *    If the path was valid, return <code>null</code>.  Otherwise, returns
+     *    an English string describing the problem.
+     */
+    static function findErrorNonRoot($path)
+    {
+        if ($path == "/") return "root path not allowed";
+        return self::findError($path);
     }
 
     /**
@@ -109,8 +143,7 @@ final class Path
     {
         if ($value === null) throw new \InvalidArgumentException("'$argName' must not be null");
         if (!is_string($value)) throw new \InvalidArgumentException("'$argName' must be a string");
-        if ($value === "/") throw new \InvalidArgumentException("'$argName' must not be the root path");
-        $error = self::findError($value);
+        $error = self::findErrorNonRoot($value);
         if ($error !== null) throw new \InvalidArgumentException("'$argName'': bad path: $error: ".var_export($value, true));
     }
 }
