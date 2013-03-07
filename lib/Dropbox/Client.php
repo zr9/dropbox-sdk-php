@@ -1027,9 +1027,12 @@ final class Client
      *    <li>"xl" - 1024x768</li>
      *    </ul>
      *
-     * @return array
-     *    A list of (array $metadata, string $data).  $metadata is the original file's metadata.
-     *    $data is the raw data for the thumbnail image.
+     * @return array|null
+     *    If the file exists, you'll get <code>list(array $metadata, string $data)</code> where
+     *    <code>$metadata</code> is the file's
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    and $data is the raw data for the thumbnail image.  If the file doesn't exist, you'll
+     *    get <code>null</code>.
      *
      * @throws Exception
      */
