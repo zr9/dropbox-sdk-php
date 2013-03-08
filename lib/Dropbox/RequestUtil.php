@@ -271,6 +271,8 @@ final class RequestUtil
 
     static function secureStringEquals($a, $b)
     {
+        Checker::argString("a", $a);
+        Checker::argString("b", $b);
         if (strlen($a) !== strlen($b)) return false;
         $result = 0;
         for ($i = 0; $i < strlen($a); $i++) {
