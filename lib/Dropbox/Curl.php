@@ -19,6 +19,11 @@ final class Curl
      */
     function __construct($url)
     {
+        // Make sure there aren't any spaces in the URL (i.e. the caller forgot to URL-encode).
+        if (strpos($url, ' ') !== false) {
+            throw new \InvalidArgumentException("Found space in \$url; it should be encoded");
+        }
+
         $this->handle = curl_init($url);
 
         // Force SSL and use our own certificate list.
