@@ -134,7 +134,7 @@ function getAppConfig()
         $appInfo = dbx\AppInfo::loadFromJsonFile($appInfoFile);
     }
     catch (dbx\AppInfoLoadException $ex) {
-        fwrite(STDERR, "Unable to load \"$appInfoFile\": " . $ex->getMessage() . "\n");
+        error_log("Unable to load \"$appInfoFile\": " . $ex->getMessage());
         die;
     }
 
