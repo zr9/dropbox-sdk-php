@@ -14,7 +14,7 @@ If you're using [Composer](http://getcomposer.org/) for your project's dependenc
 
 ```
 "require": {
-  "dropbox/dropbox-sdk": "dev-master",
+  "dropbox/dropbox-sdk": "1.0.x",
 }
 ```
 
