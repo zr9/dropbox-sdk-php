@@ -1289,13 +1289,13 @@ final class Client
      */
     static function parseDateTime($apiDateTimeString)
     {
-        $dt = \DateTime::createFromFormat(self::DATE_TIME_FORMAT, $apiDateTimeString);
+        $dt = \DateTime::createFromFormat(self::$dateTimeFormat, $apiDateTimeString);
         if ($dt === false) throw new Exception_BadResponse(
             "Bad date/time from server: ".self::q($apiDateTimeString));
         return $dt;
     }
 
-    const DATE_TIME_FORMAT = "D, d M Y H:i:s T";
+    private static $dateTimeFormat = "D, d M Y H:i:s T";
 
     private static function q($object) { return var_export($object, true); }
 
