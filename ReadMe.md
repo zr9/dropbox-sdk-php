@@ -18,8 +18,6 @@ If you're using [Composer](http://getcomposer.org/) for your project's dependenc
 }
 ```
 
-NOTE: This SDK is currently in the early stages of development, which is why you need to use "dev-master" as the version.  In the future, we'll make versioned releases.
-
 ### Without Composer
 
 If you're not using Composer, download the code, copy the "lib/" folder into your project somewhere, and include the "lib/Dropbox/autoload.php" in your code.  For example, if you copied the "lib/" and named it "dropbox-sdk/", you would do:
