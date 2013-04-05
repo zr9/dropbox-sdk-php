@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Dropbox\Path | Dropbox SDK for PHP</title>
+
+	<script type="text/javascript" src="resources/combined.js?3042661484"></script>
+	<script type="text/javascript" src="elementlist.js?3896523403"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Dropbox.AccessToken.html">Dropbox\AccessToken</a></li>
+				<li><a href="class-Dropbox.AccessType.html">Dropbox\AccessType</a></li>
+				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
+				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
+				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.Config.html">Dropbox\Config</a></li>
+				<li class="active"><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
+				<li><a href="class-Dropbox.RequestToken.html">Dropbox\RequestToken</a></li>
+				<li><a href="class-Dropbox.Token.html">Dropbox\Token</a></li>
+				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
+				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-Dropbox.AppInfoLoadException.html">Dropbox\AppInfoLoadException</a></li>
+				<li><a href="class-Dropbox.AuthInfoLoadException.html">Dropbox\AuthInfoLoadException</a></li>
+				<li><a href="class-Dropbox.DeserializeException.html">Dropbox\DeserializeException</a></li>
+				<li><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></li>
+				<li><a href="class-Dropbox.Exception_BadRequest.html">Dropbox\Exception_BadRequest</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponse.html">Dropbox\Exception_BadResponse</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponseCode.html">Dropbox\Exception_BadResponseCode</a></li>
+				<li><a href="class-Dropbox.Exception_InvalidAccessToken.html">Dropbox\Exception_InvalidAccessToken</a></li>
+				<li><a href="class-Dropbox.Exception_NetworkIO.html">Dropbox\Exception_NetworkIO</a></li>
+				<li><a href="class-Dropbox.Exception_ProtocolError.html">Dropbox\Exception_ProtocolError</a></li>
+				<li><a href="class-Dropbox.Exception_RetryLater.html">Dropbox\Exception_RetryLater</a></li>
+				<li><a href="class-Dropbox.Exception_ServerError.html">Dropbox\Exception_ServerError</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Path</h1>
+
+
+	<div class="description">
+	
+<p>Path validation functions.</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		<b>Final</b><br />
+		
+		<b>Namespace:</b> Dropbox<br />
+		
+
+		<b>Located at</b> <a href="source-class-Dropbox.Path.html#4-149" title="Go to source code">Dropbox/Path.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="isValid" id="_isValid">
+
+		<td class="attributes"><code>
+			 public static
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isValid">#</a>
+		<code><a href="source-class-Dropbox.Path.html#9-22" title="Go to source code">isValid</a>( <span>string <var>$path</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Return whether the given path is a valid Dropbox path.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Return whether the given path is a valid Dropbox path.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The path you want to check for validity.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>Whether the path was valid or not.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isValidNonRoot" id="_isValidNonRoot">
+
+		<td class="attributes"><code>
+			 public static
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isValidNonRoot">#</a>
+		<code><a href="source-class-Dropbox.Path.html#24-38" title="Go to source code">isValidNonRoot</a>( <span>string <var>$path</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Return whether the given path is a valid non-root Dropbox path. This is the
+same as <code><a href="class-Dropbox.Path.html#_isValid">Dropbox\Path::isValid()</a></code> except <code><span
+class="php-quote">&quot;/&quot;</span></code> is not allowed.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Return whether the given path is a valid non-root Dropbox path. This is the
+same as <code><a href="class-Dropbox.Path.html#_isValid">Dropbox\Path::isValid()</a></code> except <code><span
+class="php-quote">&quot;/&quot;</span></code> is not allowed.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The path you want to check for validity.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>Whether the path was valid or not.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findError" id="_findError">
+
+		<td class="attributes"><code>
+			 public static
+			string|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findError">#</a>
+		<code><a href="source-class-Dropbox.Path.html#40-74" title="Go to source code">findError</a>( <span>string <var>$path</var></span> )</code>
+
+		<div class="description short">
+			
+<p>If the given path is a valid Dropbox path, return <code><span
+class="php-keyword1">null</span></code>, otherwise return an English string
+error message describing what is wrong with the path.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>If the given path is a valid Dropbox path, return <code><span
+class="php-keyword1">null</span></code>, otherwise return an English string
+error message describing what is wrong with the path.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The path you want to check for validity.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string|null</code><br>If the path was valid, return <code><span
+class="php-keyword1">null</span></code>. Otherwise, returns an English string
+describing the problem.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findErrorNonRoot" id="_findErrorNonRoot">
+
+		<td class="attributes"><code>
+			 public static
+			string|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findErrorNonRoot">#</a>
+		<code><a href="source-class-Dropbox.Path.html#76-92" title="Go to source code">findErrorNonRoot</a>( <span>string <var>$path</var></span> )</code>
+
+		<div class="description short">
+			
+<p>If the given path is a valid non-root Dropbox path, return <code><span
+class="php-keyword1">null</span></code>, otherwise return an English string
+error message describing what is wrong with the path. This is the same as <code><a href="class-Dropbox.Path.html#_findError">Dropbox\Path::findError()</a></code> except <code><span class="php-quote">&quot;/&quot;</span></code> will
+yield an error message.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>If the given path is a valid non-root Dropbox path, return <code><span
+class="php-keyword1">null</span></code>, otherwise return an English string
+error message describing what is wrong with the path. This is the same as <code><a href="class-Dropbox.Path.html#_findError">Dropbox\Path::findError()</a></code> except <code><span class="php-quote">&quot;/&quot;</span></code> will
+yield an error message.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The path you want to check for validity.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string|null</code><br>If the path was valid, return <code><span
+class="php-keyword1">null</span></code>. Otherwise, returns an English string
+describing the problem.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getName" id="_getName">
+
+		<td class="attributes"><code>
+			 public static
+			null|string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getName">#</a>
+		<code><a href="source-class-Dropbox.Path.html#94-118" title="Go to source code">getName</a>( <span>string <var>$path</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Return the last component of a path (the file or folder name).</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Return the last component of a path (the file or folder name).</p>
+
+<pre>
+Path::getName(<span
+class="php-quote">&quot;/Misc/Notes.txt&quot;</span>) <span
+class="php-comment">// &quot;Notes.txt&quot;</span>
+Path::getName(<span
+class="php-quote">&quot;/Misc&quot;</span>)           <span
+class="php-comment">// &quot;Misc&quot;</span>
+Path::getName(<span
+class="php-quote">&quot;/&quot;</span>)               <span
+class="php-comment">// null</span>
+</pre>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The full path you want to get the last component of.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>null|string</code><br>The last component of <code><span class="php-var">$path</span></code> or
+<code><span class="php-keyword1">null</span></code> if the given <code><span
+class="php-var">$path</span></code> was &lt;code&gt;"/"&lt;code&gt;.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

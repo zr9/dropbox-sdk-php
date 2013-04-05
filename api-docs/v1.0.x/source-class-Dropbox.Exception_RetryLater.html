@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File Dropbox/Exception/RetryLater.php | Dropbox SDK for PHP</title>
+
+	<script type="text/javascript" src="resources/combined.js?3042661484"></script>
+	<script type="text/javascript" src="elementlist.js?3896523403"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Dropbox.AccessToken.html">Dropbox\AccessToken</a></li>
+				<li><a href="class-Dropbox.AccessType.html">Dropbox\AccessType</a></li>
+				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
+				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
+				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.Config.html">Dropbox\Config</a></li>
+				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
+				<li><a href="class-Dropbox.RequestToken.html">Dropbox\RequestToken</a></li>
+				<li><a href="class-Dropbox.Token.html">Dropbox\Token</a></li>
+				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
+				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-Dropbox.AppInfoLoadException.html">Dropbox\AppInfoLoadException</a></li>
+				<li><a href="class-Dropbox.AuthInfoLoadException.html">Dropbox\AuthInfoLoadException</a></li>
+				<li><a href="class-Dropbox.DeserializeException.html">Dropbox\DeserializeException</a></li>
+				<li><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></li>
+				<li><a href="class-Dropbox.Exception_BadRequest.html">Dropbox\Exception_BadRequest</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponse.html">Dropbox\Exception_BadResponse</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponseCode.html">Dropbox\Exception_BadResponseCode</a></li>
+				<li><a href="class-Dropbox.Exception_InvalidAccessToken.html">Dropbox\Exception_InvalidAccessToken</a></li>
+				<li><a href="class-Dropbox.Exception_NetworkIO.html">Dropbox\Exception_NetworkIO</a></li>
+				<li><a href="class-Dropbox.Exception_ProtocolError.html">Dropbox\Exception_ProtocolError</a></li>
+				<li class="active"><a href="class-Dropbox.Exception_RetryLater.html">Dropbox\Exception_RetryLater</a></li>
+				<li><a href="class-Dropbox.Exception_ServerError.html">Dropbox\Exception_ServerError</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="class-Dropbox.Exception_RetryLater.html" title="Summary of Dropbox\Exception_RetryLater"><span>Class</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<pre><code><span id="1" class="l"><a class="l" href="#1"> 1: </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2: </a><span class="php-keyword1">namespace</span> Dropbox;
+</span><span id="3" class="l"><a class="l" href="#3"> 3: </a>
+</span><span id="4" class="l"><a class="l" href="#4"> 4: </a><span class="php-comment">/**
+</span></span><span id="5" class="l"><a class="l" href="#5"> 5: </a><span class="php-comment"> * The Dropbox server said it couldn't fulfil our request right now, but that we should try
+</span></span><span id="6" class="l"><a class="l" href="#6"> 6: </a><span class="php-comment"> * again later.
+</span></span><span id="7" class="l"><a class="l" href="#7"> 7: </a><span class="php-comment"> */</span>
+</span><span id="8" class="l"><a class="l" href="#8"> 8: </a><span class="php-keyword1">final</span> <span class="php-keyword1">class</span> <a id="Exception_RetryLater" href="#Exception_RetryLater">Exception_RetryLater</a> <span class="php-keyword1">extends</span> Exception
+</span><span id="9" class="l"><a class="l" href="#9"> 9: </a>{
+</span><span id="10" class="l"><a class="l" href="#10">10: </a>    <span class="php-comment">/**
+</span></span><span id="11" class="l"><a class="l" href="#11">11: </a><span class="php-comment">     * @internal
+</span></span><span id="12" class="l"><a class="l" href="#12">12: </a><span class="php-comment">     */</span>
+</span><span id="13" class="l"><a class="l" href="#13">13: </a>    <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>(<span class="php-var">$message</span>)
+</span><span id="14" class="l"><a class="l" href="#14">14: </a>    {
+</span><span id="15" class="l"><a class="l" href="#15">15: </a>        parent::__construct(<span class="php-var">$message</span>);
+</span><span id="16" class="l"><a class="l" href="#16">16: </a>    }
+</span><span id="17" class="l"><a class="l" href="#17">17: </a>}
+</span><span id="18" class="l"><a class="l" href="#18">18: </a></span></code></pre>
+
+	<div id="footer">
+		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
