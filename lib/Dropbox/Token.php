@@ -47,7 +47,9 @@ abstract class Token
      * your OAuth callback endpoint to see if the given request token key is the one you
      * were expecting.
      *
-     * @param $key
+     * @param string $key
+     *
+     * @return bool
      */
     function matchesKey($key)
     {
