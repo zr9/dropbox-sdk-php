@@ -134,6 +134,28 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(filesize($localPathDest), filesize($localPathSource));
     }
 
+    function testMetadata()
+    {
+        $this->addFile($this->p("a.txt"), 100);
+
+        $md = $this->client->getMetadataWithChildren($this->p());
+        $this->assertEquals(1, count($md['contents']));
+
+        // folder metadata should be the same
+        $hash = $md['hash'];
+        list($changed, $new_md) = $this->client->getMetadataWithChildrenIfChanged($this->p(), $hash);
+        $this->assertFalse($changed);
+        $this->assertEquals($new_md, null);
+
+        $this->addFile($this->p("b.txt"), 100);
+
+        // folder metadata should be different (since we added another file)
+        $hash = $md['hash'];
+        list($changed, $new_md) = $this->client->getMetadataWithChildrenIfChanged($this->p(), $hash);
+        $this->assertTrue($changed);
+        $this->assertEquals(2, count($new_md['contents']));
+    }
+
     function testDelta()
     {
         // eat up all the deltas to the point where we should expect exactly

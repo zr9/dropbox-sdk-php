@@ -755,16 +755,16 @@ final class Client
         Path::checkArg("path", $path);
         Checker::argStringNonEmpty("previousFolderHash", $previousFolderHash);
 
-        $params = array("list" => "true", "limit" => "25000", "hash" => $previousFolderHash);
+        $params = array("list" => "true", "file_limit" => "25000", "hash" => $previousFolderHash);
 
         $response = $this->doGet(
-            $this->apiHost, "1/metadata",
+            $this->apiHost,
             $this->appendFilePath("1/metadata", $path),
             $params);
 
         if ($response->statusCode === 304) return array(false, null);
         if ($response->statusCode === 404) return array(true, null);
-        if ($response->statusCode !== 404) throw RequestUtil::unexpectedStatus($response);
+        if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 
         $metadata = RequestUtil::parseResponseJson($response->body);
         if (array_key_exists("is_deleted", $metadata) && $metadata["is_deleted"]) {
