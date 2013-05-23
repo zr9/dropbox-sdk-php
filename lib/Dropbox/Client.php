@@ -173,11 +173,12 @@ final class Client
      *                            dbx\WriteMode::add(), 
      *                            fopen("./frog.jpeg", "rb"));
      * print_r($md1);
+     * $rev = $md1["rev"];
      *
      * // Re-upload with WriteMode::update(...), which will overwrite the
      * // file if it hasn't been modified from our original upload.
      * $md2 = $client->uploadFile("/Photos/Frog.jpeg",
-     *                            dbx\WriteMode::update($md1["rev"]),
+     *                            dbx\WriteMode::update($rev),
      *                            fopen("./frog-new.jpeg", "rb"));
      * print_r($md2);
      * </code>
@@ -189,6 +190,8 @@ final class Client
      *    What to do if there's already a file at the given path.
      *
      * @param resource $inStream
+     *    The data to use for the file contents.  This stream will be closed with
+     *    <code>fclose</code>, whether the upload succeeds or not.
      *
      * @param int|null $numBytes
      *    You can pass in <code>null</code> if you don't know.  If you do provide the size, we can
@@ -287,6 +290,8 @@ final class Client
      *    What to do if there's already a file at the given path.
      *
      * @param resource $inStream
+     *    The data to use for the file contents.  This stream will be closed with
+     *    <code>fclose</code>, whether the upload succeeds or not.
      *
      * @param int|null $numBytes
      *    The number of bytes available from $inStream.
@@ -334,7 +339,7 @@ final class Client
      *    What to do if there's already a file at the given path (UTF-8).
      *
      * @param resource $inStream
-     *    The source of data to upload.
+     *    The source of data to upload.  The stream will NOT be automatically closed.
      *
      * @param int|null $numBytes
      *    You can pass in <code>null</code>.  But if you know how many bytes you expect, pass in
