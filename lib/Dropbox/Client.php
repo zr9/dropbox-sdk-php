@@ -399,7 +399,7 @@ final class Client
                 $serverByteOffset = $r;
                 assert($serverByteOffset !== $byteOffset);  // chunkedUploadContinue ensures this.
                 // An earlier byte offset means the server has lost data we sent earlier.
-                if ($r < $byteOffset) throw new Exception_BadResponse(
+                if ($serverByteOffset < $byteOffset) throw new Exception_BadResponse(
                     "Server is at an ealier byte offset: us=$byteOffset, server=$serverByteOffset");
                 // The normal case is that the server is a bit further along than us because of a
                 // partially-uploaded chunk.
