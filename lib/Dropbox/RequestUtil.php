@@ -220,7 +220,7 @@ final class RequestUtil
 
         if ($sc === 400) return new Exception_BadRequest($message);
         if ($sc === 401) return new Exception_InvalidAccessToken($message);
-        if ($sc === 500) return new Exception_ServerError($message);
+        if ($sc === 500 || $sc === 502) return new Exception_ServerError($message);
         if ($sc === 503) return new Exception_RetryLater($message);
 
         return new Exception_BadResponse("unexpected HTTP status code: $sc: $message");
