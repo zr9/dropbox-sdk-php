@@ -133,7 +133,7 @@ final class Client
             $this->appendFilePath("1/files", $path),
             array("rev" => $rev));
 
-        $curl = self::mkCurl($url);
+        $curl = $this->mkCurl($url);
         $metadataCatcher = new DropboxMetadataHeaderCatcher($curl->handle);
         $streamRelay = new CurlStreamRelay($curl->handle, $outStream);
 
@@ -1060,7 +1060,7 @@ final class Client
             $this->appendFilePath("1/thumbnails", $path),
             array("size" => $size, "format" => $format));
 
-        $curl = self::mkCurl($url);
+        $curl = $this->mkCurl($url);
         $metadataCatcher = new DropboxMetadataHeaderCatcher($curl->handle);
 
         $curl->set(CURLOPT_RETURNTRANSFER, true);
