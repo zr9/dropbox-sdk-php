@@ -298,12 +298,30 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
     function testChunkedUpload()
     {
-        $fd = $this->writeTempFile(1024);
+        $fd = $this->writeTempFile(1200);
         $contents = stream_get_contents($fd);
         fseek($fd, 0);
 
         $remotePath = $this->p("chunked-upload.txt");
         $this->client->uploadFileChunked($remotePath, dbx\WriteMode::add(), $fd, null, 512);
+
+        $fd = tmpfile();
+        $this->client->getFile($remotePath, $fd);
+        fseek($fd, 0);
+        $fetched = stream_get_contents($fd);
+        fclose($fd);
+
+        $this->assertEquals($contents, $fetched);
+    }
+
+    function testChunkedUploadWithSize()
+    {
+        $fd = $this->writeTempFile(1200);
+        $contents = stream_get_contents($fd);
+        fseek($fd, 0);
+
+        $remotePath = $this->p("chunked-upload.txt");
+        $this->client->uploadFileChunked($remotePath, dbx\WriteMode::add(), $fd, 1200, 512);
 
         $fd = tmpfile();
         $this->client->getFile($remotePath, $fd);
