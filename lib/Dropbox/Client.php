@@ -378,6 +378,7 @@ final class Client
 
         while (!feof($inStream)) {
             $data = fread($inStream, $chunkSize);
+            if ($data === false) throw new StreamReadException("Error reading from \$inStream.");
             $len = strlen($data);
 
             while (true) {
