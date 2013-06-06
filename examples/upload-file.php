@@ -4,8 +4,8 @@
 require_once __DIR__.'/helper.php';
 use \Dropbox as dbx;
 
-list($client, $localPath, $dropboxPath) = parseArgs("upload-file", $argv, array(
-        array("local-path", "The local path of the file to upload."),
+list($client, $sourcePath, $dropboxPath) = parseArgs("upload-file", $argv, array(
+        array("source-path", "A path to a local file or a URL of a resource."),
         array("dropbox-path", "The path (on Dropbox) to save the file to."),
     ));
 
@@ -15,6 +15,11 @@ if ($pathError !== null) {
     die;
 }
 
-$metadata = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), fopen($localPath, "rb"), filesize($localPath));
+$size = null;
+if (\stream_is_local($sourcePath)) {
+    $size = \filesize($sourcePath);
+}
+
+$metadata = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), fopen($sourcePath, "rb"), $size);
 
 print_r($metadata);
