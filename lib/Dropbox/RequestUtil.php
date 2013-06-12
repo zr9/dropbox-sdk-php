@@ -12,7 +12,7 @@ if (!function_exists('json_decode')) {
 if (strlen((string) PHP_INT_MAX) < 19) {
     // Looks like we're running on a 32-bit build of PHP.  This could cause problems because some of the numbers
     // we use (file sizes, quota, etc) can be larger than 32-bit ints can handle.
-    throw new \Exception("The Dropbox SDK requires at least a 64-bit build of PHP, but it looks like you're running a 32-bit build (PHP_INT_MAX=" . ((string) PHP_INT_MAX) . ").  Library: \"" . __FILE__ . "\"");
+    throw new \Exception("The Dropbox SDK uses 64-bit integers, but it looks like we're running on a version of PHP that doesn't support 64-bit integers (PHP_INT_MAX=" . ((string) PHP_INT_MAX) . ").  Library: \"" . __FILE__ . "\"");
 }
 
 /**
