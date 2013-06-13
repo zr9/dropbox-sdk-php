@@ -10,16 +10,6 @@ namespace Dropbox;
 final class Client
 {
     /**
-     * The config used when making requests to the Dropbox server.
-     *
-     * @return Config
-     */
-    function getConfig() { return $this->config; }
-
-    /** @var Config */
-    private $config;
-
-    /**
      * The access token used by this client to make authenticated API calls.  You can get an
      * access token via {@link WebAuth}.
      *
@@ -31,33 +21,78 @@ final class Client
     private $accessToken;
 
     /**
+     * An identifier for the API client, typically of the form "Name/Version".
+     * This is used to set the HTTP <code>User-Agent</code> header when making API requests.
+     * Example: <code>"PhotoEditServer/1.3"</code>
+     *
+     * If you're the author a higher-level library on top of the basic SDK, and the
+     * "Photo Edit" app's server code is using your library to access Dropbox, you should append
+     * your library's name and version to form the full identifier.  For example,
+     * if your library is called "File Picker", you might set this field to:
+     * <code>"PhotoEditServer/1.3 FilePicker/0.1-beta"</code>
+     *
+     * The exact format of the <code>User-Agent</code> header is described in
+     * <a href="http://tools.ietf.org/html/rfc2616#section-3.8">section 3.8 of the HTTP specification</a>.
+     *
+     * Note that underlying HTTP client may append other things to the <code>User-Agent</code>, such as
+     * the name of the library being used to actually make the HTTP request (such as cURL).
+     *
+     * @return string
+     */
+    function getClientIdentifier() { return $this->clientIdentifier; }
+
+    /** @var string */
+    private $clientIdentifier;
+
+    /**
+     * The locale of the user of your application.  Some API calls return localized
+     * data and error messages; this "user locale" setting determines which locale
+     * the server should use to localize those strings.
+     *
+     * @return null|string
+     */
+    function getUserLocale() { return $this->userLocale; }
+
+    /** @var null|string */
+    private $userLocale;
+
+    /**
      * Constructor.
      *
-     * <code>
-     * use \Dropbox as dbx;
-     * $config = new Config(...);
-     * list($accessToken, $dropboxUserId) = $webAuth->finish(...);
-     * $client = new dbx\Client($config, $accessToken);
-     * </code>
-     *
-     * @param Config $config
-     *     See {@link getConfig()}
-     * @param AccessToken $accessToken
+     * @param string $accessToken
      *     See {@link getAccessToken()}
+     * @param string $clientIdentifier
+     *     See {@link getClientIdentifier()}
+     * @param null|string $userLocale
+     *     See {@link getUserLocale()}
      */
-    function __construct($config, $accessToken)
+    function __construct($accessToken, $clientIdentifier, $userLocale = null)
     {
-        Config::checkArg("config", $config);
-        AccessToken::checkArg("accessToken", $accessToken);
+        Checker::argStringNonEmpty("accessToken", $accessToken);
+        Checker::argStringNonEmpty("clientIdentifier", $clientIdentifier);
+        Checker::argStringNonEmptyOrNull("userLocale", $userLocale);
 
-        $this->config = $config;
         $this->accessToken = $accessToken;
+        $this->clientIdentifier = $clientIdentifier;
+        $this->userLocale = $userLocale;
+
+        // The $host parameter is sort of internal.  We don't include it in the param list because
+        // we don't want it to be included in the documentation.  Use PHP arg list hacks to get at
+        // it.
+        $host = null;
+        if (\func_num_args() == 4) {
+            $host = \func_get_arg(3);
+            Host::checkArgOrNull("host", $host);
+        }
+        if ($host === null) {
+            $host = Host::getDefault();
+        }
+        $this->host = $host;
 
         // These fields are redundant, but it makes these values a little more convenient
         // to access.
-        $this->apiHost = $config->getAppInfo()->getHost()->getApi();
-        $this->contentHost = $config->getAppInfo()->getHost()->getContent();
-        $this->root = $config->getAppInfo()->getAccessType()->getUrlPart();
+        $this->apiHost = $host->getApi();
+        $this->contentHost = $host->getContent();
     }
 
     /** @var string */
@@ -69,7 +104,7 @@ final class Client
 
     private function appendFilePath($base, $path)
     {
-        return $base . "/" . $this->root . "/" . rawurlencode(substr($path, 1));
+        return $base . "/auto/" . rawurlencode(substr($path, 1));
     }
 
     /**
@@ -128,7 +163,7 @@ final class Client
         Checker::argStringNonEmptyOrNull("rev", $rev);
 
         $url = RequestUtil::buildUrl(
-            $this->config,
+            $this->userLocale,
             $this->contentHost,
             $this->appendFilePath("1/files", $path),
             array("rev" => $rev));
@@ -170,7 +205,7 @@ final class Client
      * use \Dropbox as dbx;
      * $client = ...;
      * $md1 = $client->uploadFile("/Photos/Frog.jpeg",
-     *                            dbx\WriteMode::add(), 
+     *                            dbx\WriteMode::add(),
      *                            fopen("./frog.jpeg", "rb"));
      * print_r($md1);
      * $rev = $md1["rev"];
@@ -243,7 +278,7 @@ final class Client
      * use \Dropbox as dbx;
      * $client = ...;
      * $md = $client->uploadFile("/Grocery List.txt",
-     *                           dbx\WriteMode::add(), 
+     *                           dbx\WriteMode::add(),
      *                           "1. Coke\n2. Popcorn\n3. Toothpaste\n");
      * print_r($md);
      * </code>
@@ -461,7 +496,7 @@ final class Client
         Checker::argCallable("curlConfigClosure", $curlConfigClosure);
 
         $url = RequestUtil::buildUrl(
-            $this->config,
+            $this->userLocale,
             $this->contentHost,
             $this->appendFilePath("1/files_put", $path),
             $writeMode->getExtraParams());
@@ -654,7 +689,7 @@ final class Client
     private function _chunkedUpload($params, $data)
     {
         $url = RequestUtil::buildUrl(
-            $this->config, $this->contentHost, "1/chunked_upload", $params);
+            $this->userLocale, $this->contentHost, "1/chunked_upload", $params);
 
         $curl = $this->mkCurl($url);
 
@@ -1078,7 +1113,7 @@ final class Client
         }
 
         $url = RequestUtil::buildUrl(
-            $this->config,
+            $this->userLocale,
             $this->contentHost,
             $this->appendFilePath("1/thumbnails", $path),
             array("size" => $size, "format" => $format));
@@ -1120,7 +1155,7 @@ final class Client
             $this->apiHost,
             "1/fileops/copy",
             array(
-                "root" => $this->root,
+                "root" => "auto",
                 "from_path" => $fromPath,
                 "to_path" => $toPath,
             ));
@@ -1155,7 +1190,7 @@ final class Client
             $this->apiHost,
             "1/fileops/copy",
             array(
-                "root" => $this->root,
+                "root" => "auto",
                 "from_copy_ref" => $copyRef,
                 "to_path" => $toPath,
             )
@@ -1187,7 +1222,7 @@ final class Client
             $this->apiHost,
             "1/fileops/create_folder",
             array(
-                "root" => $this->root,
+                "root" => "auto",
                 "path" => $path,
             ));
 
@@ -1219,7 +1254,7 @@ final class Client
             $this->apiHost,
             "1/fileops/delete",
             array(
-                "root" => $this->root,
+                "root" => "auto",
                 "path" => $path,
             ));
 
@@ -1254,7 +1289,7 @@ final class Client
             $this->apiHost,
             "1/fileops/move",
             array(
-                "root" => $this->root,
+                "root" => "auto",
                 "from_path" => $fromPath,
                 "to_path" => $toPath,
             ));
@@ -1276,7 +1311,8 @@ final class Client
     {
         Checker::argString("host", $host);
         Checker::argString("path", $path);
-        return RequestUtil::doGet($this->config, $this->accessToken, $host, $path, $params);
+        return RequestUtil::doGet($this->clientIdentifier, $this->accessToken, $this->userLocale,
+                                  $host, $path, $params);
     }
 
     /**
@@ -1291,7 +1327,8 @@ final class Client
     {
         Checker::argString("host", $host);
         Checker::argString("path", $path);
-        return RequestUtil::doPost($this->config, $this->accessToken, $host, $path, $params);
+        return RequestUtil::doPost($this->clientIdentifier, $this->accessToken, $this->userLocale,
+                                   $host, $path, $params);
     }
 
     /**
@@ -1300,7 +1337,7 @@ final class Client
      */
     private function mkCurl($url)
     {
-        return RequestUtil::mkCurl($this->config, $url, $this->accessToken);
+        return RequestUtil::mkCurl($this->clientIdentifier, $url, $this->accessToken);
     }
 
     /**
@@ -1326,9 +1363,15 @@ final class Client
 
     private static $dateTimeFormat = "D, d M Y H:i:s T";
 
-    private static function q($object) { return var_export($object, true); }
+    /**
+     * @internal
+     */
+    static function q($object) { return var_export($object, true); }
 
-    private static function getField($j, $fieldName)
+    /**
+     * @internal
+     */
+    static function getField($j, $fieldName)
     {
         if (!array_key_exists($fieldName, $j)) throw new Exception_BadResponse(
             "missing field \"$fieldName\": $body");

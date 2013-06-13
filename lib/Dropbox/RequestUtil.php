@@ -21,16 +21,16 @@ if (strlen((string) PHP_INT_MAX) < 19) {
 final class RequestUtil
 {
     /**
-     * @param Config $config
+     * @param string $userLocale
      * @param string $host
      * @param string $path
      * @param array $params
      * @return string
      */
-    static function buildUrl($config, $host, $path, $params = null)
+    static function buildUrl($userLocale, $host, $path, $params = null)
     {
         $url = self::buildUri($host, $path);
-        $url .= "?locale=" . rawurlencode($config->getUserLocale());
+        $url .= "?locale=" . rawurlencode($userLocale);
 
         if ($params !== null) {
             foreach ($params as $key => $value) {
@@ -65,24 +65,11 @@ final class RequestUtil
     }
 
     /**
-     * @param AppInfo $appInfo
-     * @param Token $token
-     * @return string
-     */
-    private static function buildOAuthHeader($appInfo, $token)
-    {
-        return "OAuth oauth_signature_method=\"PLAINTEXT\""
-             . ", oauth_consumer_key=\"" . rawurlencode($appInfo->getKey()) . "\""
-             . ", oauth_token=\"" . rawurlencode($token->getKey()) . "\""
-             . ", oauth_signature=\"" . rawurlencode($appInfo->getSecret()) . "&" . rawurlencode($token->getSecret()) . "\"";
-    }
-
-    /**
-     * @param Config $config
+     * @param string $clientIdentifier
      * @param string $url
      * @return Curl
      */
-    static function mkCurlWithoutAuth($config, $url)
+    static function mkCurlWithoutAuth($clientIdentifier, $url)
     {
         $curl = new Curl($url);
 
@@ -93,21 +80,22 @@ final class RequestUtil
         $curl->set(CURLOPT_LOW_SPEED_TIME, 10);
 
         //$curl->set(CURLOPT_VERBOSE, true);  // For debugging.
-        $curl->addHeader("User-Agent: ".$config->getClientIdentifier()." Dropbox-PHP-SDK");
+        // TODO: Figure out how to encode clientIdentifier (urlencode?)
+        $curl->addHeader("User-Agent: ".$clientIdentifier." Dropbox-PHP-SDK");
 
         return $curl;
     }
 
     /**
-     * @param Config $config
+     * @param string $clientIdentifier
      * @param string $url
-     * @param Token $authToken
+     * @param string $accessToken
      * @return Curl
      */
-    static function mkCurl($config, $url, $authToken)
+    static function mkCurl($clientIdentifier, $url, $accessToken)
     {
-        $curl = self::mkCurlWithoutAuth($config, $url);
-        $curl->addHeader("Authorization: ".self::buildOAuthHeader($config->getAppInfo(), $authToken));
+        $curl = self::mkCurlWithoutAuth($clientIdentifier, $url);
+        $curl->addHeader("Authorization: Bearer $accessToken");
         return $curl;
     }
 
@@ -135,18 +123,8 @@ final class RequestUtil
     }
 
     /**
-     * @param Config $config
-     * @param Token $oauthToken
-     * @param Curl $curl
-     */
-    static function addAuthHeader($config, $oauthToken, $curl)
-    {
-        $curl->addHeader("Authorization: ".self::buildOAuthHeader($config->getAppInfo(), $oauthToken));
-    }
-
-    /**
-     * @param Config $config
-     * @param Token $authToken
+     * @param string $accessToken
+     * @param string $userLocale
      * @param string $host
      * @param string $path
      * @param array|null $params
@@ -155,19 +133,16 @@ final class RequestUtil
      *
      * @throws Exception
      */
-    static function doPost($config, $authToken, $host, $path, $params = null)
+    static function doPost($clientIdentifier, $accessToken, $userLocale, $host, $path, $params = null)
     {
-        Config::checkArg("config", $config);
-        Token::checkArg("authToken", $authToken);
-        Checker::argStringNonEmpty("host", $host);
-        Checker::argStringNonEmpty("path", $path);
+        Checker::argStringNonEmpty("accessToken", $accessToken);
 
         $url = self::buildUri($host, $path);
 
         if ($params === null) $params = array();
-        $params['locale'] = $config->getUserLocale();
+        $params['locale'] = $userLocale;
 
-        $curl = self::mkCurl($config, $url, $authToken);
+        $curl = self::mkCurl($clientIdentifier, $url, $accessToken);
         $curl->set(CURLOPT_POST, true);
         $curl->set(CURLOPT_POSTFIELDS, self::buildPostBody($params));
 
@@ -176,8 +151,8 @@ final class RequestUtil
     }
 
     /**
-     * @param Config $config
-     * @param Token $authToken
+     * @param string $accessToken
+     * @param string $userLocale
      * @param string $host
      * @param string $path
      * @param array|null $params
@@ -186,11 +161,13 @@ final class RequestUtil
      *
      * @throws Exception
      */
-    static function doGet($config, $authToken, $host, $path, $params = null)
+    static function doGet($clientIdentifier, $accessToken, $userLocale, $host, $path, $params = null)
     {
-        $url = self::buildUrl($config, $host, $path, $params);
+        Checker::argStringNonEmpty("accessToken", $accessToken);
 
-        $curl = self::mkCurl($config, $url, $authToken);
+        $url = self::buildUrl($userLocale, $host, $path, $params);
+
+        $curl = self::mkCurl($clientIdentifier, $url, $accessToken);
         $curl->set(CURLOPT_HTTPGET, true);
         $curl->set(CURLOPT_RETURNTRANSFER, true);
 
@@ -213,20 +190,20 @@ final class RequestUtil
 
     static function unexpectedStatus($httpResponse)
     {
-        $message = "HTTP status ".$httpResponse->statusCode;
+        $sc = $httpResponse->statusCode;
+
+        $message = "HTTP status $sc";
         if (is_string($httpResponse->body)) {
             // TODO: Maybe only include the first ~200 chars of the body?
-            $message = "\n".$httpResponse->body;
+            $message .= "\n".$httpResponse->body;
         }
-
-        $sc = $httpResponse->statusCode;
 
         if ($sc === 400) return new Exception_BadRequest($message);
         if ($sc === 401) return new Exception_InvalidAccessToken($message);
         if ($sc === 500 || $sc === 502) return new Exception_ServerError($message);
         if ($sc === 503) return new Exception_RetryLater($message);
 
-        return new Exception_BadResponse("unexpected HTTP status code: $sc: $message");
+        return new Exception_BadResponse("Unexpected $message");
     }
 
     /**
@@ -272,15 +249,4 @@ final class RequestUtil
         throw new \RuntimeException("unreachable");
     }
 
-    static function secureStringEquals($a, $b)
-    {
-        Checker::argString("a", $a);
-        Checker::argString("b", $b);
-        if (strlen($a) !== strlen($b)) return false;
-        $result = 0;
-        for ($i = 0; $i < strlen($a); $i++) {
-            $result |= ord($a[$i]) ^ ord($b[$i]);
-        }
-        return $result === 0;
-    }
 }

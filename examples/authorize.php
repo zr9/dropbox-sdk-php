@@ -24,30 +24,32 @@ try {
     list($appInfoJson, $appInfo) = dbx\AppInfo::loadFromJsonFileWithRaw($argAppInfoFile);
 }
 catch (dbx\AppInfoLoadException $ex) {
-    fwrite(STDERR, "Error loading <app-json>: ".$ex->getMessage()."\n");
+    fwrite(STDERR, "Error loading <app-info-file>: ".$ex->getMessage()."\n");
     die;
 }
-$dbxConfig = new dbx\Config($appInfo, "examples-authorize");
-$webAuth = new dbx\WebAuth($dbxConfig);
 
-list($requestToken, $authorizeUrl) = $webAuth->start(null);
+// This is a command-line tool (as opposed to a web app), so we can't supply a redirect URI.
+$webAuth = new dbx\WebAuthNoRedirect($appInfo, "examples-authorize", "en");
+$authorizeUrl = $webAuth->start();
 
 echo "1. Go to: $authorizeUrl\n";
 echo "2. Click \"Allow\" (you might have to log in first).\n";
-echo "3. Hit ENTER to continue.\n";
-fgets(STDIN);
+echo "3. Copy the authorization code.\n";
+$authCode = \trim(\readline("Enter the authorization code here: "));
 
-list($accessToken, $dropboxUserId) = $webAuth->finish($requestToken);
-$serializedAccessToken = $accessToken->serialize();
+list($accessToken, $userId) = $webAuth->finish($authCode);
 
 echo "Authorization complete.\n";
-echo "- User ID: $dropboxUserId\n";
-echo "- Serialized Access Token: $serializedAccessToken\n";
+echo "- User ID: $userId\n";
+echo "- Access Token: $accessToken\n";
 
 $authArr = array(
-    "app" => $appInfoJson,
-    "access_token" => $serializedAccessToken,
+    "access_token" => $accessToken,
 );
+
+if (array_key_exists('host', $appInfoJson)) {
+    $authArr['host'] = $appInfoJson['host'];
+}
 
 $json_options = 0;
 if (defined('JSON_PRETTY_PRINT')) {
@@ -75,7 +77,6 @@ function echoHelp($command) {
     echo "  {\n";
     echo "    \"key\": \"Your Dropbox API app key\",\n";
     echo "    \"secret\": \"Your Dropbox API app secret\",\n";
-    echo "    \"access_type\": \"FullDropbox\" or \"AppFolder\"\n";
     echo "  }\n";
     echo "\n";
     echo "  Get an API app key by registering with Dropbox:\n";

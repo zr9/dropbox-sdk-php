@@ -37,6 +37,11 @@ class Checker
         if (!is_bool($argValue)) self::throwError($argName, $argValue, "boolean");
     }
 
+    static function argArray($argName, $argValue)
+    {
+        if (!is_array($argValue)) self::throwError($argName, $argValue, "array");
+    }
+
     static function argString($argName, $argValue)
     {
         if (!is_string($argValue)) self::throwError($argName, $argValue, "string");

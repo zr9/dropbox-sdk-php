@@ -12,11 +12,11 @@ session_start();
 
 $req = $_SERVER['SCRIPT_NAME'];
 
-if ($req == "/") {
+if ($req === "/") {
     $dbxClient = getClient();
 
     if ($dbxClient === false) {
-        header("Location: /oauth-start");
+        header("Location: /auth-start");
         exit;
     }
 
@@ -37,45 +37,55 @@ if ($req == "/") {
         }
     }
 }
-else if ($req == "/oauth-start") {
-    $dbxConfig = getAppConfig();
-
-    $webAuth = new dbx\WebAuth($dbxConfig);
-    $callbackUrl = getBaseUrl()."/oauth_callback";
-    list($requestToken, $authorizeUrl) = $webAuth->start($callbackUrl);
-
-    $_SESSION['requestToken'] = $requestToken->serialize();
-
+else if ($req === "/auth-start") {
+    $authorizeUrl = getWebAuth()->start();
     header("Location: $authorizeUrl");
-    exit;
 }
-else if ($req == "/oauth_callback") {
-    $dbxConfig = getAppConfig();
-    $webAuth = new dbx\WebAuth($dbxConfig);
-
-    if (isset($_GET['not_approved']) && $_GET['not_approved'] == 'true') {
-        echo renderHtmlPage("Not Authorized", "This app was not given access to this folder");
+else if ($req === "/auth-finish") {
+    try {
+        list($accessToken, $userId, $urlState) = getWebAuth()->finish($_GET);
+        assert($urlState === null);
+        unset($_SESSION['dropbox-auth-csrf-token']);
+    }
+    catch (dbx\WebAuthBadRequestException $ex) {
+        error_log("/auth-finish: bad request: " . $ex->getMessage());
+        // Respond with an HTTP 400 and display error page...
+        exit;
+    }
+    catch (dbx\WebAuthBadStateException $ex) {
+        // Auth session expired.  Restart the auth process.
+        header('Location: /auth-start');
+        exit;
+    }
+    catch (dbx\WebAuthCsrfException $ex) {
+        error_log("/auth-finish: CSRF mismatch: " . $ex->getMessage());
+        // Respond with HTTP 403 and display error page...
+        exit;
+    }
+    catch (dbx\WebAuthNotApprovedException $ex) {
+        echo renderHtmlPage("Not Authorized?", "Why not, bro?");
+        exit;
+    }
+    catch (dbx\WebAuthProviderException $ex) {
+        error_log("/auth-finish: unknown error: " . $ex->getMessage());
+        exit;
+    }
+    catch (dbx\Exception $ex) {
+        error_log("/auth-finish: error communicating with Dropbox API: " . $ex->getMessage());
         exit;
     }
 
-    if (!isset($_GET['oauth_token'])) {
-        echo renderHtmlPage("Error", "Dropbox didn't give us an 'oauth_token' parameter.");
-        exit;
-    }
-    $requestToken = dbx\RequestToken::deserialize($_SESSION['requestToken']);
-    if (!$requestToken->matchesKey($_GET['oauth_token'])) {
-        echo renderHtmlPage("Error", "Request token mismatch.");
-        exit;
-    }
-
-    list($accessToken, $dropboxUserId) = $webAuth->finish($requestToken);
-
-    $_SESSION['accessToken'] = $accessToken->serialize();
+    // NOTE: A real web app would store the access token in a database.
+    $_SESSION['access-token'] = $accessToken;
 
     echo renderHtmlPage("Authorized!", "Auth complete, <a href='/'>click here</a> to browse");
-    exit;
 }
-else if ($req == "/upload") {
+else if ($req === "/unlink") {
+    // "Forget" the access token.
+    unset($_SESSION['access-token']);
+    header("Location: /");
+}
+else if ($req === "/upload") {
     if (empty($_FILES['file']['name'])) {
         echo renderHtmlPage("Error", "Please choose a file to upload");
         exit;
@@ -138,23 +148,23 @@ function getAppConfig()
         die;
     }
 
+    $clientIdentifier = "examples-web-file-browser";
     $userLocale = null;
-    $dbxConfig = new dbx\Config($appInfo, "examples-web-file-browser", $userLocale);
 
-    return $dbxConfig;
+    return array($appInfo, $clientIdentifier, $userLocale);
 }
 
 function getClient()
 {
-    if(!isset($_SESSION['accessToken'])) {
+    if(!isset($_SESSION['access-token'])) {
         return false;
     }
 
-    $dbxConfig = getAppConfig();
+    list($appInfo, $clientIdentifier, $userLocale) = getAppConfig();
 
     try {
-        $accessToken = dbx\AccessToken::deserialize($_SESSION['accessToken']);
-        $dbxClient = new dbx\Client($dbxConfig, $accessToken);
+        $accessToken = $_SESSION['access-token'];
+        $dbxClient = new dbx\Client($accessToken, $clientIdentifier, $userLocale, $appInfo->getHost());
     }
     catch (Exception $e) {
         error_log("Error in getClient: ".$e->getMessage());
@@ -162,6 +172,14 @@ function getClient()
     }
 
     return $dbxClient;
+}
+
+function getWebAuth()
+{
+    list($appInfo, $clientIdentifier, $userLocale) = getAppConfig();
+    $redirectUri = getBaseUrl()."/auth-finish";
+    $csrfTokenStore = new dbx\ArrayEntryStore($_SESSION, 'dropbox-auth-csrf-token');
+    return new dbx\WebAuth($appInfo, $clientIdentifier, $redirectUri, $csrfTokenStore, $userLocale);
 }
 
 function renderFile($entry)
@@ -173,7 +191,7 @@ function renderFile($entry)
         <a href="/?path=$path&dl=true">Download this file</a>
 HTML;
 
-    return renderHtmlPage( "File: $entry[path]", $body );
+    return renderHtmlPage("File: ".$entry['path'], $body);
 }
 
 function passFileToBrowser(dbx\Client $dbxClient, $path)

@@ -50,6 +50,8 @@ final class Path
      */
     static function findError($path)
     {
+        Checker::argString("path", $path);
+
         $matchResult = preg_match('%^(?:
                   [\x09\x0A\x0D\x20-\x7E]            # ASCII
                 | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
@@ -109,11 +111,18 @@ final class Path
      */
     static function getName($path)
     {
-        $lastSlash = strrpos($path, "/");
-        // If the slash is the last character, give up.
-        if ($lastSlash === strlen($path) - 1) {
-            return null;
+        Checker::argString("path", $path);
+
+        if (\substr_compare($path, "/", 0, 1) !== 0) {
+            throw new \InvalidArgumentException("'path' must start with \"/\"");
         }
+        $l = strlen($path);
+        if ($l === 1) return null;
+        if ($path[$l-1] === "/") {
+            throw new \InvalidArgumentException("'path' must not end with \"/\"");
+        }
+
+        $lastSlash = strrpos($path, "/");
         return substr($path, $lastSlash+1);
     }
 

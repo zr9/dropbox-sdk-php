@@ -2,171 +2,275 @@
 namespace Dropbox;
 
 /**
- * Use {@link WebAuth::start()} and {@link WebAuth::finish()} to guide your
+ * OAuth 2 code-based authorization.
+ *
+ * Use {@link WebAuth::start()} and {@link WebAuth::getToken()} to guide your
  * user through the process of giving your app access to their Dropbox account.  At the end, you
- * will have a {@link AccessToken}, which you can pass to {@link Client} and start making
+ * will have an {@link AccessToken}, which you can pass to {@link Client} and start making
  * API calls.
  *
- * This class is stateless so it can be shared/reused.
+ * Example:
+ *
+ * <code>
+ * use \Dropbox as dbx;
+ *
+ * function getWebAuth()
+ * {
+ *    $appInfo = dbx\AppInfo::loadFromJsonFile(...);
+ *    $clientIdentifier = "my-app/1.0";
+ *    $redirectUri = "https://example.org/dropbox-auth-finish";
+ *    $csrfTokenStore = new dbx\ArrayElementStore($_SESSION, 'dropbox-auth-csrf-token');
+ *    return new dbx\WebAuth($appInfo, $clientIdentifier, $redirectUri, $csrfTokenStore, ...);
+ * }
+ *
+ * // ----------------------------------------------------------
+ * // In the URL handler for "/dropbox-auth-start"
+ *
+ * $authorizeUrl = getWebAuth()->start();
+ * header("Location: $authorizeUrl");
+ *
+ * // ----------------------------------------------------------
+ * // In the URL handler for "/dropbox-auth-finish"
+ *
+ * try {
+ *    list($accessToken, $userId, $urlState) = getWebAuth()->finish($_GET);
+ *    assert($urlState === null);  // Since we didn't pass anything in start()
+ * }
+ * catch (dbx\WebAuthBadRequestException $ex) {
+ *    error_log("/dropbox-auth-finish: bad request: " . $ex->getMessage());
+ *    // Respond with an HTTP 400 and display error page...
+ * }
+ * catch (dbx\WebAuthBadStateException $ex) {
+ *    // Auth session expired.  Restart the auth process.
+ *    header('Location: /dropbox-auth-start');
+ * }
+ * catch (dbx\WebAuthCsrfException $ex) {
+ *    error_log("/dropbox-auth-finish: CSRF mismatch: " . $ex->getMessage());
+ *    // Respond with HTTP 403 and display error page...
+ * }
+ * catch (dbx\WebAuthNotApprovedException $ex) {
+ *    error_log("/dropbox-auth-finish: not approved: " . $ex->getMessage());
+ * }
+ * catch (dbx\WebAuthProviderException $ex) {
+ *    error_log("/dropbox-auth-finish: error redirect from Dropbox: " . $ex->getMessage());
+ * }
+ * catch (dbx\Exception $ex) {
+ *    error_log("/dropbox-auth-finish: error communicating with Dropbox API: " . $ex->getMessage());
+ * }
+ *
+ * // We can now use $accessToken to make API requests.
+ * $client = dbx\Client($accessToken, ...);
+ * </code>
+ *
  */
-final class WebAuth
+final class WebAuth extends WebAuthBase
 {
     /**
-     * The config used when making requests to the Dropbox server.
+     * The URI that the Dropbox server will redirect the user to after the user finishes
+     * authorizing your app.  This URI must be HTTPS-based and
+     * <a href="https://www.dropbox.com/developers/apps">pre-registered with Dropbox</a>,
+     * though "localhost"-based and "127.0.0.1"-based URIs are allowed without pre-registration
+     * and can be either HTTP or HTTPS.
      *
-     * @return Config
+     * @return string
      */
-    function getConfig() { return $this->config; }
+    function getRedirectUri() { return $this->redirectUri; }
 
-    /** @var Config */
-    private $config;
+    /** @var string */
+    private $redirectUri;
+
+    /**
+     * A object that lets us save the CSRF token to the user's session.  If you're using the
+     * standard PHP <code>$_SESSION</code>, you can pass in something like
+     * <code>new ArrayEntryStore($_SESSION, 'dropbox-auth-csrf-token')</code>.
+     *
+     * If you're not using $_SESSION, you might have to create your own class that provides
+     * the same <code>get()</code>/<code>set()</code>/<code>clear()</code> methods as
+     * {@link ArrayEntryStore}.
+     *
+     * @return object
+     */
+    function getCsrfTokenStore() { return $this->csrfTokenStore; }
+
+    /** @var object */
+    private $csrfTokenStore;
 
     /**
      * Constructor.
      *
-     * @param Config $config
-     *     See {@link getConfig()}
+     * @param AppInfo $appInfo
+     *     See {@link getAppInfo()}
+     * @param string $clientIdentifier
+     *     See {@link getClientIdentifier()}
+     * @param null|string $redirectUri
+     *     See {@link getRedirectUri()}
+     * @param null|string $csrfTokenStore
+     *     See {@link getCsrfTokenStore()}
+     * @param null|string $userLocale
+     *     See {@link getUserLocale()}
      */
-    function __construct($config)
+    function __construct($appInfo, $clientIdentifier, $redirectUri, $csrfTokenStore, $userLocale = null)
     {
-        Config::checkArg("config", $config);
-        $this->config = $config;
+        parent::__construct($appInfo, $clientIdentifier, $userLocale);
+
+        Checker::argStringNonEmpty("redirectUri", $redirectUri);
+
+        $this->csrfTokenStore = $csrfTokenStore;
+        $this->redirectUri = $redirectUri;
     }
 
     /**
-     * Tells Dropbox that you want to start authorization and returns the information necessary
-     * to continue authorization.  This corresponds to step 1 of the three-step OAuth web flow.
+     * Starts the OAuth 2 authorization process, which involves redirecting the user to the
+     * returned authorization URL (a URL on the Dropbox website).  When the user then
+     * either approves or denies your app access, Dropbox will redirect them to the
+     * <code>$redirectUri</code> given to constructor, at which point you should
+     * call {@link finish()} to complete the authorization process.
      *
-     * After this function returns, direct your user to the returned <code>$authorizeUrl</code>,
-     * which gives them a chance to grant your application access to their Dropbox account.  This
-     * corresponds to step 2 of the three-step OAuth web flow.
+     * This function will also save a CSRF token using the <code>$csrfTokenStore</code> given to
+     * the constructor.  This CSRF token will be checked on {@link finish()} to prevent
+     * request forgery.
      *
-     * If they choose to grant access, they will be redirected to the URL you provide for
-     * <code>$callbackUrl</code>, after which you should call {@link finish()} to get an
-     * access token.
-     *
-     * <code>
-     * use \Dropbox as dbx;
-     * $config = new dbx\Config(...);
-     * $webAuth = new dbx\WebAuth($config);
-     * $callbackUrl = "https://example.org/dropbox-auth-finish";
-     * list($requestToken, $authorizeUrl) = $webAuth->start($callbackUrl);
-     * $_SESSION['dropbox-request-token'] = $requestToken->serialize();
-     * header("Location: $authorizeUrl");
-     * </code>
-     *
-     * @param string $callbackUrl
-     *    The URL that the Dropbox servers will redirect the user to after the user finishes
-     *    authorizing your app.  If this is <code>null</code>, the user will not be redirected.
+     * @param string|null $urlState
+     *    Any data you would like to keep in the URL through the authorization process.
+     *    This exact state will be returned to you by {@link finish()}.
      *
      * @return array
-     *    A <code>list(RequestToken $requestToken, string $authorizeUrl)</code>.  Redirect the
-     *    user's browser to <code>$authorizeUrl</code>.  When they're done authorizing, call
-     *    {@link finish()} with <code>$requestToken</code>.
+     *    The URL to redirect the user to.
      *
      * @throws Exception
      */
-    function start($callbackUrl)
+    function start($urlState = null)
     {
-        Checker::argStringOrNull("callbackUrl", $callbackUrl);
+        Checker::argStringOrNull("urlState", $urlState);
 
-        $url = RequestUtil::buildUri(
-            $this->config->getAppInfo()->getHost()->getApi(),
-            "1/oauth/request_token");
-
-        $params = array(
-            "oauth_signature_method" => "PLAINTEXT",
-            "oauth_consumer_key" => $this->config->getAppInfo()->getKey(),
-            "oauth_signature" => rawurlencode($this->config->getAppInfo()->getSecret()) . "&",
-            "locale" => $this->config->getUserLocale(),
-        );
-
-        $curl = RequestUtil::mkCurlWithoutAuth($this->config, $url);
-        $curl->set(CURLOPT_POST, true);
-        $curl->set(CURLOPT_POSTFIELDS, RequestUtil::buildPostBody($params));
-
-        $curl->set(CURLOPT_RETURNTRANSFER, true);
-        $response = $curl->exec();
-
-        if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
-
-        $parts = array();
-        parse_str($response->body, $parts);
-        if (!array_key_exists('oauth_token', $parts)) {
-            throw new Exception_BadResponse("Missing \"oauth_token\" parameter.");
+        $csrfToken = self::encodeCsrfToken(Security::getRandomBytes(16));
+        $state = $csrfToken;
+        if ($urlState !== null) {
+            $state .= "|";
+            $state .= $urlState;
         }
-        if (!array_key_exists('oauth_token_secret', $parts)) {
-            throw new Exception_BadResponse("Missing \"oauth_token_secret\" parameter.");
-        }
-        $requestToken = new RequestToken($parts['oauth_token'], $parts['oauth_token_secret']);
+        $this->csrfTokenStore->set($csrfToken);
 
-        $authorizeUrl = RequestUtil::buildUrl(
-            $this->config,
-            $this->config->getAppInfo()->getHost()->getWeb(),
-            "1/oauth/authorize",
-            array(
-                "oauth_token" => $requestToken->getKey(),
-                "oauth_callback" => $callbackUrl,
-            ));
+        return $this->_getAuthorizeUrl($this->redirectUri, $state);
+    }
 
-        return array($requestToken, $authorizeUrl);
+    private static function encodeCsrfToken($string)
+    {
+        return strtr(base64_encode($string), '+/', '-_');
+    }
+
+    private static function decodeCsrfToken($string)
+    {
+        return base64_decode(strtr($string, '-_', '+/'));
     }
 
     /**
-     * Call this after the user has visited the authorize URL
-     * (returned by {@link start()}) and approved your app.  This corresponds to
-     * step 3 of the three-step OAuth web flow.
+     * Call this after the user has visited the authorize URL ({@link start()}), approved your app,
+     * and was redirected to your redirect URI.
      *
-     * Example (see {@link start() for first part):
-     * <code>
-     * // In the request handler for "/dropbox-auth-finish"
-     * $givenKey = $_GET['oauth_token'];
-     * $requestToken = RequestToken::deserialize($_SESSION['dropbox-request-token'])
-     * if (!$requestToken->matchesKey($givenKey)) {
-     *     // Do not continue.  You could show an error or redirect back to
-     *     // the beginning of the authorization process.
-     * }
-     * $webAuth = new dbx\WebAuth($config);
-     * list($accessToken, $dropboxUserId) = $webAuth->finish($requestToken);
-     * saveDropboxAccessTokenInYourDatabase($accessToken->serialize());
-     * </code>
-     *
-     * @param RequestToken $requestToken
-     *    The <code>RequestToken</code> returned by {@link start()}.
+     * @param array $queryParams
+     *    The query parameters on the GET request to your redirect URI.
      *
      * @return array
-     *    A <code>list(RequestToken $requestToken, string $dropboxUserId)</code>.  Use
-     *    <code>$requestToken</code> to construct a {@link Client} object and start making
-     *    API calls.  <code>$dropboxUserId</code> is the user ID of the user's Dropbox
-     *    account and is for your own reference.
+     *    A <code>list(string $accessToken, string $userId, string $urlState)</code>, where
+     *    <code>$accessToken</code> can be used to construct a {@link Client}, <code>$userId</code>
+     *    is the user ID of the user's Dropbox account, and <code>$urlState</code> is the
+     *    value you originally passed in to {@link start()}.
      *
      * @throws Exception
+     *    Thrown if there's an error getting the access token from Dropbox.
+     * @throws WebAuthBadRequestException
+     * @throws WebAuthBadStateException
+     * @throws WebAuthCsrfException
+     * @throws WebAuthNotApprovedException
+     * @throws WebAuthProviderException
      */
-    function finish($requestToken)
+    function finish($queryParams)
     {
-        RequestToken::checkArg("requestToken", $requestToken);
+        Checker::argArray("queryParams", $queryParams);
 
-        $response = RequestUtil::doPost(
-            $this->config,
-            $requestToken,
-            $this->config->getAppInfo()->getHost()->getApi(),
-            "1/oauth/access_token");
+        $csrfTokenFromSession = $this->csrfTokenStore->get();
+        Checker::argStringOrNull("this->csrfTokenStore->get()", $csrfTokenFromSession);
 
-        if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
+        // Check well-formedness of request.
 
-        $parts = array();
-        parse_str($response->body, $parts);
-        if (!array_key_exists('oauth_token', $parts)) {
-            throw new Exception_BadResponse("Missing \"oauth_token\" parameter.");
+        if (!isset($queryParams['state'])) {
+            throw new WebAuthBadRequestException("Missing query parameter 'state'.");
         }
-        if (!array_key_exists('oauth_token_secret', $parts)) {
-            throw new Exception_BadResponse("Missing \"oauth_token_secret\" parameter.");
-        }
-        if (!array_key_exists('uid', $parts)) {
-            throw new Exception_BadResponse("Missing \"uid\" parameter.");
+        $state = $queryParams['state'];
+        Checker::argString("queryParams['state']", $state);
+
+        $error = null;
+        if (isset($queryParams['error'])) {
+            $error = $queryParams['error'];
+            Checker::argString("queryParams['error']", $error);
+            $errorDescription = null;
+            if (isset($queryParams['error_description'])) {
+                $errorDescription = $queryParams['error_description'];
+                Checker::argString("queryParams['error_description']", $errorDescription);
+            }
         }
 
-        $accessToken = new AccessToken($parts['oauth_token'], $parts['oauth_token_secret']);
-        return array($accessToken, $parts['uid']);
+        $code = null;
+        if (isset($queryParams['code'])) {
+            $code = $queryParams['code'];
+            Checker::argString("queryParams['code']", $code);
+        }
+
+        if ($code !== null && $error !== null) {
+            throw new WebAuthBadRequestException("Query parameters 'code' and 'error' are both set;".
+                                                 " only one must be set.");
+        }
+        if ($code === null && $error === null) {
+            throw new WebAuthBadRequestException("Neither query parameter 'code' or 'error' is set.");
+        }
+
+        // Check CSRF token
+
+        if ($csrfTokenFromSession === null) {
+            throw new WebAuthBadStateException();
+        }
+        // Sanity check to make sure something hasn't gone terribly wrong.
+        assert(strlen($csrfTokenFromSession) > 20);
+
+        $splitPos = strpos($state, "|");
+        if ($splitPos === false) {
+            $givenCsrfToken = $state;
+            $urlState = null;
+        } else {
+            $givenCsrfToken = substr($state, 0, $splitPos);
+            $urlState = substr($state, $splitPos + 1);
+        }
+        if (!Security::stringEquals($csrfTokenFromSession, $givenCsrfToken)) {
+            throw new WebAuthCsrfException("Expected ".Client::q($csrfTokenFromSession).
+                                           ", got ".Client::q($givenCsrfToken).".");
+        }
+        $this->csrfTokenStore->clear();
+
+        // Check for error identifier
+
+        if ($error !== null) {
+            if ($error === 'access_denied') {
+                // When the user clicks "Deny".
+                if ($errorDescription === null) {
+                    throw new WebAuthNotApprovedException("No additional description from Dropbox.");
+                } else {
+                    throw new WebAuthNotApprovedException("Additional description from Dropbox: $errorDescription");
+                }
+            } else {
+                // All other errors.
+                $fullMessage = $error;
+                if ($errorDescription !== null) {
+                    $fullMessage .= ": ";
+                    $fullMessage .= $errorDescription;
+                }
+                throw new WebAuthProviderException($fullMessage);
+            }
+        }
+
+        // If everything went ok, make the network call to get an access token.
+
+        list($accessToken, $userId) = $this->_finish($code, $this->redirectUri);
+        return array($accessToken, $userId, $urlState);
     }
 }

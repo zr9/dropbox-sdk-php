@@ -40,7 +40,6 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
         $correct = array(
             "key" => "an_app_key",
             "secret" => "an_app_secret",
-            "access_type" => "AppFolder"
         );
 
         // check that we detect every missing field
@@ -113,18 +112,13 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
 
     function testBadAuthJsonFields()
     {
-        $correct = array(
-            "app" => array(
-                "key" => "an_app_key",
-                "secret" => "an_app_secret",
-                "access_type" => "AppFolder"
-            ),
-            "access_token" => "an_access_token"
+        $minimal = array(
+            "access_token" => "an_access_token",
         );
 
         // check that we detect every missing field
-        foreach ($correct as $key => $value) {
-            $tmp = $correct;
+        foreach ($minimal as $key => $value) {
+            $tmp = $minimal;
             unset($tmp[$key]);
 
             file_put_contents("test.json", json_encode($tmp, TRUE));
@@ -137,6 +131,11 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
                 // Expecting this exception.
             }
         }
+
+        $correct = array(
+            "access_token" => "an_access_token",
+            "host" => "test-server.com",
+        );
 
         // check that we detect non-string fields
         foreach ($correct as $key => $value) {

@@ -2,7 +2,7 @@
 namespace Dropbox;
 
 /**
- * Information about how you've registered your application with the Dropbox API.
+ * Your app's API key and secret.
  */
 final class AppInfo
 {
@@ -33,17 +33,6 @@ final class AppInfo
     private $secret;
 
     /**
-     * The type of access your app is registered for.  You can see how your apps areregistered
-     * on the <a href="http://dropbox.com/developers/apps">Dropbox developer website</a>.
-     *
-     * @return AccessType
-     */
-    function getAccessType() { return $this->accessType; }
-
-    /** @var string */
-    private $accessType;
-
-    /**
      * The set of servers your app will use.  This defaults to the standard Dropbox servers
      * {@link Host::getDefault}.
      *
@@ -63,25 +52,21 @@ final class AppInfo
      *    See {@link getKey()}
      * @param string $secret
      *    See {@link getSecret()}
-     * @param string $accessType
-     *    See {@link getAccessType()}
      */
-    function __construct($key, $secret, $accessType)
+    function __construct($key, $secret)
     {
-        Token::checkKeyArg($key);
-        Token::checkSecretArg($secret);
-        AccessType::checkArg("accessType", $accessType);
+        self::checkKeyArg($key);
+        self::checkSecretArg($secret);
 
         $this->key = $key;
         $this->secret = $secret;
-        $this->accessType = $accessType;
 
         // The $host parameter is sort of internal.  We don't include it in the param list because
         // we don't want it to be included in the documentation.  Use PHP arg list hacks to get at
         // it.
         $host = null;
-        if (\func_num_args() == 4) {
-            $host = \func_get_arg(3);
+        if (\func_num_args() == 3) {
+            $host = \func_get_arg(2);
             Host::checkArgOrNull("host", $host);
         }
         if ($host === null) {
@@ -92,11 +77,15 @@ final class AppInfo
 
     /**
      * Loads a JSON file containing information about your app. At a minimum, the file must include
-     * the key, secret, and access_type fields.  Run 'php authorize.php' in the examples directory
+     * the "key" and "secret" fields.  Run 'php authorize.php' in the examples directory
      * for details about what this file should look like.
      *
-     * @param string $path Path to a JSON file
+     * @param string $path
+     *    Path to a JSON file
+     *
      * @return AppInfo
+     *
+     * @throws AppInfoLoadException
      */
     static function loadFromJsonFile($path)
     {
@@ -106,14 +95,17 @@ final class AppInfo
 
     /**
      * Loads a JSON file containing information about your app. At a minimum, the file must include
-     * the key, secret, and access_type fields.  Run 'php authorize.php' in the examples directory
+     * the "key" and "secret" fields.  Run 'php authorize.php' in the examples directory
      * for details about what this file should look like.
      *
-     * @param string $path Path to a JSON file
+     * @param string $path
+     *    Path to a JSON file
      *
      * @return array
      *    A list of two items.  The first is a PHP array representation of the raw JSON, the second
      *    is an AppInfo object that is the parsed version of the JSON.
+     *
+     * @throws AppInfoLoadException
      *
      * @internal
      */
@@ -151,9 +143,9 @@ final class AppInfo
             throw new AppInfoLoadException("Expecting JSON object, got something else");
         }
 
-        $requiredKeys = array("key", "secret", "access_type");
+        $requiredKeys = array("key", "secret");
         foreach ($requiredKeys as $key) {
-            if (!isset($jsonArr[$key])) {
+            if (!array_key_exists($key, $jsonArr)) {
                 throw new AppInfoLoadException("Missing field \"$key\"");
             }
 
@@ -166,31 +158,19 @@ final class AppInfo
         $appKey = $jsonArr["key"];
         $appSecret = $jsonArr["secret"];
 
-        $tokenErr = Token::getTokenPartError($appKey);
+        $tokenErr = self::getTokenPartError($appKey);
         if (!is_null($tokenErr)) {
             throw new AppInfoLoadException("Field \"key\" doesn't look like a valid app key: $tokenErr");
         }
 
-        $tokenErr = Token::getTokenPartError($appSecret);
+        $tokenErr = self::getTokenPartError($appSecret);
         if (!is_null($tokenErr)) {
             throw new AppInfoLoadException("Field \"secret\" doesn't look like a valid app secret: $tokenErr");
         }
 
-        // Check the access type
-        $accessTypeStr = $jsonArr["access_type"];
-        if ($accessTypeStr === "FullDropbox") {
-            $accessType = AccessType::FullDropbox();
-        }
-        else if ($accessTypeStr === "AppFolder") {
-            $accessType = AccessType::AppFolder();
-        }
-        else {
-            throw new AppInfoLoadException("Field \"access_type\" must be either \"FullDropbox\" or \"AppFolder\"");
-        }
-
         // Check for the optional 'host' field
-        if (!isset($jsonArr["host"])) {
-            $host = Host::getDefault();
+        if (!array_key_exists('host', $jsonArr)) {
+            $host = null;
         }
         else {
             $baseHost = $jsonArr["host"];
@@ -205,7 +185,7 @@ final class AppInfo
             $host = new Host($api, $content, $web);
         }
 
-        return new AppInfo($appKey, $appSecret, $accessType, $host);
+        return new AppInfo($appKey, $appSecret, $host);
     }
 
     /**
@@ -229,4 +209,30 @@ final class AppInfo
         if ($argValue === null) return;
         if (!($argValue instanceof self)) Checker::throwError($argName, $argValue, __CLASS__);
     }
+
+    /** @internal */
+    static function getTokenPartError($s)
+    {
+        if ($s === null) return "can't be null";
+        if (strlen($s) === 0) return "can't be empty";
+        if (strstr($s, ' ')) return "can't contain a space";
+        return null;  // 'null' means "no error"
+    }
+
+    /** @internal */
+    static function checkKeyArg($key)
+    {
+        $error = self::getTokenPartError($key);
+        if ($error === null) return;
+        throw new \InvalidArgumentException("Bad 'key': \"$key\": $error.");
+    }
+
+    /** @internal */
+    static function checkSecretArg($secret)
+    {
+        $error = self::getTokenPartError($secret);
+        if ($error === null) return;
+        throw new \InvalidArgumentException("Bad 'secret': \"$secret\": $error.");
+    }
+
 }

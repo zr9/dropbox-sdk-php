@@ -14,7 +14,7 @@ If you're using [Composer](http://getcomposer.org/) for your project's dependenc
 
 ```
 "require": {
-  "dropbox/dropbox-sdk": "1.0.*",
+  "dropbox/dropbox-sdk": "1.1.*",
 }
 ```
 
@@ -40,15 +40,14 @@ Save the API key to a JSON file called, say, "test.app":
 {
   "key": "Your Dropbox API app key",
   "secret": "Your Dropbox API app secret",
-  "access_type": "FullDropbox" or "AppFolder"
 }
 ```
 
 ## Using the Dropbox API
 
-Before your app can access a Dropbox user's files, the user must authorize your application.  Dropbox uses the web-based "3-legged" OAuth flow for app authorization.  Successfully completing this flow gives you an _access token_ for the user's Dropbox account, which grants you the ability to make Dropbox API calls to access their files.
+Before your app can access a Dropbox user's files, the user must authorize your application using OAuth 2.  Successfully completing this authorization flow gives you an _access token_ for the user's Dropbox account, which grants you the ability to make Dropbox API calls to access their files.
 
-You only need to perform the authorization process once per user.  Once you have an access token for a user, save it somewhere persistent, like in a database.  The next time that user visits your app's website, you can skip the authorization process and go straight to making regular API calls.  See: [API documentation](http://dropbox.github.io/dropbox-sdk-php/api-docs/v1.0.x/).
+You only need to perform the authorization process once per user.  Once you have an access token for a user, save it somewhere persistent, like in a database.  The next time that user visits your app's website, you can skip the authorization process and go straight to making regular API calls.  See: [API documentation](http://dropbox.github.io/dropbox-sdk-php/api-docs/v1.1.x/).
 
 ### Command-Line Example
 
@@ -61,32 +60,29 @@ use \Dropbox as dbx;
 $appInfo = dbx\AppInfo::loadFromJsonFile("test.app");
 
 $clientIdentifier = "auth-example";  // For the HTTP User-Agent header.
-$config = new dbx\Config($appInfo, $clientIdentifier);
+$webAuth = new dbx\WebAuth($appInfo, $clientIdentifier);
 
-$webAuth = new dbx\WebAuth($config);
-
-// OAuth, part 1: Get a request token.
-$callbackUrl = null;  // NOTE: A real web app would have a callback URL.
-list($requestToken, $authorizeUrl) = $webAuth->start($callbackUrl);
-
-// OAuth, part 2: Send the user to the Dropbox app authorization page.
+// Send the user to the Dropbox app authorization page.
+// NOTE: A web app would pass in a redirect URL.
+$authorizeUrl = $webAuth->getAuthorizeUrlNoRedirect();
 // NOTE: A real web app would redirect the user's browser.
-// the URL.
 echo "1. Go to $authorizeUrl\n";
 echo "2. Click \"Allow\" (you might have to log in first).\n";
-echo "3. Press ENTER to continue.\n";
-fgets(STDIN);
-    // NOTE: A real web app would get notified via its callback URL.
-    // We just tell the user to press ENTER so we know when to continue.
 
-// OAuth, part 3: Get an access token.
-list($accessToken, $dropboxUserId) = $webAuth->finish($requestToken);
-echo "Access Token (serialized): ".$accessToken->serialize();
-    // NOTE: A real web app would save the access token in a database.
+// NOTE: A real web app would have the authorization code delivered to
+// its redirect URL.  But since we're a command-line program, just ask
+// the user to copy/paste it.
+echo "3. Copy the authorization code.\n";
+$authCode = trim(readline("Enter the authorization code here: "));
+
+// Get an access token from Dropbox.
+// NOTE: A real web app would save the access token in a database.
+list($accessToken, $dropboxUserId) = $webAuth->finish($authCode);
+echo "Access Token: $accessToken\n";
 
 // We can now access the user's Dropbox account.  Let's get the user's
 // Dropbox account information using the getAccountInfo() method.
-$client = new dbx\Client($config, $accessToken);
+$client = new dbx\Client($accessToken, $clientIdentifier);
 $accountInfo = $client->getAccountInfo();
 print_r($accountInfo);
 ```

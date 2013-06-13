@@ -19,15 +19,14 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $authFile = __DIR__."/test.auth";
 
         try {
-            list($appInfo, $accessToken) = dbx\AuthInfo::loadFromJsonFile($authFile);
+            list($accessToken, $host) = dbx\AuthInfo::loadFromJsonFile($authFile);
         } catch (dbx\AuthInfoLoadException $ex) {
             echo "Error loading auth-info: ".$ex->getMessage()."\n";
             die;
         }
 
         $userLocale = "en";
-        $dbxConfig = new dbx\Config($appInfo, "examples-account-info", $userLocale);
-        $this->client = new dbx\Client($dbxConfig, $accessToken);
+        $this->client = new dbx\Client($accessToken, "sdk-tests", $userLocale, $host);
     }
 
     private $testFolder;

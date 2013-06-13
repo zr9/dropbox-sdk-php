@@ -16,7 +16,7 @@ final class AuthInfo
      * @param string $path
      *    Path to a JSON file
      * @return array
-     *    A pair of (AppInfo $appInfo, AccessToken $accessToken).
+     *    A <code>list(string $accessToken, Host $host)</code>.
      *
      * @throws AuthInfoLoadException
      */
@@ -43,7 +43,7 @@ final class AuthInfo
      * @param array $jsonArr
      *    A parsed JSON object, typcally the result of json_decode(..., TRUE).
      * @return array
-     *    A list(AppInfo $appInfo, AccessToken $accessToken).
+     *    A <code>list(string $accessToken, Host $host)</code>.
      *
      * @throws AuthInfoLoadException
      */
@@ -53,32 +53,33 @@ final class AuthInfo
             throw new AuthInfoLoadException("Expecting JSON object, found something else");
         }
 
-        if (!isset($jsonArr['app'])) {
-            throw new AuthInfoLoadException("Missing field \"app\"");
-        }
-
-        // Extract app info
-        $appJson = $jsonArr['app'];
-
-        try {
-            $appInfo = AppInfo::loadFromJson($appJson);
-        }
-        catch (AppInfoLoadException $e) {
-            throw new AuthInfoLoadException("Bad \"app\" field: ".$e->getMessage());
-        }
-
-        // Extract access token
-        if (!isset($jsonArr['access_token'])) {
+        // Check access_token
+        if (!array_key_exists('access_token', $jsonArr)) {
             throw new AuthInfoLoadException("Missing field \"access_token\"");
         }
 
-        $accessTokenString = $jsonArr['access_token'];
-        if (!is_string($accessTokenString)) {
+        $accessToken = $jsonArr['access_token'];
+        if (!is_string($accessToken)) {
             throw new AuthInfoLoadException("Expecting field \"access_token\" to be a string");
         }
 
-        $accessToken = AccessToken::deserialize($accessTokenString);
+        // Check for the optional 'host' field
+        if (!array_key_exists('host', $jsonArr)) {
+            $host = null;
+        }
+        else {
+            $baseHost = $jsonArr["host"];
+            if (!is_string($baseHost)) {
+                throw new AuthInfoLoadException("Optional field \"host\" must be a string");
+            }
 
-        return array($appInfo, $accessToken);
+            $api = "api-$baseHost";
+            $content = "api-content-$baseHost";
+            $web = "meta-$baseHost";
+
+            $host = new Host($api, $content, $web);
+        }
+
+        return array($accessToken, $host);
     }
 }

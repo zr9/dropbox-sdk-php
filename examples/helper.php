@@ -138,15 +138,14 @@ function parseArgs($exampleName, $argv, $requiredParams = null, $optionalParams 
     }
 
     try {
-        list($appInfo, $accessToken) = dbx\AuthInfo::loadFromJsonFile($nonOptionArgs[0]);
+        list($accessToken, $host) = dbx\AuthInfo::loadFromJsonFile($nonOptionArgs[0]);
     }
     catch (dbx\AuthInfoLoadException $ex) {
         fwrite(STDERR, "Error loading <auth-file>: ".$ex->getMessage()."\n");
         die;
     }
 
-    $config = new dbx\Config($appInfo, "examples-$exampleName", $locale);
-    $client = new dbx\Client($config, $accessToken);
+    $client = new dbx\Client($accessToken, "examples-$exampleName", $locale, $host);
 
     // Fill in the extra/optional arg slots with nulls.
     $ret = array_slice($nonOptionArgs, 1);
