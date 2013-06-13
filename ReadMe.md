@@ -5,7 +5,7 @@ A PHP library to access [Dropbox's HTTP-based API](http://dropbox.com/developers
 License: [MIT](License.txt)
 
 Requirements:
-  * PHP 5.3+
+  * PHP 5.3+, [with 64-bit integers](http://stackoverflow.com/questions/864058/how-to-have-64-bit-integer-on-php).
   * PHP [cURL extension](http://php.net/manual/en/curl.installation.php) with SSL enabled (it's usually built-in).
 
 ## Setup
