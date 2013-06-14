@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Dropbox\WebAuth | Dropbox SDK for PHP</title>
+
+	<script type="text/javascript" src="resources/combined.js?152231664"></script>
+	<script type="text/javascript" src="elementlist.js?2975086069"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
+				<li><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></li>
+				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
+				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
+				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
+				<li class="active"><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
+				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
+				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
+				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-Dropbox.AppInfoLoadException.html">Dropbox\AppInfoLoadException</a></li>
+				<li><a href="class-Dropbox.AuthInfoLoadException.html">Dropbox\AuthInfoLoadException</a></li>
+				<li><a href="class-Dropbox.DeserializeException.html">Dropbox\DeserializeException</a></li>
+				<li><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></li>
+				<li><a href="class-Dropbox.Exception_BadRequest.html">Dropbox\Exception_BadRequest</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponse.html">Dropbox\Exception_BadResponse</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponseCode.html">Dropbox\Exception_BadResponseCode</a></li>
+				<li><a href="class-Dropbox.Exception_InvalidAccessToken.html">Dropbox\Exception_InvalidAccessToken</a></li>
+				<li><a href="class-Dropbox.Exception_NetworkIO.html">Dropbox\Exception_NetworkIO</a></li>
+				<li><a href="class-Dropbox.Exception_ProtocolError.html">Dropbox\Exception_ProtocolError</a></li>
+				<li><a href="class-Dropbox.Exception_RetryLater.html">Dropbox\Exception_RetryLater</a></li>
+				<li><a href="class-Dropbox.Exception_ServerError.html">Dropbox\Exception_ServerError</a></li>
+				<li><a href="class-Dropbox.StreamReadException.html">Dropbox\StreamReadException</a></li>
+				<li><a href="class-Dropbox.WebAuthException_BadRequest.html">Dropbox\WebAuthException_BadRequest</a></li>
+				<li><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></li>
+				<li><a href="class-Dropbox.WebAuthException_Csrf.html">Dropbox\WebAuthException_Csrf</a></li>
+				<li><a href="class-Dropbox.WebAuthException_NotApproved.html">Dropbox\WebAuthException_NotApproved</a></li>
+				<li><a href="class-Dropbox.WebAuthException_Provider.html">Dropbox\WebAuthException_Provider</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class WebAuth</h1>
+
+
+	<div class="description">
+	
+<p>OAuth 2 "authorization code" flow. (This SDK does not support the "token"
+flow.)</p>
+
+<p>Use <code><a href="class-Dropbox.WebAuth.html#_start">Dropbox\WebAuth::start()</a></code> and WebAuth::getToken() to guide your
+user through the process of giving your app access to their Dropbox account. At
+the end, you will have an AccessToken, which you can pass to <code><a href="class-Dropbox.Client.html">Dropbox\Client</a></code> and start making API calls.</p>
+
+<p>Example:</p>
+
+<pre>
+<span class="php-keyword1">use</span> \Dropbox <span
+class="php-keyword1">as</span> dbx;
+
+<span
+class="php-keyword1">function</span> getWebAuth()
+{
+   <span
+class="php-var">$appInfo</span> = dbx\AppInfo::loadFromJsonFile(...);
+   <span
+class="php-var">$clientIdentifier</span> = <span
+class="php-quote">&quot;my-app/1.0&quot;</span>;
+   <span
+class="php-var">$redirectUri</span> = <span
+class="php-quote">&quot;https://example.org/dropbox-auth-finish&quot;</span>;
+   <span
+class="php-var">$csrfTokenStore</span> = <span
+class="php-keyword1">new</span> dbx\ArrayElementStore(<span
+class="php-var">$_SESSION</span>, <span
+class="php-quote">'dropbox-auth-csrf-token'</span>);
+   <span
+class="php-keyword1">return</span> <span
+class="php-keyword1">new</span> dbx\WebAuth(<span
+class="php-var">$appInfo</span>, <span
+class="php-var">$clientIdentifier</span>, <span
+class="php-var">$redirectUri</span>, <span
+class="php-var">$csrfTokenStore</span>, ...);
+}
+
+<span
+class="php-comment">// ----------------------------------------------------------</span>
+<span
+class="php-comment">// In the URL handler for &quot;/dropbox-auth-start&quot;</span>
+
+<span
+class="php-var">$authorizeUrl</span> = getWebAuth()-&gt;start();
+<span
+class="php-keyword2">header</span>(<span
+class="php-quote">&quot;Location: </span><span
+class="php-var">$authorizeUrl</span><span
+class="php-quote">&quot;</span>);
+
+<span
+class="php-comment">// ----------------------------------------------------------</span>
+<span
+class="php-comment">// In the URL handler for &quot;/dropbox-auth-finish&quot;</span>
+
+<span
+class="php-keyword1">try</span> {
+   <span
+class="php-keyword1">list</span>(<span
+class="php-var">$accessToken</span>, <span class="php-var">$userId</span>, <span
+class="php-var">$urlState</span>) = getWebAuth()-&gt;finish(<span
+class="php-var">$_GET</span>);
+   <span class="php-keyword2">assert</span>(<span
+class="php-var">$urlState</span> === <span
+class="php-keyword1">null</span>);  <span
+class="php-comment">// Since we didn't pass anything in start()</span>
+}
+<span
+class="php-keyword1">catch</span> (dbx\WebAuthException_BadRequest <span
+class="php-var">$ex</span>) {
+   <span
+class="php-keyword2">error_log</span>(<span
+class="php-quote">&quot;/dropbox-auth-finish: bad request: &quot;</span> . <span
+class="php-var">$ex</span>-&gt;getMessage());
+   <span
+class="php-comment">// Respond with an HTTP 400 and display error page...</span>
+}
+<span
+class="php-keyword1">catch</span> (dbx\WebAuthException_BadState <span
+class="php-var">$ex</span>) {
+   <span
+class="php-comment">// Auth session expired.  Restart the auth process.</span>
+   <span
+class="php-keyword2">header</span>(<span
+class="php-quote">'Location: /dropbox-auth-start'</span>);
+}
+<span
+class="php-keyword1">catch</span> (dbx\WebAuthException_Csrf <span
+class="php-var">$ex</span>) {
+   <span
+class="php-keyword2">error_log</span>(<span
+class="php-quote">&quot;/dropbox-auth-finish: CSRF mismatch: &quot;</span> . <span
+class="php-var">$ex</span>-&gt;getMessage());
+   <span
+class="php-comment">// Respond with HTTP 403 and display error page...</span>
+}
+<span
+class="php-keyword1">catch</span> (dbx\WebAuthException_NotApproved <span
+class="php-var">$ex</span>) {
+   <span
+class="php-keyword2">error_log</span>(<span
+class="php-quote">&quot;/dropbox-auth-finish: not approved: &quot;</span> . <span
+class="php-var">$ex</span>-&gt;getMessage());
+}
+<span
+class="php-keyword1">catch</span> (dbx\WebAuthException_Provider <span
+class="php-var">$ex</span>) {
+   <span
+class="php-keyword2">error_log</span>(<span
+class="php-quote">&quot;/dropbox-auth-finish: error redirect from Dropbox: &quot;</span> . <span
+class="php-var">$ex</span>-&gt;getMessage());
+}
+<span
+class="php-keyword1">catch</span> (dbx\Exception <span
+class="php-var">$ex</span>) {
+   <span
+class="php-keyword2">error_log</span>(<span
+class="php-quote">&quot;/dropbox-auth-finish: error communicating with Dropbox API: &quot;</span> . <span
+class="php-var">$ex</span>-&gt;getMessage());
+}
+
+<span
+class="php-comment">// We can now use $accessToken to make API requests.</span>
+<span
+class="php-var">$client</span> = dbx\Client(<span
+class="php-var">$accessToken</span>, ...);
+</pre>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-Dropbox.WebAuthBase.html"><span>Dropbox\WebAuthBase</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>Dropbox\WebAuth</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		<b>Namespace:</b> Dropbox<br />
+		
+
+		<b>Located at</b> <a href="source-class-Dropbox.WebAuth.html#4-276" title="Go to source code">Dropbox/WebAuth.php</a><br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="getRedirectUri" id="_getRedirectUri">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getRedirectUri">#</a>
+		<code><a href="source-class-Dropbox.WebAuth.html#68-77" title="Go to source code">getRedirectUri</a>( )</code>
+
+		<div class="description short">
+			
+<p>The URI that the Dropbox server will redirect the user to after the user
+finishes authorizing your app. This URI must be HTTPS-based and <a
+href="https://www.dropbox.com/developers/apps">pre-registered with Dropbox</a>,
+though "localhost"-based and "127.0.0.1"-based URIs are allowed without
+pre-registration and can be either HTTP or HTTPS.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>The URI that the Dropbox server will redirect the user to after the user
+finishes authorizing your app. This URI must be HTTPS-based and <a
+href="https://www.dropbox.com/developers/apps">pre-registered with Dropbox</a>,
+though "localhost"-based and "127.0.0.1"-based URIs are allowed without
+pre-registration and can be either HTTP or HTTPS.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getCsrfTokenStore" id="_getCsrfTokenStore">
+
+		<td class="attributes"><code>
+			 public 
+			object
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getCsrfTokenStore">#</a>
+		<code><a href="source-class-Dropbox.WebAuth.html#82-93" title="Go to source code">getCsrfTokenStore</a>( )</code>
+
+		<div class="description short">
+			
+<p>A object that lets us save the CSRF token to the user's session. If you're
+using the standard PHP <code><span class="php-var">$_SESSION</span></code>, you
+can pass in something like <code><span class="php-keyword1">new</span>
+ArrayEntryStore(<span class="php-var">$_SESSION</span>, <span
+class="php-quote">'dropbox-auth-csrf-token'</span>)</code>.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>A object that lets us save the CSRF token to the user's session. If you're
+using the standard PHP <code><span class="php-var">$_SESSION</span></code>, you
+can pass in something like <code><span class="php-keyword1">new</span>
+ArrayEntryStore(<span class="php-var">$_SESSION</span>, <span
+class="php-quote">'dropbox-auth-csrf-token'</span>)</code>.</p>
+
+<p>If you're not using $_SESSION, you might have to create your own class that
+provides the same <code>get()</code>/<code>set()</code>/<code>clear()</code>
+methods as <code><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></code>.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>object</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Dropbox.WebAuth.html#98-120" title="Go to source code">__construct</a>( <span><code><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></code> <var>$appInfo</var></span>, <span>string <var>$clientIdentifier</var></span>, <span>null|string <var>$redirectUri</var></span>, <span>null|string <var>$csrfTokenStore</var></span>, <span>null|string <var>$userLocale</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Constructor.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Constructor.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$appInfo</var></dt>
+					<dd><code><code><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></code></code><br>$appInfo See <code><a href="class-Dropbox.WebAuthBase.html#_getAppInfo">Dropbox\WebAuthBase::getAppInfo()</a></code></dd>
+					<dt><var>$clientIdentifier</var></dt>
+					<dd><code>string</code><br>$clientIdentifier See <code><a href="class-Dropbox.WebAuthBase.html#_getClientIdentifier">Dropbox\WebAuthBase::getClientIdentifier()</a></code></dd>
+					<dt><var>$redirectUri</var></dt>
+					<dd><code>null|string</code><br>$redirectUri See <code><a href="class-Dropbox.WebAuth.html#_getRedirectUri">Dropbox\WebAuth::getRedirectUri()</a></code></dd>
+					<dt><var>$csrfTokenStore</var></dt>
+					<dd><code>null|string</code><br>$csrfTokenStore See <code><a href="class-Dropbox.WebAuth.html#_getCsrfTokenStore">Dropbox\WebAuth::getCsrfTokenStore()</a></code></dd>
+					<dt><var>$userLocale</var></dt>
+					<dd><code>null|string</code><br>$userLocale See <code><a href="class-Dropbox.WebAuthBase.html#_getUserLocale">Dropbox\WebAuthBase::getUserLocale()</a></code></dd>
+				</dl></div>
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Dropbox.WebAuthBase.html#___construct">Dropbox\WebAuthBase::__construct()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="start" id="_start">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_start">#</a>
+		<code><a href="source-class-Dropbox.WebAuth.html#122-155" title="Go to source code">start</a>( <span>string|null <var>$urlState</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Starts the OAuth 2 authorization process, which involves redirecting the user
+to the returned authorization URL (a URL on the Dropbox website). When the user
+then either approves or denies your app access, Dropbox will redirect them to
+the <code><span class="php-var">$redirectUri</span></code> given to constructor,
+at which point you should call <code><a href="class-Dropbox.WebAuth.html#_finish">Dropbox\WebAuth::finish()</a></code> to complete the authorization
+process.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Starts the OAuth 2 authorization process, which involves redirecting the user
+to the returned authorization URL (a URL on the Dropbox website). When the user
+then either approves or denies your app access, Dropbox will redirect them to
+the <code><span class="php-var">$redirectUri</span></code> given to constructor,
+at which point you should call <code><a href="class-Dropbox.WebAuth.html#_finish">Dropbox\WebAuth::finish()</a></code> to complete the authorization
+process.</p>
+
+<p>This function will also save a CSRF token using the <code><span
+class="php-var">$csrfTokenStore</span></code> given to the constructor. This
+CSRF token will be checked on <code><a href="class-Dropbox.WebAuth.html#_finish">Dropbox\WebAuth::finish()</a></code> to prevent request forgery.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$urlState</var></dt>
+					<dd><code>string|null</code><br>$urlState Any data you would like to keep in the URL through the authorization
+process. This exact state will be returned to you by <code><a href="class-Dropbox.WebAuth.html#_finish">Dropbox\WebAuth::finish()</a></code>.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>The URL to redirect the user to.<br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="finish" id="_finish">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_finish">#</a>
+		<code><a href="source-class-Dropbox.WebAuth.html#167-275" title="Go to source code">finish</a>( <span>array <var>$queryParams</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Call this after the user has visited the authorize URL (<code><a href="class-Dropbox.WebAuth.html#_start">Dropbox\WebAuth::start()</a></code>),
+approved your app, and was redirected to your redirect URI.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Call this after the user has visited the authorize URL (<code><a href="class-Dropbox.WebAuth.html#_start">Dropbox\WebAuth::start()</a></code>),
+approved your app, and was redirected to your redirect URI.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$queryParams</var></dt>
+					<dd><code>array</code><br>$queryParams The query parameters on the GET request to your redirect URI.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>A <code><span class="php-keyword1">list</span>(string <span
+class="php-var">$accessToken</span>, string <span
+class="php-var">$userId</span>, string <span
+class="php-var">$urlState</span>)</code>, where <code><span
+class="php-var">$accessToken</span></code> can be used to construct a <code><a href="class-Dropbox.Client.html">Dropbox\Client</a></code>, <code><span class="php-var">$userId</span></code> is the user ID of the
+user's Dropbox account, and <code><span class="php-var">$urlState</span></code>
+is the value you originally passed in to <code><a href="class-Dropbox.WebAuth.html#_start">Dropbox\WebAuth::start()</a></code>.<br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br>Thrown if there's an error getting the access token from Dropbox.<br />
+					<code><code><a href="class-Dropbox.WebAuthException_BadRequest.html">Dropbox\WebAuthException_BadRequest</a></code></code><br />
+					<code><code><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></code></code><br />
+					<code><code><a href="class-Dropbox.WebAuthException_Csrf.html">Dropbox\WebAuthException_Csrf</a></code></code><br />
+					<code><code><a href="class-Dropbox.WebAuthException_NotApproved.html">Dropbox\WebAuthException_NotApproved</a></code></code><br />
+					<code><code><a href="class-Dropbox.WebAuthException_Provider.html">Dropbox\WebAuthException_Provider</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Dropbox.WebAuthBase.html#methods">Dropbox\WebAuthBase</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Dropbox.WebAuthBase.html#_getAppInfo">getAppInfo()</a>, 
+			<a href="class-Dropbox.WebAuthBase.html#_getClientIdentifier">getClientIdentifier()</a>, 
+			<a href="class-Dropbox.WebAuthBase.html#_getUserLocale">getUserLocale()</a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

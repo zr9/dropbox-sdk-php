@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+	<meta name="robots" content="noindex" />
+
+	<title>File Dropbox/Exception/BadResponseCode.php | Dropbox SDK for PHP</title>
+
+	<script type="text/javascript" src="resources/combined.js?152231664"></script>
+	<script type="text/javascript" src="elementlist.js?2975086069"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
+				<li><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></li>
+				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
+				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
+				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
+				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
+				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
+				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
+				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-Dropbox.AppInfoLoadException.html">Dropbox\AppInfoLoadException</a></li>
+				<li><a href="class-Dropbox.AuthInfoLoadException.html">Dropbox\AuthInfoLoadException</a></li>
+				<li><a href="class-Dropbox.DeserializeException.html">Dropbox\DeserializeException</a></li>
+				<li><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></li>
+				<li><a href="class-Dropbox.Exception_BadRequest.html">Dropbox\Exception_BadRequest</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponse.html">Dropbox\Exception_BadResponse</a></li>
+				<li class="active"><a href="class-Dropbox.Exception_BadResponseCode.html">Dropbox\Exception_BadResponseCode</a></li>
+				<li><a href="class-Dropbox.Exception_InvalidAccessToken.html">Dropbox\Exception_InvalidAccessToken</a></li>
+				<li><a href="class-Dropbox.Exception_NetworkIO.html">Dropbox\Exception_NetworkIO</a></li>
+				<li><a href="class-Dropbox.Exception_ProtocolError.html">Dropbox\Exception_ProtocolError</a></li>
+				<li><a href="class-Dropbox.Exception_RetryLater.html">Dropbox\Exception_RetryLater</a></li>
+				<li><a href="class-Dropbox.Exception_ServerError.html">Dropbox\Exception_ServerError</a></li>
+				<li><a href="class-Dropbox.StreamReadException.html">Dropbox\StreamReadException</a></li>
+				<li><a href="class-Dropbox.WebAuthException_BadRequest.html">Dropbox\WebAuthException_BadRequest</a></li>
+				<li><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></li>
+				<li><a href="class-Dropbox.WebAuthException_Csrf.html">Dropbox\WebAuthException_Csrf</a></li>
+				<li><a href="class-Dropbox.WebAuthException_NotApproved.html">Dropbox\WebAuthException_NotApproved</a></li>
+				<li><a href="class-Dropbox.WebAuthException_Provider.html">Dropbox\WebAuthException_Provider</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="class-Dropbox.Exception_BadResponseCode.html" title="Summary of Dropbox\Exception_BadResponseCode"><span>Class</span></a>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<pre><code><span id="1" class="l"><a class="l" href="#1"> 1: </a><span class="xlang">&lt;?php</span>
+</span><span id="2" class="l"><a class="l" href="#2"> 2: </a><span class="php-keyword1">namespace</span> Dropbox;
+</span><span id="3" class="l"><a class="l" href="#3"> 3: </a>
+</span><span id="4" class="l"><a class="l" href="#4"> 4: </a><span class="php-comment">/**
+</span></span><span id="5" class="l"><a class="l" href="#5"> 5: </a><span class="php-comment"> * Thrown when the the Dropbox server responds with an HTTP status code we didn't expect.
+</span></span><span id="6" class="l"><a class="l" href="#6"> 6: </a><span class="php-comment"> */</span>
+</span><span id="7" class="l"><a class="l" href="#7"> 7: </a><span class="php-keyword1">final</span> <span class="php-keyword1">class</span> <a id="Exception_BadResponseCode" href="#Exception_BadResponseCode">Exception_BadResponseCode</a> <span class="php-keyword1">extends</span> Exception_BadResponse
+</span><span id="8" class="l"><a class="l" href="#8"> 8: </a>{
+</span><span id="9" class="l"><a class="l" href="#9"> 9: </a>    <span class="php-comment">/** @var int */</span>
+</span><span id="10" class="l"><a class="l" href="#10">10: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$statusCode" href="#$statusCode">$statusCode</a></span>;
+</span><span id="11" class="l"><a class="l" href="#11">11: </a>
+</span><span id="12" class="l"><a class="l" href="#12">12: </a>    <span class="php-comment">/**
+</span></span><span id="13" class="l"><a class="l" href="#13">13: </a><span class="php-comment">     * @param string $message
+</span></span><span id="14" class="l"><a class="l" href="#14">14: </a><span class="php-comment">     * @param int $statusCode
+</span></span><span id="15" class="l"><a class="l" href="#15">15: </a><span class="php-comment">     *
+</span></span><span id="16" class="l"><a class="l" href="#16">16: </a><span class="php-comment">     * @internal
+</span></span><span id="17" class="l"><a class="l" href="#17">17: </a><span class="php-comment">     */</span>
+</span><span id="18" class="l"><a class="l" href="#18">18: </a>    <span class="php-keyword1">function</span> <a id="___construct" href="#___construct">__construct</a>(<span class="php-var">$message</span>, <span class="php-var">$statusCode</span>)
+</span><span id="19" class="l"><a class="l" href="#19">19: </a>    {
+</span><span id="20" class="l"><a class="l" href="#20">20: </a>        parent::__construct(<span class="php-var">$message</span>);
+</span><span id="21" class="l"><a class="l" href="#21">21: </a>        <span class="php-var">$this</span>-&gt;statusCode = <span class="php-var">$statusCode</span>;
+</span><span id="22" class="l"><a class="l" href="#22">22: </a>    }
+</span><span id="23" class="l"><a class="l" href="#23">23: </a>
+</span><span id="24" class="l"><a class="l" href="#24">24: </a>    <span class="php-comment">/**
+</span></span><span id="25" class="l"><a class="l" href="#25">25: </a><span class="php-comment">     * The HTTP status code returned by the Dropbox server.
+</span></span><span id="26" class="l"><a class="l" href="#26">26: </a><span class="php-comment">     *
+</span></span><span id="27" class="l"><a class="l" href="#27">27: </a><span class="php-comment">     * @return int
+</span></span><span id="28" class="l"><a class="l" href="#28">28: </a><span class="php-comment">     */</span>
+</span><span id="29" class="l"><a class="l" href="#29">29: </a>    <span class="php-keyword1">public</span> <span class="php-keyword1">function</span> <a id="_getStatusCode" href="#_getStatusCode">getStatusCode</a>()
+</span><span id="30" class="l"><a class="l" href="#30">30: </a>    {
+</span><span id="31" class="l"><a class="l" href="#31">31: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;statusCode;
+</span><span id="32" class="l"><a class="l" href="#32">32: </a>    }
+</span><span id="33" class="l"><a class="l" href="#33">33: </a>}
+</span><span id="34" class="l"><a class="l" href="#34">34: </a></span></code></pre>
+
+	<div id="footer">
+		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

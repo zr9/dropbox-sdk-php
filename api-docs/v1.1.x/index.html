@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Dropbox SDK for PHP</title>
+
+	<script type="text/javascript" src="resources/combined.js"></script>
+	<script type="text/javascript" src="elementlist.js"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+<span>Overview</span>
+
+		<div id="groups">
+		</div>
+
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
+				<li><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></li>
+				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
+				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
+				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
+				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
+				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
+				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
+				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
+			</ul>
+
+
+
+			<h3>Exceptions</h3>
+			<ul>
+				<li><a href="class-Dropbox.AppInfoLoadException.html">Dropbox\AppInfoLoadException</a></li>
+				<li><a href="class-Dropbox.AuthInfoLoadException.html">Dropbox\AuthInfoLoadException</a></li>
+				<li><a href="class-Dropbox.DeserializeException.html">Dropbox\DeserializeException</a></li>
+				<li><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></li>
+				<li><a href="class-Dropbox.Exception_BadRequest.html">Dropbox\Exception_BadRequest</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponse.html">Dropbox\Exception_BadResponse</a></li>
+				<li><a href="class-Dropbox.Exception_BadResponseCode.html">Dropbox\Exception_BadResponseCode</a></li>
+				<li><a href="class-Dropbox.Exception_InvalidAccessToken.html">Dropbox\Exception_InvalidAccessToken</a></li>
+				<li><a href="class-Dropbox.Exception_NetworkIO.html">Dropbox\Exception_NetworkIO</a></li>
+				<li><a href="class-Dropbox.Exception_ProtocolError.html">Dropbox\Exception_ProtocolError</a></li>
+				<li><a href="class-Dropbox.Exception_RetryLater.html">Dropbox\Exception_RetryLater</a></li>
+				<li><a href="class-Dropbox.Exception_ServerError.html">Dropbox\Exception_ServerError</a></li>
+				<li><a href="class-Dropbox.StreamReadException.html">Dropbox\StreamReadException</a></li>
+				<li><a href="class-Dropbox.WebAuthException_BadRequest.html">Dropbox\WebAuthException_BadRequest</a></li>
+				<li><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></li>
+				<li><a href="class-Dropbox.WebAuthException_Csrf.html">Dropbox\WebAuthException_Csrf</a></li>
+				<li><a href="class-Dropbox.WebAuthException_NotApproved.html">Dropbox\WebAuthException_NotApproved</a></li>
+				<li><a href="class-Dropbox.WebAuthException_Provider.html">Dropbox\WebAuthException_Provider</a></li>
+			</ul>
+
+
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" autofocus />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li class="active">
+<span>Overview</span>			</li>
+			<li>
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content">
+	<h1>Dropbox SDK for PHP</h1>
+
+
+
+
+
+<table class="summary" id="classes">
+<caption>Classes summary</caption>
+<tr>
+	<td class="name"><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></td>
+	<td>Your app's API key and secret.
+<!-- by Texy2! --></td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></td>
+	<td>A class that gives get/put/clear access to a single entry in an array.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></td>
+	<td>This class contains methods to load an AppInfo and AccessToken from a JSON file.
+This can help simplify simple scripts (such as the example programs that come
+with the SDK) but is probably not useful in typical Dropbox API apps.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Client.html">Dropbox\Client</a></td>
+	<td>The class used to make most Dropbox API calls. You can use this once you've
+gotten an AccessToken via <code><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></code>.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Path.html">Dropbox\Path</a></td>
+	<td>Path validation functions.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Security.html">Dropbox\Security</a></td>
+	<td>Helper functions for security-related things.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></td>
+	<td>OAuth 2 "authorization code" flow. (This SDK does not support the "token" flow.)</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></td>
+	<td>The base class for the two auth options.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></td>
+	<td>OAuth 2 code-based authorization for apps that can't provide a redirect URI,
+typically command-line example apps.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></td>
+	<td>Describes how a file should be saved when it is written to Dropbox.</td>
+</tr>
+</table>
+
+
+
+<table class="summary" id="exceptions">
+<caption>Exceptions summary</caption>
+<tr>
+	<td class="name"><a href="class-Dropbox.AppInfoLoadException.html">Dropbox\AppInfoLoadException</a></td>
+	<td>Thrown by the <code>AppInfo::loadXXX</code> methods if something goes wrong.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.AuthInfoLoadException.html">Dropbox\AuthInfoLoadException</a></td>
+	<td>Thrown by the <code>AuthInfo::loadXXX</code> methods if something goes wrong.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.DeserializeException.html">Dropbox\DeserializeException</a></td>
+	<td>If, when loading a serialized RequestToken or AccessToken, the
+input string is malformed, this exception will be thrown.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></td>
+	<td>The base class for all API call exceptions.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception_BadRequest.html">Dropbox\Exception_BadRequest</a></td>
+	<td>Thrown when the server tells us that our request was invalid. This is typically
+due to an HTTP 400 response from the server.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception_BadResponse.html">Dropbox\Exception_BadResponse</a></td>
+	<td>When this SDK can't understand the response from the server. This could be due
+to a bug in this SDK or a buggy response from the Dropbox server.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception_BadResponseCode.html">Dropbox\Exception_BadResponseCode</a></td>
+	<td>Thrown when the the Dropbox server responds with an HTTP status code we didn't
+expect.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception_InvalidAccessToken.html">Dropbox\Exception_InvalidAccessToken</a></td>
+	<td>The Dropbox server said that the access token you used is invalid or expired.
+You should probably ask the user to go through the OAuth authorization flow
+again to get a new access token.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception_NetworkIO.html">Dropbox\Exception_NetworkIO</a></td>
+	<td>There was a network I/O error when making the request.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception_ProtocolError.html">Dropbox\Exception_ProtocolError</a></td>
+	<td>There was an protocol misunderstanding between this SDK and the server. One of
+us didn't understand what the other one was saying.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception_RetryLater.html">Dropbox\Exception_RetryLater</a></td>
+	<td>The Dropbox server said it couldn't fulfil our request right now, but that we
+should try again later.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.Exception_ServerError.html">Dropbox\Exception_ServerError</a></td>
+	<td>The Dropbox server said that there was an internal error when trying to fulfil
+our request. This usually corresponds to an HTTP 500 response.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.StreamReadException.html">Dropbox\StreamReadException</a></td>
+	<td>Thrown when there's an error reading from a stream that was passed in by the
+caller.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WebAuthException_BadRequest.html">Dropbox\WebAuthException_BadRequest</a></td>
+	<td>Thrown if the redirect URL was missing parameters or if the given parameters
+were not valid.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></td>
+	<td>Thrown if all the parameters are correct, but there's no CSRF token in the
+session. This probably means that the session expired.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WebAuthException_Csrf.html">Dropbox\WebAuthException_Csrf</a></td>
+	<td>Thrown if the given 'state' parameter doesn't contain the CSRF token from the
+user's session. This is blocked to prevent CSRF attacks.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WebAuthException_NotApproved.html">Dropbox\WebAuthException_NotApproved</a></td>
+	<td>Thrown if the user chose not to grant your app access to their Dropbox account.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.WebAuthException_Provider.html">Dropbox\WebAuthException_Provider</a></td>
+	<td>Thrown if Dropbox returns some other error about the authorization request.</td>
+</tr>
+</table>
+
+
+</div>
+
+	<div id="footer">
+		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
