@@ -1,4 +1,11 @@
 ---------------------------------------------
+1.0.2 (2013-06-17)
+
+- Fixed performance problem with file uploads when reading from from a
+  network stream.
+- Treat HTTP 502 like HTTP 500 (yields better retry behavior)
+
+---------------------------------------------
 1.0.1 (2013-05-09)
 
 - Fix Client.getMetadataWithChildrenIfChanged
