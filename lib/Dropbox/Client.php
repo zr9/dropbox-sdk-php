@@ -366,7 +366,7 @@ final class Client
 
         assert($chunkSize > 0);
 
-        $data = fread($inStream, $chunkSize);
+        $data = self::readFully($inStream, $chunkSize);
         $len = strlen($data);
 
         $client = $this;
@@ -377,8 +377,7 @@ final class Client
         $byteOffset = $len;
 
         while (!feof($inStream)) {
-            $data = fread($inStream, $chunkSize);
-            if ($data === false) throw new StreamReadException("Error reading from \$inStream.");
+            $data = self::readFully($inStream, $chunkSize);
             $len = strlen($data);
 
             while (true) {
@@ -423,6 +422,30 @@ final class Client
             });
 
         return $metadata;
+    }
+
+    /**
+     * Sometimes fread() returns less than the request number of bytes (for example, when reading
+     * from network streams).  This function repeatedly calls fread until the requested number of
+     * bytes have been read or we've reached EOF.
+     *
+     * @param resource $inStream
+     * @param int $limit
+     * @return string
+     */
+    private static function readFully($inStream, $numBytes)
+    {
+        Checker::argNat("numBytes", $numBytes);
+
+        $full = '';
+        $bytesRemaining = $numBytes;
+        while (!feof($inStream) && $bytesRemaining > 0) {
+            $part = fread($inStream, $bytesRemaining);
+            if ($part === false) throw new StreamReadException("Error reading from \$inStream.");
+            $full .= $part;
+            $bytesRemaining -= strlen($part);
+        }
+        return $full;
     }
 
     /**
