@@ -87,7 +87,10 @@ final class RequestUtil
         $curl = new Curl($url);
 
         $curl->set(CURLOPT_CONNECTTIMEOUT, 10);
-        $curl->set(CURLOPT_TIMEOUT, 60);
+
+        // If the transfer speed is below 1kB/sec for 10 sec, abort.
+        $curl->set(CURLOPT_LOW_SPEED_LIMIT, 1024);
+        $curl->set(CURLOPT_LOW_SPEED_TIME, 10);
 
         //$curl->set(CURLOPT_VERBOSE, true);  // For debugging.
         $curl->addHeader("User-Agent: ".$config->getClientIdentifier()." Dropbox-PHP-SDK");
