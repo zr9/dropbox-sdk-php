@@ -126,8 +126,8 @@ class WebAuthBase
         }
         $userId = $parts['uid'];
 
-        if ($tokenType != "bearer") {
-            throw new Exception_BadResponse("Unknown \"token_type\"; expecting \"bearer\", got  "
+        if ($tokenType !== "Bearer" && $tokenType !== "bearer") {
+            throw new Exception_BadResponse("Unknown \"token_type\"; expecting \"Bearer\", got  "
                                             .Client::q($tokenType));
         }
 
