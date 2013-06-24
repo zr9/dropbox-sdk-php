@@ -6,7 +6,7 @@ namespace Dropbox;
  *
  * The recommended action is to show an HTTP 400 error page.
  */
-class WebAuthBadRequestException extends \Exception
+class WebAuthException_BadRequest extends \Exception
 {
     /**
      * @param string $message

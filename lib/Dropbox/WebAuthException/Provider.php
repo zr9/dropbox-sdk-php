@@ -4,7 +4,7 @@ namespace Dropbox;
 /**
  * Thrown if Dropbox returns some other error about the authorization request.
  */
-class WebAuthProviderException extends \Exception
+class WebAuthException_Provider extends \Exception
 {
     /**
      * @param string $message

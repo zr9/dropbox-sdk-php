@@ -47,22 +47,22 @@ else if ($req === "/auth-finish") {
         assert($urlState === null);
         unset($_SESSION['dropbox-auth-csrf-token']);
     }
-    catch (dbx\WebAuthBadRequestException $ex) {
+    catch (dbx\WebAuthException_BadRequest $ex) {
         error_log("/auth-finish: bad request: " . $ex->getMessage());
         // Respond with an HTTP 400 and display error page...
         exit;
     }
-    catch (dbx\WebAuthBadStateException $ex) {
+    catch (dbx\WebAuthException_BadState $ex) {
         // Auth session expired.  Restart the auth process.
         header('Location: /auth-start');
         exit;
     }
-    catch (dbx\WebAuthCsrfException $ex) {
+    catch (dbx\WebAuthException_Csrf $ex) {
         error_log("/auth-finish: CSRF mismatch: " . $ex->getMessage());
         // Respond with HTTP 403 and display error page...
         exit;
     }
-    catch (dbx\WebAuthNotApprovedException $ex) {
+    catch (dbx\WebAuthException_NotApproved $ex) {
         echo renderHtmlPage("Not Authorized?", "Why not, bro?");
         exit;
     }

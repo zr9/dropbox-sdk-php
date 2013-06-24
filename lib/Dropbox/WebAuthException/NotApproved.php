@@ -4,7 +4,7 @@ namespace Dropbox;
 /**
  * Thrown if the user chose not to grant your app access to their Dropbox account.
  */
-class WebAuthNotApprovedException extends \Exception
+class WebAuthException_NotApproved extends \Exception
 {
     /**
      * @param string $message

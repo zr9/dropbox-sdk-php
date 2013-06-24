@@ -7,7 +7,7 @@ namespace Dropbox;
  *
  * The recommended action is to redirect the user's browser to try the approval process again.
  */
-class WebAuthBadStateException extends \Exception
+class WebAuthException_BadState extends \Exception
 {
     /**
      * @param string $message

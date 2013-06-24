@@ -7,7 +7,7 @@ namespace Dropbox;
  *
  * The recommended action is to respond with an HTTP 403 error page.
  */
-class WebAuthCsrfException extends \Exception
+class WebAuthException_Csrf extends \Exception
 {
     /**
      * @param string $message

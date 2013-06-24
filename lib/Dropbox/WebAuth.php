@@ -36,22 +36,22 @@ namespace Dropbox;
  *    list($accessToken, $userId, $urlState) = getWebAuth()->finish($_GET);
  *    assert($urlState === null);  // Since we didn't pass anything in start()
  * }
- * catch (dbx\WebAuthBadRequestException $ex) {
+ * catch (dbx\WebAuthException_BadRequest $ex) {
  *    error_log("/dropbox-auth-finish: bad request: " . $ex->getMessage());
  *    // Respond with an HTTP 400 and display error page...
  * }
- * catch (dbx\WebAuthBadStateException $ex) {
+ * catch (dbx\WebAuthException_BadState $ex) {
  *    // Auth session expired.  Restart the auth process.
  *    header('Location: /dropbox-auth-start');
  * }
- * catch (dbx\WebAuthCsrfException $ex) {
+ * catch (dbx\WebAuthException_Csrf $ex) {
  *    error_log("/dropbox-auth-finish: CSRF mismatch: " . $ex->getMessage());
  *    // Respond with HTTP 403 and display error page...
  * }
- * catch (dbx\WebAuthNotApprovedException $ex) {
+ * catch (dbx\WebAuthException_NotApproved $ex) {
  *    error_log("/dropbox-auth-finish: not approved: " . $ex->getMessage());
  * }
- * catch (dbx\WebAuthProviderException $ex) {
+ * catch (dbx\WebAuthException_Provider $ex) {
  *    error_log("/dropbox-auth-finish: error redirect from Dropbox: " . $ex->getMessage());
  * }
  * catch (dbx\Exception $ex) {
@@ -179,11 +179,11 @@ class WebAuth extends WebAuthBase
      *
      * @throws Exception
      *    Thrown if there's an error getting the access token from Dropbox.
-     * @throws WebAuthBadRequestException
-     * @throws WebAuthBadStateException
-     * @throws WebAuthCsrfException
-     * @throws WebAuthNotApprovedException
-     * @throws WebAuthProviderException
+     * @throws WebAuthException_BadRequest
+     * @throws WebAuthException_BadState
+     * @throws WebAuthException_Csrf
+     * @throws WebAuthException_NotApproved
+     * @throws WebAuthException_Provider
      */
     function finish($queryParams)
     {
@@ -195,7 +195,7 @@ class WebAuth extends WebAuthBase
         // Check well-formedness of request.
 
         if (!isset($queryParams['state'])) {
-            throw new WebAuthBadRequestException("Missing query parameter 'state'.");
+            throw new WebAuthException_BadRequest("Missing query parameter 'state'.");
         }
         $state = $queryParams['state'];
         Checker::argString("queryParams['state']", $state);
@@ -218,17 +218,17 @@ class WebAuth extends WebAuthBase
         }
 
         if ($code !== null && $error !== null) {
-            throw new WebAuthBadRequestException("Query parameters 'code' and 'error' are both set;".
+            throw new WebAuthException_BadRequest("Query parameters 'code' and 'error' are both set;".
                                                  " only one must be set.");
         }
         if ($code === null && $error === null) {
-            throw new WebAuthBadRequestException("Neither query parameter 'code' or 'error' is set.");
+            throw new WebAuthException_BadRequest("Neither query parameter 'code' or 'error' is set.");
         }
 
         // Check CSRF token
 
         if ($csrfTokenFromSession === null) {
-            throw new WebAuthBadStateException();
+            throw new WebAuthException_BadState();
         }
         // Sanity check to make sure something hasn't gone terribly wrong.
         assert(strlen($csrfTokenFromSession) > 20);
@@ -242,7 +242,7 @@ class WebAuth extends WebAuthBase
             $urlState = substr($state, $splitPos + 1);
         }
         if (!Security::stringEquals($csrfTokenFromSession, $givenCsrfToken)) {
-            throw new WebAuthCsrfException("Expected ".Client::q($csrfTokenFromSession).
+            throw new WebAuthException_Csrf("Expected ".Client::q($csrfTokenFromSession).
                                            ", got ".Client::q($givenCsrfToken).".");
         }
         $this->csrfTokenStore->clear();
@@ -253,9 +253,9 @@ class WebAuth extends WebAuthBase
             if ($error === 'access_denied') {
                 // When the user clicks "Deny".
                 if ($errorDescription === null) {
-                    throw new WebAuthNotApprovedException("No additional description from Dropbox.");
+                    throw new WebAuthException_NotApproved("No additional description from Dropbox.");
                 } else {
-                    throw new WebAuthNotApprovedException("Additional description from Dropbox: $errorDescription");
+                    throw new WebAuthException_NotApproved("Additional description from Dropbox: $errorDescription");
                 }
             } else {
                 // All other errors.
@@ -264,7 +264,7 @@ class WebAuth extends WebAuthBase
                     $fullMessage .= ": ";
                     $fullMessage .= $errorDescription;
                 }
-                throw new WebAuthProviderException($fullMessage);
+                throw new WebAuthException_Provider($fullMessage);
             }
         }
 
