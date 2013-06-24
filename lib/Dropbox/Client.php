@@ -7,7 +7,7 @@ namespace Dropbox;
  *
  * This class is stateless so it can be shared/reused.
  */
-final class Client
+class Client
 {
     /**
      * The access token used by this client to make authenticated API calls.  You can get an

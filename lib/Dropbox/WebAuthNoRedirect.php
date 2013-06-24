@@ -35,7 +35,7 @@ namespace Dropbox;
  * $client = dbx\Client($accessToken, $clientIdentifier, ...);
  * </code>
  */
-final class WebAuthNoRedirect extends WebAuthBase
+class WebAuthNoRedirect extends WebAuthBase
 {
     /**
      * Returns the URL of the authorization page the user must visit.  If the user approves

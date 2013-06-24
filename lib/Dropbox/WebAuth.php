@@ -63,7 +63,7 @@ namespace Dropbox;
  * </code>
  *
  */
-final class WebAuth extends WebAuthBase
+class WebAuth extends WebAuthBase
 {
     /**
      * The URI that the Dropbox server will redirect the user to after the user finishes
