@@ -1,6 +1,6 @@
 # Dropbox SDK for PHP 5.3+
 
-A PHP library to access [Dropbox's HTTP-based API](http://dropbox.com/developers/reference/api).
+A PHP library to access [Dropbox's HTTP-based API](http://dropbox.com/developers/core/docs).
 
 License: [MIT](License.txt)
 
