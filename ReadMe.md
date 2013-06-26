@@ -60,11 +60,10 @@ use \Dropbox as dbx;
 $appInfo = dbx\AppInfo::loadFromJsonFile("test.app");
 
 $clientIdentifier = "auth-example";  // For the HTTP User-Agent header.
-$webAuth = new dbx\WebAuth($appInfo, $clientIdentifier);
+$webAuth = new dbx\WebAuthNoRedirect($appInfo, $clientIdentifier);
+$authorizeUrl = $webAuth->start();
 
 // Send the user to the Dropbox app authorization page.
-// NOTE: A web app would pass in a redirect URL.
-$authorizeUrl = $webAuth->getAuthorizeUrlNoRedirect();
 // NOTE: A real web app would redirect the user's browser.
 echo "1. Go to $authorizeUrl\n";
 echo "2. Click \"Allow\" (you might have to log in first).\n";
