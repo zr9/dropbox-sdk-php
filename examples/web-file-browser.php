@@ -66,7 +66,7 @@ else if ($req === "/auth-finish") {
         echo renderHtmlPage("Not Authorized?", "Why not, bro?");
         exit;
     }
-    catch (dbx\WebAuthProviderException $ex) {
+    catch (dbx\WebAuthException_Provider $ex) {
         error_log("/auth-finish: unknown error: " . $ex->getMessage());
         exit;
     }
