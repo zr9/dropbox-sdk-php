@@ -2,7 +2,7 @@
 namespace Dropbox;
 
 /**
- * OAuth 2 code-based authorization.
+ * OAuth 2 "authorization code" flow.  (This SDK does not support the "token" flow.)
  *
  * Use {@link WebAuth::start()} and {@link WebAuth::getToken()} to guide your
  * user through the process of giving your app access to their Dropbox account.  At the end, you
