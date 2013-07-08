@@ -657,7 +657,7 @@ class Client
      *    If <code>null</code>, it means the Dropbox server wasn't aware of the
      *    <code>$uploadId</code> you gave it.
      *    Otherwise, you get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
      *    for the newly-created file.
      *
      * @throws Exception
@@ -716,7 +716,7 @@ class Client
      *
      * @return array|null
      *    If there is a file or folder at the given path, you'll get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
      *    for that file or folder.  If not, you'll get back <code>null</code>.
      *
      * @throws Exception
@@ -743,7 +743,7 @@ class Client
      *
      * @return array|null
      *    If there is a file or folder at the given path, you'll get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
      *    for that file or folder, along with all immediate children if it's a folder.  If not,
      *    you'll get back <code>null</code>.
      *
@@ -810,7 +810,7 @@ class Client
      *    A <code>list(boolean $changed, array $metadata)</code>.  If the metadata hasn't changed,
      *    you'll get <code>list(false, null)</code>.  If the metadata of the folder or any of its
      *    children has changed, you'll get <code>list(true, $newMetadata)</code>.  $metadata is a
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>.
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>.
      *
      * @throws Exception
      */
@@ -1094,7 +1094,7 @@ class Client
      * @return array|null
      *    If the file exists, you'll get <code>list(array $metadata, string $data)</code> where
      *    <code>$metadata</code> is the file's
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
      *    and $data is the raw data for the thumbnail image.  If the file doesn't exist, you'll
      *    get <code>null</code>.
      *
@@ -1209,7 +1209,7 @@ class Client
      *
      * @return array|null
      *    If successful, you'll get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
      *    for the newly-created folder.  If not successful, you'll get <code>null</code>.
      *
      * @throws Exception

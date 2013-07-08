@@ -4,10 +4,10 @@ namespace Dropbox;
 /**
  * OAuth 2 "authorization code" flow.  (This SDK does not support the "token" flow.)
  *
- * Use {@link WebAuth::start()} and {@link WebAuth::getToken()} to guide your
- * user through the process of giving your app access to their Dropbox account.  At the end, you
- * will have an {@link AccessToken}, which you can pass to {@link Client} and start making
- * API calls.
+ * Use {@link WebAuth::start()} and {@link WebAuth::finish()} to guide your
+ * user through the process of giving your app access to their Dropbox account.
+ * At the end, you will have an access token, which you can pass to {@link Client}
+ * and start making API calls.
  *
  * Example:
  *
