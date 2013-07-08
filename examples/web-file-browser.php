@@ -16,7 +16,7 @@ if ($req === "/") {
     $dbxClient = getClient();
 
     if ($dbxClient === false) {
-        header("Location: /auth-start");
+        header("Location: /dropbox-auth-start");
         exit;
     }
 
@@ -37,28 +37,28 @@ if ($req === "/") {
         }
     }
 }
-else if ($req === "/auth-start") {
+else if ($req === "/dropbox-auth-start") {
     $authorizeUrl = getWebAuth()->start();
     header("Location: $authorizeUrl");
 }
-else if ($req === "/auth-finish") {
+else if ($req === "/dropbox-auth-finish") {
     try {
         list($accessToken, $userId, $urlState) = getWebAuth()->finish($_GET);
         assert($urlState === null);
         unset($_SESSION['dropbox-auth-csrf-token']);
     }
     catch (dbx\WebAuthException_BadRequest $ex) {
-        error_log("/auth-finish: bad request: " . $ex->getMessage());
+        error_log("/dropbox-auth-finish: bad request: " . $ex->getMessage());
         // Respond with an HTTP 400 and display error page...
         exit;
     }
     catch (dbx\WebAuthException_BadState $ex) {
         // Auth session expired.  Restart the auth process.
-        header('Location: /auth-start');
+        header('Location: /dropbox-auth-start');
         exit;
     }
     catch (dbx\WebAuthException_Csrf $ex) {
-        error_log("/auth-finish: CSRF mismatch: " . $ex->getMessage());
+        error_log("/dropbox-auth-finish: CSRF mismatch: " . $ex->getMessage());
         // Respond with HTTP 403 and display error page...
         exit;
     }
@@ -67,11 +67,11 @@ else if ($req === "/auth-finish") {
         exit;
     }
     catch (dbx\WebAuthException_Provider $ex) {
-        error_log("/auth-finish: unknown error: " . $ex->getMessage());
+        error_log("/dropbox-auth-finish: unknown error: " . $ex->getMessage());
         exit;
     }
     catch (dbx\Exception $ex) {
-        error_log("/auth-finish: error communicating with Dropbox API: " . $ex->getMessage());
+        error_log("/dropbox-auth-finish: error communicating with Dropbox API: " . $ex->getMessage());
         exit;
     }
 
@@ -177,7 +177,7 @@ function getClient()
 function getWebAuth()
 {
     list($appInfo, $clientIdentifier, $userLocale) = getAppConfig();
-    $redirectUri = getBaseUrl()."/auth-finish";
+    $redirectUri = getBaseUrl()."/dropbox-auth-finish";
     $csrfTokenStore = new dbx\ArrayEntryStore($_SESSION, 'dropbox-auth-csrf-token');
     return new dbx\WebAuth($appInfo, $clientIdentifier, $redirectUri, $csrfTokenStore, $userLocale);
 }

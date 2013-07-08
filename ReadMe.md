@@ -8,6 +8,8 @@ Requirements:
   * PHP 5.3+, [with 64-bit integers](http://stackoverflow.com/questions/864058/how-to-have-64-bit-integer-on-php).
   * PHP [cURL extension](http://php.net/manual/en/curl.installation.php) with SSL enabled (it's usually built-in).
 
+[SDK API docs.](http://dropbox.github.io/dropbox-sdk-php/api-docs/v1.1.x/)
+
 ## Setup
 
 If you're using [Composer](http://getcomposer.org/) for your project's dependencies, add the following to your "composer.json":
@@ -17,8 +19,6 @@ If you're using [Composer](http://getcomposer.org/) for your project's dependenc
   "dropbox/dropbox-sdk": "1.1.*",
 }
 ```
-
-### Without Composer
 
 If you're not using Composer, download the code, copy the "lib/" folder into your project somewhere, and include the "lib/Dropbox/autoload.php" in your code.  For example, if you copied the "lib/" and named it "dropbox-sdk/", you would do:
 
@@ -81,11 +81,13 @@ A trivial example that calls the /account/info API endpoint.
 
 ### web-file-browser.php
 
-A tiny web app that runs through the OAuth 2 authorization flow and then uses Dropbox API calls to let the user browse their Dropbox files.  If you have PHP 5.4+, you can run it using PHP's built-in web server:
+A tiny web app that runs through the OAuth 2 authorization flow and then uses Dropbox API calls to let the user browse their Dropbox files.  You need PHP 5.4+ to run it.
+
+Prerequisite: In the Dropbox API [app configuration console](https://www.dropbox.com/developers/apps), you need to add "http://localhost:5000/dropbox-auth-finish" to the list of allowed redirect URIs.
 
 ```
 cp test.app examples/web-file-browser.app
-php -S localhost:8080 examples/web-file-browser.php
+php -S localhost:5000 examples/web-file-browser.php   # requires PHP 5.4+
 ```
 
 ### Running the Tests
