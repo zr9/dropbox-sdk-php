@@ -1,5 +1,5 @@
 ---------------------------------------------
-1.1.0-beta1 (2013-06-21)
+1.1.0 (2013-07-08)
 
 - Switch to OAuth 2.  This is a backwards incompatible change to the auth API,
   but all regular API calls remain unchanged.
