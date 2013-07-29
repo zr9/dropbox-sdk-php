@@ -32,9 +32,9 @@ final class Curl
         $this->set(CURLOPT_SSLVERSION, 3);  // Force SSL v3.
         $this->set(CURLOPT_CAINFO, __DIR__."/trusted-certs.crt");
 
-        // Limit vulnerability surface area.
-        $this->set(CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
-        $this->set(CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTPS);
+        // Limit vulnerability surface area.  Supported in cURL 7.19.4+
+        if (defined('CURLOPT_PROTOCOLS')) $this->set(CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
+        if (defined('CURLOPT_REDIR_PROTOCOLS')) $this->set(CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTPS);
     }
 
     /**
