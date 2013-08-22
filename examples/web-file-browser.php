@@ -103,7 +103,9 @@ else if ($req === "/upload") {
 
     $remotePath = rtrim($remoteDir, "/")."/".$_FILES['file']['name'];
 
-    $result = $dbxClient->uploadFile($remotePath, dbx\WriteMode::add(), fopen($_FILES['file']['tmp_name'], "rb"));
+    $fp = fopen($_FILES['file']['tmp_name'], "rb");
+    $result = $dbxClient->uploadFile($remotePath, dbx\WriteMode::add(), $fp);
+    fclose($fp);
     $str = print_r($result, TRUE);
     echo renderHtmlPage("Uploading File", "Result: <pre>$str</pre>");
 }

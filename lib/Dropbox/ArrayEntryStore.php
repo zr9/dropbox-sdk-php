@@ -4,7 +4,7 @@ namespace Dropbox;
 /**
  * A class that gives get/put/clear access to a single entry in an array.
  */
-class ArrayEntryStore
+class ArrayEntryStore implements ValueStore
 {
     private $array;
     private $key;

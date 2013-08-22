@@ -85,6 +85,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
         $fd = $this->writeTempFile($size);
         $result = $this->client->uploadFile($path, $writeMode, $fd, $size);
+        fclose($fd);
         $this->assertEquals($size, $result['bytes']);
 
         return $result;
@@ -121,7 +122,9 @@ class ClientTest extends PHPUnit_Framework_TestCase
 
         $remotePath = $this->p("test-fil".self::E_ACCENT.".txt");
 
-        $up = $this->client->uploadFile($remotePath, dbx\WriteMode::add(), fopen($localPathSource, "rb"));
+        $fp = fopen($localPathSource, "rb");
+        $up = $this->client->uploadFile($remotePath, dbx\WriteMode::add(), $fp);
+        fclose($fp);
         $this->assertEquals($up["path"], $remotePath);
 
         $fd = fopen($localPathDest, "wb");
@@ -270,7 +273,9 @@ class ClientTest extends PHPUnit_Framework_TestCase
     {
         $remotePath = $this->p("image.jpg");
         $localPath = __DIR__."/upload.jpg";
-        $this->client->uploadFile($remotePath, dbx\WriteMode::add(), fopen($localPath, "rb"));
+        $fp = fopen($localPath, "rb");
+        $this->client->uploadFile($remotePath, dbx\WriteMode::add(), $fp);
+        fclose($fp);
 
         list($md1, $data1) = $this->client->getThumbnail($remotePath, "jpeg", "xs");
         $this->assertTrue(self::isJpeg($data1));

@@ -20,6 +20,8 @@ if (\stream_is_local($sourcePath)) {
     $size = \filesize($sourcePath);
 }
 
-$metadata = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), fopen($sourcePath, "rb"), $size);
+$fp = fopen($sourcePath, "rb");
+$metadata = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), $fp, $size);
+fclose($fp)
 
 print_r($metadata);

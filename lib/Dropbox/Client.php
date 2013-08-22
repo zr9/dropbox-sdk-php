@@ -204,17 +204,19 @@ class Client
      * <code>
      * use \Dropbox as dbx;
      * $client = ...;
+     * $fd = fopen("./frog.jpeg", "rb");
      * $md1 = $client->uploadFile("/Photos/Frog.jpeg",
-     *                            dbx\WriteMode::add(),
-     *                            fopen("./frog.jpeg", "rb"));
+     *                            dbx\WriteMode::add(), $fd);
+     * fclose($fd);
      * print_r($md1);
      * $rev = $md1["rev"];
      *
      * // Re-upload with WriteMode::update(...), which will overwrite the
      * // file if it hasn't been modified from our original upload.
+     * $fd = fopen("./frog-new.jpeg", "rb");
      * $md2 = $client->uploadFile("/Photos/Frog.jpeg",
-     *                            dbx\WriteMode::update($rev),
-     *                            fopen("./frog-new.jpeg", "rb"));
+     *                            dbx\WriteMode::update($rev), $fd);
+     * fclose($fd);
      * print_r($md2);
      * </code>
      *
@@ -225,8 +227,7 @@ class Client
      *    What to do if there's already a file at the given path.
      *
      * @param resource $inStream
-     *    The data to use for the file contents.  This stream will be closed with
-     *    <code>fclose</code>, whether the upload succeeds or not.
+     *    The data to use for the file contents.
      *
      * @param int|null $numBytes
      *    You can pass in <code>null</code> if you don't know.  If you do provide the size, we can
@@ -241,32 +242,25 @@ class Client
      */
     function uploadFile($path, $writeMode, $inStream, $numBytes = null)
     {
-        try {
-            Path::checkArgNonRoot("path", $path);
-            WriteMode::checkArg("writeMode", $writeMode);
-            Checker::argResource("inStream", $inStream);
-            Checker::argNatOrNull("numBytes", $numBytes);
+        Path::checkArgNonRoot("path", $path);
+        WriteMode::checkArg("writeMode", $writeMode);
+        Checker::argResource("inStream", $inStream);
+        Checker::argNatOrNull("numBytes", $numBytes);
 
-            // If we don't know how many bytes are coming, we have to use chunked upload.
-            // If $numBytes is large, we elect to use chunked upload.
-            // In all other cases, use regular upload.
-            if ($numBytes === null || $numBytes > self::$AUTO_CHUNKED_UPLOAD_THRESHOLD) {
-                $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes,
-                                                      self::$DEFAULT_CHUNK_SIZE);
-            } else {
-                $metadata = $this->_uploadFile($path, $writeMode,
-                    function(Curl $curl) use ($inStream, $numBytes) {
-                        $curl->set(CURLOPT_PUT, true);
-                        $curl->set(CURLOPT_INFILE, $inStream);
-                        $curl->set(CURLOPT_INFILESIZE, $numBytes);
-                    });
-            }
+        // If we don't know how many bytes are coming, we have to use chunked upload.
+        // If $numBytes is large, we elect to use chunked upload.
+        // In all other cases, use regular upload.
+        if ($numBytes === null || $numBytes > self::$AUTO_CHUNKED_UPLOAD_THRESHOLD) {
+            $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes,
+                                                  self::$DEFAULT_CHUNK_SIZE);
+        } else {
+            $metadata = $this->_uploadFile($path, $writeMode,
+                function(Curl $curl) use ($inStream, $numBytes) {
+                    $curl->set(CURLOPT_PUT, true);
+                    $curl->set(CURLOPT_INFILE, $inStream);
+                    $curl->set(CURLOPT_INFILESIZE, $numBytes);
+                });
         }
-        catch (\Exception $ex) {
-            fclose($inStream);
-            throw $ex;
-        }
-        fclose($inStream);
 
         return $metadata;
     }
@@ -277,9 +271,9 @@ class Client
      * <code>
      * use \Dropbox as dbx;
      * $client = ...;
-     * $md = $client->uploadFile("/Grocery List.txt",
-     *                           dbx\WriteMode::add(),
-     *                           "1. Coke\n2. Popcorn\n3. Toothpaste\n");
+     * $md = $client->uploadFileFromString("/Grocery List.txt",
+     *                                     dbx\WriteMode::add(),
+     *                                     "1. Coke\n2. Popcorn\n3. Toothpaste\n");
      * print_r($md);
      * </code>
      *
@@ -325,8 +319,7 @@ class Client
      *    What to do if there's already a file at the given path.
      *
      * @param resource $inStream
-     *    The data to use for the file contents.  This stream will be closed with
-     *    <code>fclose</code>, whether the upload succeeds or not.
+     *    The data to use for the file contents.
      *
      * @param int|null $numBytes
      *    The number of bytes available from $inStream.
@@ -344,27 +337,17 @@ class Client
      */
     function uploadFileChunked($path, $writeMode, $inStream, $numBytes = null, $chunkSize = null)
     {
-        try {
-            if ($chunkSize === null) {
-                $chunkSize = self::$DEFAULT_CHUNK_SIZE;
-            }
-
-            Path::checkArgNonRoot("path", $path);
-            WriteMode::checkArg("writeMode", $writeMode);
-            Checker::argResource("inStream", $inStream);
-            Checker::argNatOrNull("numBytes", $numBytes);
-            Checker::argIntPositive("chunkSize", $chunkSize);
-
-            $metadata = $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes,
-                                                  $chunkSize);
+        if ($chunkSize === null) {
+            $chunkSize = self::$DEFAULT_CHUNK_SIZE;
         }
-        catch (\Exception $ex) {
-            fclose($inStream);
-            throw $ex;
-        }
-        fclose($inStream);
 
-        return $metadata;
+        Path::checkArgNonRoot("path", $path);
+        WriteMode::checkArg("writeMode", $writeMode);
+        Checker::argResource("inStream", $inStream);
+        Checker::argNatOrNull("numBytes", $numBytes);
+        Checker::argIntPositive("chunkSize", $chunkSize);
+
+        return $this->_uploadFileChunked($path, $writeMode, $inStream, $numBytes, $chunkSize);
     }
 
     /**
@@ -374,7 +357,7 @@ class Client
      *    What to do if there's already a file at the given path (UTF-8).
      *
      * @param resource $inStream
-     *    The source of data to upload.  The stream will NOT be automatically closed.
+     *    The source of data to upload.
      *
      * @param int|null $numBytes
      *    You can pass in <code>null</code>.  But if you know how many bytes you expect, pass in
