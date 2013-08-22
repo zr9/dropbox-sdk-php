@@ -19,7 +19,7 @@ namespace Dropbox;
  *    $appInfo = dbx\AppInfo::loadFromJsonFile(...);
  *    $clientIdentifier = "my-app/1.0";
  *    $redirectUri = "https://example.org/dropbox-auth-finish";
- *    $csrfTokenStore = new dbx\ArrayElementStore($_SESSION, 'dropbox-auth-csrf-token');
+ *    $csrfTokenStore = new dbx\ArrayEntryStore($_SESSION, 'dropbox-auth-csrf-token');
  *    return new dbx\WebAuth($appInfo, $clientIdentifier, $redirectUri, $csrfTokenStore, ...);
  * }
  *
@@ -80,7 +80,7 @@ class WebAuth extends WebAuthBase
     private $redirectUri;
 
     /**
-     * A object that lets us save the CSRF token to the user's session.  If you're using the
+     * A object that lets us save CSRF token string to the user's session.  If you're using the
      * standard PHP <code>$_SESSION</code>, you can pass in something like
      * <code>new ArrayEntryStore($_SESSION, 'dropbox-auth-csrf-token')</code>.
      *
@@ -88,7 +88,7 @@ class WebAuth extends WebAuthBase
      * the same <code>get()</code>/<code>set()</code>/<code>clear()</code> methods as
      * {@link ArrayEntryStore}.
      *
-     * @return object
+     * @return ValueStore
      */
     function getCsrfTokenStore() { return $this->csrfTokenStore; }
 
@@ -104,7 +104,7 @@ class WebAuth extends WebAuthBase
      *     See {@link getClientIdentifier()}
      * @param null|string $redirectUri
      *     See {@link getRedirectUri()}
-     * @param null|string $csrfTokenStore
+     * @param null|ValueStore $csrfTokenStore
      *     See {@link getCsrfTokenStore()}
      * @param null|string $userLocale
      *     See {@link getUserLocale()}
