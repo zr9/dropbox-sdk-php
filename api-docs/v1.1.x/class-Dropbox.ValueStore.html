@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class Dropbox\Security | Dropbox SDK for PHP</title>
+	<title>Interface Dropbox\ValueStore | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
 	<script type="text/javascript" src="elementlist.js?2222935599"></script>
@@ -31,7 +31,7 @@
 				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
 				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
-				<li class="active"><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
+				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -40,7 +40,7 @@
 
 			<h3>Interfaces</h3>
 			<ul>
-				<li><a href="class-Dropbox.ValueStore.html">Dropbox\ValueStore</a></li>
+				<li class="active"><a href="class-Dropbox.ValueStore.html">Dropbox\ValueStore</a></li>
 			</ul>
 
 
@@ -100,12 +100,76 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class Security</h1>
+	<h1>Interface ValueStore</h1>
 
 
 	<div class="description">
 	
-<p>Helper functions for security-related things.</p>
+<p>A contract for a class which provides simple get/set/clear access to a single
+string value. <code><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></code> provides an implementation of this for
+storing a value in a single array element.</p>
+
+<p>Example implementation for a Memcache-based backing store:</p>
+
+<pre>
+<span class="php-keyword1">class</span> MemcacheValueStore <span
+class="php-keyword1">implements</span> ValueStore
+{
+    <span
+class="php-keyword1">private</span> <span class="php-var">$key</span>;
+    <span
+class="php-keyword1">private</span> <span
+class="php-var">$memcache</span>;
+
+    <span
+class="php-keyword1">function</span> __construct(<span
+class="php-var">$memcache</span>, <span
+class="php-var">$key</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;memcache = <span
+class="php-var">$memcache</span>;
+        <span
+class="php-var">$this</span>-&gt;<span class="php-keyword2">key</span> = <span
+class="php-var">$key</span>;
+    }
+
+    <span
+class="php-keyword1">function</span> get()
+    {
+        <span
+class="php-var">$value</span> = <span
+class="php-var">$this</span>-&gt;memcache-&gt;get(<span
+class="php-var">$this</span>-&gt;getKey());
+        <span
+class="php-keyword1">return</span> <span class="php-var">$value</span> === <span
+class="php-keyword1">false</span> ? <span
+class="php-keyword1">null</span> : <span
+class="php-keyword2">base64_decode</span>(<span
+class="php-var">$value</span>);
+    }
+
+    <span
+class="php-keyword1">function</span> set(<span
+class="php-var">$value</span>)
+    {
+        <span
+class="php-var">$this</span>-&gt;memcache-&gt;set(<span
+class="php-var">$this</span>-&gt;<span class="php-keyword2">key</span>, <span
+class="php-keyword2">base64_encode</span>(<span
+class="php-var">$value</span>));
+    }
+
+    <span
+class="php-keyword1">function</span> clear()
+    {
+        <span
+class="php-var">$this</span>-&gt;memcache-&gt;<span
+class="php-keyword2">delete</span>(<span class="php-var">$this</span>-&gt;<span
+class="php-keyword2">key</span>);
+    }
+}
+</pre>
 
 	</div>
 
@@ -113,6 +177,10 @@
 
 
 
+	<div>
+		<h4>Direct known implementers</h4>
+			<a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a>
+	</div>
 
 
 
@@ -123,61 +191,44 @@
 		<b>Namespace:</b> Dropbox<br />
 		
 
-		<b>Located at</b> <a href="source-class-Dropbox.Security.html#4-65" title="Go to source code">Dropbox/Security.php</a><br />
+		<b>Located at</b> <a href="source-class-Dropbox.ValueStore.html#4-61" title="Go to source code">Dropbox/ValueStore.php</a><br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="stringEquals" id="_stringEquals">
+	<tr data-order="get" id="_get">
 
 		<td class="attributes"><code>
-			 public static
-			boolean
+			 public 
+			string
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_stringEquals">#</a>
-		<code><a href="source-class-Dropbox.Security.html#9-36" title="Go to source code">stringEquals</a>( <span>string <var>$a</var></span>, <span>string <var>$b</var></span> )</code>
+		<a class="anchor" href="#_get">#</a>
+		<code><a href="source-class-Dropbox.ValueStore.html#43-48" title="Go to source code">get</a>( )</code>
 
 		<div class="description short">
 			
-<p>A string equality function that compares strings in a way that isn't
-suceptible to timing attacks. An attacker can figure out the length of the
-string, but not the string's value.</p>
+<p>Returns the entry's current value or <code><span
+class="php-keyword1">null</span></code> if nothing is set.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>A string equality function that compares strings in a way that isn't
-suceptible to timing attacks. An attacker can figure out the length of the
-string, but not the string's value.</p>
-
-<p>Use this when comparing two strings where:</p>
-
-<ul>
-	<li>one string could be influenced by an attacker</li>
-
-	<li>the other string contains data an attacker shouldn't know</li>
-</ul>
+<p>Returns the entry's current value or <code><span
+class="php-keyword1">null</span></code> if nothing is set.</p>
 
 
 
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$a</var></dt>
-					<dd><code>string</code><br>$a</dd>
-					<dt><var>$b</var></dt>
-					<dd><code>string</code><br>$b</dd>
-				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>boolean</code><br />
+					<code>string</code><br />
 				</div>
 
 
@@ -186,41 +237,70 @@ string, but not the string's value.</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getRandomBytes" id="_getRandomBytes">
+	<tr data-order="set" id="_set">
 
 		<td class="attributes"><code>
-			 public static
-			string
+			 public 
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_getRandomBytes">#</a>
-		<code><a href="source-class-Dropbox.Security.html#38-64" title="Go to source code">getRandomBytes</a>( <span>integer <var>$numBytes</var></span> )</code>
+		<a class="anchor" href="#_set">#</a>
+		<code><a href="source-class-Dropbox.ValueStore.html#50-55" title="Go to source code">set</a>( <span>string <var>$value</var></span> )</code>
 
 		<div class="description short">
 			
-<p>Returns cryptographically strong secure random bytes (as a PHP string).</p>
+<p>Set the entry to the given value.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Returns cryptographically strong secure random bytes (as a PHP string).</p>
+<p>Set the entry to the given value.</p>
 
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$numBytes</var></dt>
-					<dd><code>integer</code><br>$numBytes The number of bytes of random data to return.</dd>
+					<dt><var>$value</var></dt>
+					<dd><code>string</code><br>$value</dd>
 				</dl></div>
 
-				<h4>Returns</h4>
-				<div class="list">
-					<code>string</code><br />
-				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="clear" id="_clear">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_clear">#</a>
+		<code><a href="source-class-Dropbox.ValueStore.html#57-60" title="Go to source code">clear</a>( )</code>
+
+		<div class="description short">
+			
+<p>Remove the value.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Remove the value.</p>
+
+
+
+
 
 
 

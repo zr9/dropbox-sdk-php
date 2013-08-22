@@ -8,7 +8,7 @@
 	<title>File Dropbox/WebAuth.php | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2975086069"></script>
+	<script type="text/javascript" src="elementlist.js?2222935599"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -39,6 +39,10 @@
 				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
 			</ul>
 
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-Dropbox.ValueStore.html">Dropbox\ValueStore</a></li>
+			</ul>
 
 
 			<h3>Exceptions</h3>
@@ -103,10 +107,10 @@
 </span><span id="4" class="l"><a class="l" href="#4">  4: </a><span class="php-comment">/**
 </span></span><span id="5" class="l"><a class="l" href="#5">  5: </a><span class="php-comment"> * OAuth 2 &quot;authorization code&quot; flow.  (This SDK does not support the &quot;token&quot; flow.)
 </span></span><span id="6" class="l"><a class="l" href="#6">  6: </a><span class="php-comment"> *
-</span></span><span id="7" class="l"><a class="l" href="#7">  7: </a><span class="php-comment"> * Use {@link WebAuth::start()} and {@link WebAuth::getToken()} to guide your
-</span></span><span id="8" class="l"><a class="l" href="#8">  8: </a><span class="php-comment"> * user through the process of giving your app access to their Dropbox account.  At the end, you
-</span></span><span id="9" class="l"><a class="l" href="#9">  9: </a><span class="php-comment"> * will have an {@link AccessToken}, which you can pass to {@link Client} and start making
-</span></span><span id="10" class="l"><a class="l" href="#10"> 10: </a><span class="php-comment"> * API calls.
+</span></span><span id="7" class="l"><a class="l" href="#7">  7: </a><span class="php-comment"> * Use {@link WebAuth::start()} and {@link WebAuth::finish()} to guide your
+</span></span><span id="8" class="l"><a class="l" href="#8">  8: </a><span class="php-comment"> * user through the process of giving your app access to their Dropbox account.
+</span></span><span id="9" class="l"><a class="l" href="#9">  9: </a><span class="php-comment"> * At the end, you will have an access token, which you can pass to {@link Client}
+</span></span><span id="10" class="l"><a class="l" href="#10"> 10: </a><span class="php-comment"> * and start making API calls.
 </span></span><span id="11" class="l"><a class="l" href="#11"> 11: </a><span class="php-comment"> *
 </span></span><span id="12" class="l"><a class="l" href="#12"> 12: </a><span class="php-comment"> * Example:
 </span></span><span id="13" class="l"><a class="l" href="#13"> 13: </a><span class="php-comment"> *
@@ -118,7 +122,7 @@
 </span></span><span id="19" class="l"><a class="l" href="#19"> 19: </a><span class="php-comment"> *    $appInfo = dbx\AppInfo::loadFromJsonFile(...);
 </span></span><span id="20" class="l"><a class="l" href="#20"> 20: </a><span class="php-comment"> *    $clientIdentifier = &quot;my-app/1.0&quot;;
 </span></span><span id="21" class="l"><a class="l" href="#21"> 21: </a><span class="php-comment"> *    $redirectUri = &quot;https://example.org/dropbox-auth-finish&quot;;
-</span></span><span id="22" class="l"><a class="l" href="#22"> 22: </a><span class="php-comment"> *    $csrfTokenStore = new dbx\ArrayElementStore($_SESSION, 'dropbox-auth-csrf-token');
+</span></span><span id="22" class="l"><a class="l" href="#22"> 22: </a><span class="php-comment"> *    $csrfTokenStore = new dbx\ArrayEntryStore($_SESSION, 'dropbox-auth-csrf-token');
 </span></span><span id="23" class="l"><a class="l" href="#23"> 23: </a><span class="php-comment"> *    return new dbx\WebAuth($appInfo, $clientIdentifier, $redirectUri, $csrfTokenStore, ...);
 </span></span><span id="24" class="l"><a class="l" href="#24"> 24: </a><span class="php-comment"> * }
 </span></span><span id="25" class="l"><a class="l" href="#25"> 25: </a><span class="php-comment"> *
@@ -179,7 +183,7 @@
 </span><span id="80" class="l"><a class="l" href="#80"> 80: </a>    <span class="php-keyword1">private</span> <span class="php-var"><a id="$redirectUri" href="#$redirectUri">$redirectUri</a></span>;
 </span><span id="81" class="l"><a class="l" href="#81"> 81: </a>
 </span><span id="82" class="l"><a class="l" href="#82"> 82: </a>    <span class="php-comment">/**
-</span></span><span id="83" class="l"><a class="l" href="#83"> 83: </a><span class="php-comment">     * A object that lets us save the CSRF token to the user's session.  If you're using the
+</span></span><span id="83" class="l"><a class="l" href="#83"> 83: </a><span class="php-comment">     * A object that lets us save CSRF token string to the user's session.  If you're using the
 </span></span><span id="84" class="l"><a class="l" href="#84"> 84: </a><span class="php-comment">     * standard PHP &lt;code&gt;$_SESSION&lt;/code&gt;, you can pass in something like
 </span></span><span id="85" class="l"><a class="l" href="#85"> 85: </a><span class="php-comment">     * &lt;code&gt;new ArrayEntryStore($_SESSION, 'dropbox-auth-csrf-token')&lt;/code&gt;.
 </span></span><span id="86" class="l"><a class="l" href="#86"> 86: </a><span class="php-comment">     *
@@ -187,7 +191,7 @@
 </span></span><span id="88" class="l"><a class="l" href="#88"> 88: </a><span class="php-comment">     * the same &lt;code&gt;get()&lt;/code&gt;/&lt;code&gt;set()&lt;/code&gt;/&lt;code&gt;clear()&lt;/code&gt; methods as
 </span></span><span id="89" class="l"><a class="l" href="#89"> 89: </a><span class="php-comment">     * {@link ArrayEntryStore}.
 </span></span><span id="90" class="l"><a class="l" href="#90"> 90: </a><span class="php-comment">     *
-</span></span><span id="91" class="l"><a class="l" href="#91"> 91: </a><span class="php-comment">     * @return object
+</span></span><span id="91" class="l"><a class="l" href="#91"> 91: </a><span class="php-comment">     * @return ValueStore
 </span></span><span id="92" class="l"><a class="l" href="#92"> 92: </a><span class="php-comment">     */</span>
 </span><span id="93" class="l"><a class="l" href="#93"> 93: </a>    <span class="php-keyword1">function</span> <a id="_getCsrfTokenStore" href="#_getCsrfTokenStore">getCsrfTokenStore</a>() { <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;csrfTokenStore; }
 </span><span id="94" class="l"><a class="l" href="#94"> 94: </a>
@@ -203,7 +207,7 @@
 </span></span><span id="104" class="l"><a class="l" href="#104">104: </a><span class="php-comment">     *     See {@link getClientIdentifier()}
 </span></span><span id="105" class="l"><a class="l" href="#105">105: </a><span class="php-comment">     * @param null|string $redirectUri
 </span></span><span id="106" class="l"><a class="l" href="#106">106: </a><span class="php-comment">     *     See {@link getRedirectUri()}
-</span></span><span id="107" class="l"><a class="l" href="#107">107: </a><span class="php-comment">     * @param null|string $csrfTokenStore
+</span></span><span id="107" class="l"><a class="l" href="#107">107: </a><span class="php-comment">     * @param null|ValueStore $csrfTokenStore
 </span></span><span id="108" class="l"><a class="l" href="#108">108: </a><span class="php-comment">     *     See {@link getCsrfTokenStore()}
 </span></span><span id="109" class="l"><a class="l" href="#109">109: </a><span class="php-comment">     * @param null|string $userLocale
 </span></span><span id="110" class="l"><a class="l" href="#110">110: </a><span class="php-comment">     *     See {@link getUserLocale()}

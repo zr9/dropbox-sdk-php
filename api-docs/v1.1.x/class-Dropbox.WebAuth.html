@@ -7,7 +7,7 @@
 	<title>Class Dropbox\WebAuth | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2975086069"></script>
+	<script type="text/javascript" src="elementlist.js?2222935599"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -38,6 +38,10 @@
 				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
 			</ul>
 
+			<h3>Interfaces</h3>
+			<ul>
+				<li><a href="class-Dropbox.ValueStore.html">Dropbox\ValueStore</a></li>
+			</ul>
 
 
 			<h3>Exceptions</h3>
@@ -104,9 +108,10 @@
 <p>OAuth 2 "authorization code" flow. (This SDK does not support the "token"
 flow.)</p>
 
-<p>Use <code><a href="class-Dropbox.WebAuth.html#_start">Dropbox\WebAuth::start()</a></code> and WebAuth::getToken() to guide your
-user through the process of giving your app access to their Dropbox account. At
-the end, you will have an AccessToken, which you can pass to <code><a href="class-Dropbox.Client.html">Dropbox\Client</a></code> and start making API calls.</p>
+<p>Use <code><a href="class-Dropbox.WebAuth.html#_start">Dropbox\WebAuth::start()</a></code> and <code><a href="class-Dropbox.WebAuth.html#_finish">Dropbox\WebAuth::finish()</a></code> to guide your user
+through the process of giving your app access to their Dropbox account. At the
+end, you will have an access token, which you can pass to <code><a href="class-Dropbox.Client.html">Dropbox\Client</a></code> and
+start making API calls.</p>
 
 <p>Example:</p>
 
@@ -127,7 +132,7 @@ class="php-var">$redirectUri</span> = <span
 class="php-quote">&quot;https://example.org/dropbox-auth-finish&quot;</span>;
    <span
 class="php-var">$csrfTokenStore</span> = <span
-class="php-keyword1">new</span> dbx\ArrayElementStore(<span
+class="php-keyword1">new</span> dbx\ArrayEntryStore(<span
 class="php-var">$_SESSION</span>, <span
 class="php-quote">'dropbox-auth-csrf-token'</span>);
    <span
@@ -316,7 +321,7 @@ pre-registration and can be either HTTP or HTTPS.</p>
 
 		<td class="attributes"><code>
 			 public 
-			object
+			<code><a href="class-Dropbox.ValueStore.html">Dropbox\ValueStore</a></code>
 			
 			</code>
 		</td>
@@ -327,7 +332,7 @@ pre-registration and can be either HTTP or HTTPS.</p>
 
 		<div class="description short">
 			
-<p>A object that lets us save the CSRF token to the user's session. If you're
+<p>A object that lets us save CSRF token string to the user's session. If you're
 using the standard PHP <code><span class="php-var">$_SESSION</span></code>, you
 can pass in something like <code><span class="php-keyword1">new</span>
 ArrayEntryStore(<span class="php-var">$_SESSION</span>, <span
@@ -337,7 +342,7 @@ class="php-quote">'dropbox-auth-csrf-token'</span>)</code>.</p>
 
 		<div class="description detailed hidden">
 			
-<p>A object that lets us save the CSRF token to the user's session. If you're
+<p>A object that lets us save CSRF token string to the user's session. If you're
 using the standard PHP <code><span class="php-var">$_SESSION</span></code>, you
 can pass in something like <code><span class="php-keyword1">new</span>
 ArrayEntryStore(<span class="php-var">$_SESSION</span>, <span
@@ -352,7 +357,7 @@ methods as <code><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntry
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>object</code><br />
+					<code><code><a href="class-Dropbox.ValueStore.html">Dropbox\ValueStore</a></code></code><br />
 				</div>
 
 
@@ -372,7 +377,7 @@ methods as <code><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntry
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Dropbox.WebAuth.html#98-120" title="Go to source code">__construct</a>( <span><code><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></code> <var>$appInfo</var></span>, <span>string <var>$clientIdentifier</var></span>, <span>null|string <var>$redirectUri</var></span>, <span>null|string <var>$csrfTokenStore</var></span>, <span>null|string <var>$userLocale</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.WebAuth.html#98-120" title="Go to source code">__construct</a>( <span><code><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></code> <var>$appInfo</var></span>, <span>string <var>$clientIdentifier</var></span>, <span>null|string <var>$redirectUri</var></span>, <span>null|<code><a href="class-Dropbox.ValueStore.html">Dropbox\ValueStore</a></code> <var>$csrfTokenStore</var></span>, <span>null|string <var>$userLocale</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -395,7 +400,7 @@ methods as <code><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntry
 					<dt><var>$redirectUri</var></dt>
 					<dd><code>null|string</code><br>$redirectUri See <code><a href="class-Dropbox.WebAuth.html#_getRedirectUri">Dropbox\WebAuth::getRedirectUri()</a></code></dd>
 					<dt><var>$csrfTokenStore</var></dt>
-					<dd><code>null|string</code><br>$csrfTokenStore See <code><a href="class-Dropbox.WebAuth.html#_getCsrfTokenStore">Dropbox\WebAuth::getCsrfTokenStore()</a></code></dd>
+					<dd><code>null|<code><a href="class-Dropbox.ValueStore.html">Dropbox\ValueStore</a></code></code><br>$csrfTokenStore See <code><a href="class-Dropbox.WebAuth.html#_getCsrfTokenStore">Dropbox\WebAuth::getCsrfTokenStore()</a></code></dd>
 					<dt><var>$userLocale</var></dt>
 					<dd><code>null|string</code><br>$userLocale See <code><a href="class-Dropbox.WebAuthBase.html#_getUserLocale">Dropbox\WebAuthBase::getUserLocale()</a></code></dd>
 				</dl></div>
