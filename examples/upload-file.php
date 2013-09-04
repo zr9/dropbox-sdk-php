@@ -22,6 +22,6 @@ if (\stream_is_local($sourcePath)) {
 
 $fp = fopen($sourcePath, "rb");
 $metadata = $client->uploadFile($dropboxPath, dbx\WriteMode::add(), $fp, $size);
-fclose($fp)
+fclose($fp);
 
 print_r($metadata);
