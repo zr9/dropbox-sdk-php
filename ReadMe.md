@@ -7,6 +7,7 @@ License: [MIT](License.txt)
 Requirements:
   * PHP 5.3+, [with 64-bit integers](http://stackoverflow.com/questions/864058/how-to-have-64-bit-integer-on-php).
   * PHP [cURL extension](http://php.net/manual/en/curl.installation.php) with SSL enabled (it's usually built-in).
+  * Must not be using [`mbstring.func_overload`](http://www.php.net/manual/en/mbstring.overload.php) to overload PHP's standard string functions.
 
 [SDK API docs.](http://dropbox.github.io/dropbox-sdk-php/api-docs/v1.1.x/)
 

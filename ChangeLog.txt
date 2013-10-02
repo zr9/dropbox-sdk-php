@@ -1,3 +1,6 @@
+- Bail out if 'mbstring.func_overload' is set.  We need the standard string
+  functions to behave as originally defined.
+
 ---------------------------------------------
 1.1.1 (2013-08-21)
 

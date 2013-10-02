@@ -9,6 +9,13 @@ if (!function_exists('json_decode')) {
     throw new \Exception("The Dropbox SDK requires the JSON PHP extension, but it looks like you don't have it (couldn't find function \"json_decode\").  Library: \"" . __FILE__ . "\".");
 }
 
+// If mbstring.func_overload is set, it changes the behavior of the standard string functions in
+// ways that makes this library break.
+$mbstring_func_overload = ini_get("mbstring.func_overload");
+if ($mbstring_func_overload & 2 == 2) {
+    throw new \Exception("The Dropbox SDK doesn't work when mbstring.func_overload is set to overload the standard string functions (value = ".var_export($mbstring_func_overload, true).").  Library: \"" . __FILE__ . "\".");
+}
+
 if (strlen((string) PHP_INT_MAX) < 19) {
     // Looks like we're running on a 32-bit build of PHP.  This could cause problems because some of the numbers
     // we use (file sizes, quota, etc) can be larger than 32-bit ints can handle.
