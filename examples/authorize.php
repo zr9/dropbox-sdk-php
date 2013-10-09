@@ -1,6 +1,12 @@
 #!/usr/bin/env php
 <?php
 
+require_once __DIR__."/../test/strict.php";
+
+if (PHP_SAPI !== "cli") {
+    throw new \Exception("This program was meant to be run from the command-line and not as a web app.  Bad value for PHP_SAPI.  Expected \"cli\", given \"".PHP_SAPI."\".");
+}
+
 // NOTE: You should be using Composer's global autoloader.  But just so these examples
 // work for people who don't have Composer, we'll use the library's "autoload.php".
 require_once __DIR__.'/../lib/Dropbox/autoload.php';
