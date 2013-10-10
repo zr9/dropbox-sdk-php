@@ -243,7 +243,7 @@ function getUrl($relative_path)
 
 function getPath($relative_path)
 {
-    if (PHP_SAPI == 'cli-server') {
+    if (PHP_SAPI === 'cli-server') {
         return "/".$relative_path;
     } else {
         return $_SERVER["SCRIPT_NAME"]."/".$relative_path;
@@ -254,7 +254,7 @@ function init()
 {
     global $argv;
 
-    // They ran us as a command-line script.  Launch the PHP built-in web server.
+    // If we were run as a command-line script, launch the PHP built-in web server.
     if (PHP_SAPI === 'cli') {
         launchBuiltInWebServer($argv);
         assert(false);
@@ -293,7 +293,9 @@ function launchBuiltInWebServer($argv)
     } else if (count($argv) === 2) {
         $port = intval($argv[1]);
     } else {
-        fprintf(STDERR, "Usage: ".PHP_BINARY." [server-port]\n");
+        fprintf(STDERR,
+            "Too many arguments.\n".
+            "Usage: php $argv[0] [server-port]\n");
         exit(1);
     }
 
