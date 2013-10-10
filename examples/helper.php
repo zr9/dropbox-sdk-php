@@ -122,7 +122,7 @@ function parseArgs($exampleName, $argv, $requiredParams = null, $optionalParams 
 
     // Make sure the argument count is compatible with the parameter count.
     if ($minArgs === $maxArgs) {
-        if (count($nonOptionArgs) != $minArgs) {
+        if (count($nonOptionArgs) !== $minArgs) {
             fwrite(STDERR, "Expecting exactly $minArgs non-option arguments, got $givenArgs.\n");
             fwrite(STDERR, "Run with no arguments for help.\n");
             die;
