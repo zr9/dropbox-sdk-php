@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../test/strict.php';
+require_once __DIR__.'/../lib/Dropbox/strict.php';
 
 $appInfoFile = __DIR__."/web-file-browser.app";
 

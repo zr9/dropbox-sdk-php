@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__."/../test/strict.php";
+require_once __DIR__."/../lib/Dropbox/strict.php";
 
 if (PHP_SAPI !== "cli") {
     throw new \Exception("This program was meant to be run from the command-line and not as a web app.  Bad value for PHP_SAPI.  Expected \"cli\", given \"".PHP_SAPI."\".");
