@@ -82,14 +82,21 @@ A trivial example that calls the /account/info API endpoint.
 
 ### web-file-browser.php
 
-A tiny web app that runs through the OAuth 2 authorization flow and then uses Dropbox API calls to let the user browse their Dropbox files.  You need PHP 5.4+ to run it.
+A tiny web app that runs through the OAuth 2 authorization flow and then uses Dropbox API calls to let the user browse their Dropbox files.
 
-Prerequisite: In the Dropbox API [app configuration console](https://www.dropbox.com/developers/apps), you need to add "http://localhost:5000/dropbox-auth-finish" to the list of allowed redirect URIs.
+**Required**: copy one of the ".app" files you created previously to "examples/web-file-browser.app".
 
-```
-cp test.app examples/web-file-browser.app
-php -S localhost:5000 examples/web-file-browser.php   # requires PHP 5.4+
-```
+**Using PHP built-in web server (PHP 5.4+).**
+
+1. Go to the Dropbox API [app console](https://www.dropbox.com/developers/apps), go to the API app you configured in "web-file-browser.app", go to the _OAuth redirect URIs_ section, and add "http://localhost:5000/dropbox-auth-finish".
+2. Run "`php web-file-browser.php`".
+3. Point your browser at "http://localhost:5000/".
+
+**Using an existing web server setup.**
+
+1. Copy the entire SDK folder to your web server's document path.  For example, let's say the script is accessible at "http://localhost/~scooby/dropbox/examples/web-file-browser.php".
+2. Go to the Dropbox API [app console](https://www.dropbox.com/developers/apps), go to the API app you configured in "web-file-browser.app", go to the _OAuth redirect URIs_ section, and add "http://localhost/~scooby/dropbox/examples/web-file-browser.php/dropbox-auth-finish".
+3. Point your browser at "http://localhost/~scooby/dropbox/examples/web-file-browser.php".
 
 ### Running the Tests
 
