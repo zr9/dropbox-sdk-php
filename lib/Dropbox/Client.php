@@ -134,8 +134,9 @@ class Client
      *
      * <code>
      * $client = ...;
-     * $metadata = $client->getFile("/Photos/Frog.jpeg",
-     *                              fopen("./Frog.jpeg", "wb"));
+     * $fd = fopen("./Frog.jpeg", "wb");
+     * $metadata = $client->getFile("/Photos/Frog.jpeg", $fd);
+     * fclose($fd);
      * print_r($metadata);
      * </code>
      *
