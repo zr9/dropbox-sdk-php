@@ -10,11 +10,11 @@ require_once __DIR__.'/../lib/Dropbox/autoload.php';
 
 use \Dropbox as dbx;
 
-$request_path = init();
+$requestPath = init();
 
 session_start();
 
-if ($request_path === "/") {
+if ($requestPath === "/") {
     $dbxClient = getClient();
 
     if ($dbxClient === false) {
@@ -25,25 +25,65 @@ if ($request_path === "/") {
     $path = "/";
     if (isset($_GET['path'])) $path = $_GET['path'];
 
-    if (isset($_GET['dl'])) {
-        passFileToBrowser($dbxClient, $path);
+    $entry = $dbxClient->getMetadataWithChildren($path);
+    if ($entry['is_dir']) {
+        echo renderFolder($entry);
     }
     else {
-        $entry = $dbxClient->getMetadataWithChildren($path);
-
-        if ($entry['is_dir']) {
-            echo renderFolder($entry);
-        }
-        else {
-            echo renderFile($entry);
-        }
+        echo renderFile($entry);
     }
 }
-else if ($request_path === "/dropbox-auth-start") {
+else if ($requestPath == "/download") {
+    $dbxClient = getClient();
+
+    if ($dbxClient === false) {
+        header("Location: ".getPath("dropbox-auth-start"));
+        exit;
+    }
+
+    if (!isset($_GET['path'])) {
+        header("Location: ".getPath(""));
+        exit;
+    }
+    $path = $_GET['path'];
+
+    $fd = tmpfile();
+    $metadata = $dbxClient->getFile($path, $fd);
+
+    header("Content-Type: $metadata[mime_type]");
+    fseek($fd, 0);
+    fpassthru($fd);
+    fclose($fd);
+}
+else if ($requestPath === "/upload") {
+    if (empty($_FILES['file']['name'])) {
+        echo renderHtmlPage("Error", "Please choose a file to upload");
+        exit;
+    }
+
+    if (!empty($_FILES['file']['error'])) {
+        echo renderHtmlPage("Error", "Error ".$_FILES['file']['error']." uploading file.  See <a href='http://php.net/manual/en/features.file-upload.errors.php'>the docs</a> for details");
+        exit;
+    }
+
+    $dbxClient = getClient();
+
+    $remoteDir = "/";
+    if (isset($_POST['folder'])) $remoteDir = $_POST['folder'];
+
+    $remotePath = rtrim($remoteDir, "/")."/".$_FILES['file']['name'];
+
+    $fp = fopen($_FILES['file']['tmp_name'], "rb");
+    $result = $dbxClient->uploadFile($remotePath, dbx\WriteMode::add(), $fp);
+    fclose($fp);
+    $str = print_r($result, TRUE);
+    echo renderHtmlPage("Uploading File", "Result: <pre>$str</pre>");
+}
+else if ($requestPath === "/dropbox-auth-start") {
     $authorizeUrl = getWebAuth()->start();
     header("Location: $authorizeUrl");
 }
-else if ($request_path === "/dropbox-auth-finish") {
+else if ($requestPath === "/dropbox-auth-finish") {
     try {
         list($accessToken, $userId, $urlState) = getWebAuth()->finish($_GET);
         assert($urlState === null);
@@ -83,38 +123,14 @@ else if ($request_path === "/dropbox-auth-finish") {
     echo renderHtmlPage("Authorized!",
         "Auth complete, <a href='".htmlspecialchars(getPath(""))."'>click here</a> to browse.");
 }
-else if ($request_path === "/dropbox-auth-unlink") {
+else if ($requestPath === "/dropbox-auth-unlink") {
     // "Forget" the access token.
     unset($_SESSION['access-token']);
     echo renderHtmlPage("Unlinked.",
         "Go back <a href='".htmlspecialchars(getPath(""))."'>home</a>.");
 }
-else if ($request_path === "/upload") {
-    if (empty($_FILES['file']['name'])) {
-        echo renderHtmlPage("Error", "Please choose a file to upload");
-        exit;
-    }
-
-    if (!empty($_FILES['file']['error'])) {
-        echo renderHtmlPage("Error", "Error ".$_FILES['file']['error']." uploading file.  See <a href='http://php.net/manual/en/features.file-upload.errors.php'>the docs</a> for details");
-        exit;
-    }
-
-    $dbxClient = getClient();
-
-    $remoteDir = "/";
-    if (isset($_POST['folder'])) $remoteDir = $_POST['folder'];
-
-    $remotePath = rtrim($remoteDir, "/")."/".$_FILES['file']['name'];
-
-    $fp = fopen($_FILES['file']['tmp_name'], "rb");
-    $result = $dbxClient->uploadFile($remotePath, dbx\WriteMode::add(), $fp);
-    fclose($fp);
-    $str = print_r($result, TRUE);
-    echo renderHtmlPage("Uploading File", "Result: <pre>$str</pre>");
-}
 else {
-    echo renderHtmlPage("Bad URL", "No handler for $request_path");
+    echo renderHtmlPage("Bad URL", "No handler for $requestPath");
     exit;
 }
 
@@ -193,25 +209,14 @@ function getWebAuth()
 
 function renderFile($entry)
 {
-    $metadataStr = print_r($entry, TRUE);
-    $path = htmlspecialchars($entry['path']);
+    $metadataStr = htmlspecialchars(print_r($entry, true));
+    $downloadPath = getPath("download?path=".htmlspecialchars($entry['path']));
     $body = <<<HTML
         <pre>$metadataStr</pre>
-        <a href="/?path=$path&dl=true">Download this file</a>
+        <a href="$downloadPath">Download this file</a>
 HTML;
 
     return renderHtmlPage("File: ".$entry['path'], $body);
-}
-
-function passFileToBrowser(dbx\Client $dbxClient, $path)
-{
-    $fd = tmpfile();
-    $metadata = $dbxClient->getFile($path, $fd);
-
-    header("Content-type: $metadata[mime_type]");
-    fseek($fd, 0);
-    fpassthru($fd);
-    fclose($fd);
 }
 
 function renderHtmlPage($title, $body)
