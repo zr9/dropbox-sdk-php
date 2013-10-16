@@ -89,7 +89,6 @@ else if ($requestPath === "/dropbox-auth-finish") {
         // We didn't pass in $urlState to finish, and we're assuming the session can't be
         // tampered with, so this should be null.
         assert($urlState === null);
-        unset($_SESSION['dropbox-auth-csrf-token']);
     }
     catch (dbx\WebAuthException_BadRequest $ex) {
         respondWithError(400, "Bad Request");
