@@ -90,8 +90,11 @@ else if ($requestPath === "/dropbox-auth-finish") {
         unset($_SESSION['dropbox-auth-csrf-token']);
     }
     catch (dbx\WebAuthException_BadRequest $ex) {
+        respondWithError(400, "Bad Request");
+        // Write full details to server error log.
+        // IMPORTANT: Never show the $ex->getMessage() string to the user -- it could contain
+        // sensitive information.
         error_log("/dropbox-auth-finish: bad request: " . $ex->getMessage());
-        // Respond with an HTTP 400 and display error page...
         exit;
     }
     catch (dbx\WebAuthException_BadState $ex) {
@@ -100,20 +103,25 @@ else if ($requestPath === "/dropbox-auth-finish") {
         exit;
     }
     catch (dbx\WebAuthException_Csrf $ex) {
+        respondWithError(403, "Unauthorized", "CSRF mismatch");
+        // Write full details to server error log.
+        // IMPORTANT: Never show the $ex->getMessage() string to the user -- it contains
+        // sensitive information that could be used to bypass the CSRF check.
         error_log("/dropbox-auth-finish: CSRF mismatch: " . $ex->getMessage());
-        // Respond with HTTP 403 and display error page...
         exit;
     }
     catch (dbx\WebAuthException_NotApproved $ex) {
-        echo renderHtmlPage("Not Authorized?", "Why not, bro?");
+        echo renderHtmlPage("Not Authorized?", "Why not?");
         exit;
     }
     catch (dbx\WebAuthException_Provider $ex) {
         error_log("/dropbox-auth-finish: unknown error: " . $ex->getMessage());
+        respondWithError(500, "Internal Server Error");
         exit;
     }
     catch (dbx\Exception $ex) {
         error_log("/dropbox-auth-finish: error communicating with Dropbox API: " . $ex->getMessage());
+        respondWithError(500, "Internal Server Error");
         exit;
     }
 
@@ -169,8 +177,7 @@ function getAppConfig()
         $appInfo = dbx\AppInfo::loadFromJsonFile($appInfoFile);
     }
     catch (dbx\AppInfoLoadException $ex) {
-        error_log("Unable to load \"$appInfoFile\": " . $ex->getMessage());
-        die;
+        throw new Exception("Unable to load \"$appInfoFile\": " . $ex->getMessage());
     }
 
     $clientIdentifier = "examples-web-file-browser";
@@ -186,17 +193,8 @@ function getClient()
     }
 
     list($appInfo, $clientIdentifier, $userLocale) = getAppConfig();
-
-    try {
-        $accessToken = $_SESSION['access-token'];
-        $dbxClient = new dbx\Client($accessToken, $clientIdentifier, $userLocale, $appInfo->getHost());
-    }
-    catch (Exception $e) {
-        error_log("Error in getClient: ".$e->getMessage());
-        return false;
-    }
-
-    return $dbxClient;
+    $accessToken = $_SESSION['access-token'];
+    return new dbx\Client($accessToken, $clientIdentifier, $userLocale, $appInfo->getHost());
 }
 
 function getWebAuth()
@@ -232,6 +230,13 @@ function renderHtmlPage($title, $body)
         </body>
     </html>
 HTML;
+}
+
+function respondWithError($code, $title, $body = "")
+{
+    $proto = $_SERVER['SERVER_PROTOCOL'];
+    header("$proto $code $title", true, $code);
+    echo renderHtmlPage($title, $body);
 }
 
 function getUrl($relative_path)
