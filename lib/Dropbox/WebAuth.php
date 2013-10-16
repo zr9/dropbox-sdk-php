@@ -230,8 +230,6 @@ class WebAuth extends WebAuthBase
         if ($csrfTokenFromSession === null) {
             throw new WebAuthException_BadState();
         }
-        // Sanity check to make sure something hasn't gone terribly wrong.
-        assert(strlen($csrfTokenFromSession) > 20);
 
         $splitPos = strpos($state, "|");
         if ($splitPos === false) {
