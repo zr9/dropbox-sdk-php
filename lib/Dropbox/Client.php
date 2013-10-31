@@ -420,14 +420,14 @@ class Client
                 // An earlier byte offset means the server has lost data we sent earlier.
                 if ($serverByteOffset < $byteOffset) throw new Exception_BadResponse(
                     "Server is at an ealier byte offset: us=$byteOffset, server=$serverByteOffset");
-                // The normal case is that the server is a bit further along than us because of a
-                // partially-uploaded chunk.
                 $diff = $serverByteOffset - $byteOffset;
+                // If the server is past where we think it could possibly be, something went wrong.
                 if ($diff > $len) throw new Exception_BadResponse(
                     "Server is more than a chunk ahead: us=$byteOffset, server=$serverByteOffset");
-
-                // Finish the rest of this chunk.
+                // The normal case is that the server is a bit further along than us because of a
+                // partially-uploaded chunk.  Finish it off.
                 $byteOffset += $diff;
+                if ($diff === $len) break;  // If the server is at the end, we're done.
                 $data = substr($data, $diff);
             }
         }
@@ -670,7 +670,8 @@ class Client
      * @param string $data
      * @return HttpResponse
      */
-    private function _chunkedUpload($params, $data)
+    protected function _chunkedUpload($params, $data)
+        // Marked 'protected' so I can override it in testing.
     {
         $url = RequestUtil::buildUrl(
             $this->userLocale, $this->contentHost, "1/chunked_upload", $params);

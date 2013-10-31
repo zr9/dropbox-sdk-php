@@ -336,6 +336,52 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($contents, $fetched);
     }
 
+    function testChunkedUploadWithFailures()
+    {
+        $client = new ClientForChunkedUploadWithFailures(
+            $this->client->getAccessToken(),
+            $this->client->getClientIdentifier(),
+            $this->client->getUserLocale());
+
+
+        $fd = $this->writeTempFile(10);
+        $contents = stream_get_contents($fd);
+
+        $remotePath = $this->p("chunked-upload.txt");
+
+        // Simulate losing a request or response.
+        foreach (array('lose-request', 'lose-response') as $secondInstruction) {
+            // Upload.
+            $client->callCounter = 0;
+            $client->instructions = array('ok', $secondInstruction);
+            fseek($fd, 0);
+            $md = $client->uploadFileChunked($remotePath, dbx\WriteMode::add(), $fd, 10, 4);
+            $this->assertEquals($client->callCounter, 4);
+
+            // Download and verify.
+            $outFd = tmpfile();
+            $this->client->getFile($md['path'], $outFd);
+            fseek($outFd, 0);
+            $fetched = stream_get_contents($outFd);
+            $this->assertEquals($fetched, $contents);
+        }
+
+        // Failing four times in a row should cause us to give up.
+        $client->callCounter = 0;
+        $client->instructions =
+            array('ok', 'lose-request', 'lose-request', 'lose-request', 'lose-response');
+        fseek($fd, 0);
+        try {
+            $client->uploadFileChunked($remotePath, dbx\WriteMode::add(), $fd, 10, 4);
+            assert(false);  // Should never get here.
+        }
+        catch (dbx\Exception_NetworkIO $ex) {
+            // We want thie exception to happen.
+            $this->assertEquals($ex->getMessage(), "simulate lose-response");
+            $this->assertEquals($client->callCounter, 5);
+        }
+    }
+
     // --------------- Test File Operations -------------------
     function testCopy()
     {
@@ -395,3 +441,37 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($result['contents']));
     }
 }
+
+class ClientForChunkedUploadWithFailures extends dbx\Client
+{
+    public $callCounter = 0;
+    public $instructions = array();
+    public $callsToAllow = 0;
+    public $callsToFail = 0;
+
+    protected function _chunkedUpload($params, $data)
+    {
+        $this->callCounter += 1;
+
+        if (count($this->instructions) > 0) {
+            $instruction = array_shift($this->instructions);
+        } else {
+            $instruction = 'ok';
+        }
+
+        if ($instruction === 'lose-request') {
+            throw new dbx\Exception_NetworkIO("simulate lose-request");
+        }
+        else if ($instruction === 'lose-response') {
+            parent::_chunkedUpload($params, $data);
+            throw new dbx\Exception_NetworkIO("simulate lose-response");
+        }
+        else if ($instruction === 'ok') {
+            return parent::_chunkedUpload($params, $data);
+        }
+        else {
+            throw \InvalidArgumentException("invalid instruction: \"".$instruction."\"");
+        }
+    } 
+}
+
