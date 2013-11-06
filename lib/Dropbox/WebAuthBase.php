@@ -65,7 +65,7 @@ class WebAuthBase
     function __construct($appInfo, $clientIdentifier, $userLocale = null)
     {
         AppInfo::checkArg("appInfo", $appInfo);
-        Checker::argStringNonEmpty("clientIdentifier", $clientIdentifier);
+        Client::checkClientIdentifierArg("clientIdentifier", $clientIdentifier);
         Checker::argStringNonEmptyOrNull("userLocale", $userLocale);
 
         $this->appInfo = $appInfo;

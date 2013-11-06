@@ -68,8 +68,8 @@ class Client
      */
     function __construct($accessToken, $clientIdentifier, $userLocale = null)
     {
-        Checker::argStringNonEmpty("accessToken", $accessToken);
-        Checker::argStringNonEmpty("clientIdentifier", $clientIdentifier);
+        self::checkAccessTokenArg("accessToken", $accessToken);
+        self::checkClientIdentifierArg("clientIdentifier", $clientIdentifier);
         Checker::argStringNonEmptyOrNull("userLocale", $userLocale);
 
         $this->accessToken = $accessToken;
@@ -1361,5 +1361,46 @@ class Client
         if (!array_key_exists($fieldName, $j)) throw new Exception_BadResponse(
             "missing field \"$fieldName\": $body");
         return $j[$fieldName];
+    }
+
+    /**
+     * Given an OAuth 2 access token, returns <code>null</code> if it is well-formed (though
+     * not necessarily valid).  Otherwise, returns a string describing what's wrong with it.
+     */
+    static function getAccessTokenError($s)
+    {
+        if ($s === null) return "can't be null";
+        if (strlen($s) === 0) return "can't be empty";
+        if (preg_match('@[^-=_~/A-Za-z0-9\.\+]@', $s) === 1) return "contains invalid character";
+        return null;
+    }
+
+    /**
+     * @internal
+     */
+    static function checkAccessTokenArg($argName, $accessToken)
+    {
+        $error = self::getAccessTokenError($accessToken);
+        if ($error !== null) throw new \InvalidArgumentException("'$argName' invalid: $error");
+    }
+
+    /**
+     * @internal
+     */
+    static function getClientIdentifierError($s)
+    {
+        if ($s === null) return "can't be null";
+        if (strlen($s) === 0) return "can't be empty";
+        if (preg_match('@[\x00-\x1f\x7f]@', $s) === 1) return "contains control character";
+        return null;
+    }
+
+    /**
+     * @internal
+     */
+    static function checkClientIdentifierArg($argName, $accessToken)
+    {
+        $error = self::getClientIdentifierError($accessToken);
+        if ($error !== null) throw new \InvalidArgumentException("'$argName' invalid: $error");
     }
 }
