@@ -829,6 +829,12 @@ class Client
      *    If this is the first time you're calling this, pass in <code>null</code>.  Otherwise,
      *    pass in whatever cursor was returned by the previous call.
      *
+     * @param string|null $path_prefix
+     *    If <code>null</code>, you'll get results for the entire folder (either the user's
+     *    entire Dropbox or your App Folder).  If you set <code>$path_prefix</code> to
+     *    "/Photos/Vacation", you'll only get results for that path and any files and folders
+     *    under it.
+     *
      * @return array
      *    A <a href="https://www.dropbox.com/developers/core/api#delta">delta page</a>, which
      *    contains a list of changes to apply along with a new "cursor" that should be passed into
@@ -839,11 +845,14 @@ class Client
      *
      * @throws Exception
      */
-    function getDelta($cursor = null)
+    function getDelta($cursor = null, $pathPrefix = null)
     {
         Checker::argStringNonEmptyOrNull("cursor", $cursor);
+        Path::checkArgOrNull("pathPrefix", $pathPrefix);
 
-        $response = $this->doPost($this->apiHost, "1/delta", array("cursor" => $cursor));
+        $response = $this->doPost($this->apiHost, "1/delta", array(
+            "cursor" => $cursor,
+            "path_prefix" => $pathPrefix));
 
         if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
 

@@ -3,6 +3,7 @@
 - Tweak web-file-browser.php example to work in an existing web server setup.
 - Fix bug with file uploads, triggered when a chunked upload request succeeds
   but the response doesn't get back to us.
+- Add support for "path_prefix" parameter to /delta.
 
 ---------------------------------------------
 1.1.1 (2013-08-21)

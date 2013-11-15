@@ -179,6 +179,40 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($path, $result['entries'][0][1]["path"]);
     }
 
+    function testDeltaPathPrefix()
+    {
+        // eat up all the deltas to the point where we should expect exactly
+        // one after we add a new file
+        $pathPrefix = $this->p("folder");
+        $result = $this->client->getDelta(null, $pathPrefix);
+        $this->assertTrue($result['reset']);
+        $this->assertEquals($result['entries'], array());
+        $cursor = $result['cursor'];
+
+        $this->addFile($this->p("stuff.txt"), 1);
+        $this->client->createFolder($this->p("folder"));
+        $this->client->createFolder($this->p("folder2"));
+        $this->addFile($this->p("folder/a.txt"), 2);
+        $this->addFile($this->p("folder/b.txt"), 3);
+        $this->addFile($this->p("folder2/a.txt"), 4);
+        $this->addFile($this->p("folder.txt"), 5);
+
+        $allEntries = array();
+
+        do {
+            $result = $this->client->getDelta($cursor, $pathPrefix);
+            $cursor = $result['cursor'];
+            foreach ($result['entries'] as $entry) {
+                $allEntries[$entry[1]['path']] = $entry[1]['bytes'];
+            }
+        } while ($result['has_more']);
+
+        $this->assertEquals($allEntries, array(
+            $this->p("folder") => 0,
+            $this->p("folder/a.txt") => 2,
+            $this->p("folder/b.txt") => 3));
+    }
+
     function testRevisions()
     {
         $path = $this->p("revisions.txt");
