@@ -4,6 +4,7 @@
 - Fix bug with file uploads, triggered when a chunked upload request succeeds
   but the response doesn't get back to us.
 - Add support for "path_prefix" parameter to /delta.
+- Add support for API call that upgrades OAuth 1 tokens to OAuth 2 tokens.
 
 ---------------------------------------------
 1.1.1 (2013-08-21)

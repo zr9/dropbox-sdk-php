@@ -108,6 +108,16 @@ class Client
     }
 
     /**
+     * Disable the access token that you constructed this <code>Client</code> with.
+     * After calling this, API calls made with this <code>Client</code> will fail.
+     */
+    function disableAccessToken()
+    {
+        $response = $this->doPost($this->apiHost, "1/disable_access_token");
+        if ($response->statusCode !== 200) throw RequestUtil::unexpectedStatus($response);
+    }
+
+    /**
      * Returns a basic account and quota information.
      *
      * <code>
