@@ -23,7 +23,8 @@ namespace Dropbox;
  * print("1. Go to: $authorizeUrl\n");
  * print("2. Click "Allow" (you might have to log in first).\n");
  * print("3. Copy the authorization code.\n");
- * $code = \trim(\readline("4. Enter the authorization code here: "));
+ * print("Enter the authorization code here: ");
+ * $code = \trim(\fgets(STDIN));
  *
  * try {
  *    list($accessToken, $userId) = $webAuth->finish($code);
