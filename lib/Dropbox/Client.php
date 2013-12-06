@@ -99,8 +99,6 @@ class Client
     private $apiHost;
     /** @var string */
     private $contentHost;
-    /** @var string */
-    private $root;
 
     private function appendFilePath($base, $path)
     {
@@ -110,6 +108,8 @@ class Client
     /**
      * Disable the access token that you constructed this <code>Client</code> with.
      * After calling this, API calls made with this <code>Client</code> will fail.
+     *
+     * @throws Exception
      */
     function disableAccessToken()
     {
@@ -459,7 +459,8 @@ class Client
      * bytes have been read or we've reached EOF.
      *
      * @param resource $inStream
-     * @param int $limit
+     * @param int $numBytes
+     * @throws StreamReadException
      * @return string
      */
     private static function readFully($inStream, $numBytes)
@@ -839,7 +840,7 @@ class Client
      *    If this is the first time you're calling this, pass in <code>null</code>.  Otherwise,
      *    pass in whatever cursor was returned by the previous call.
      *
-     * @param string|null $path_prefix
+     * @param string|null $pathPrefix
      *    If <code>null</code>, you'll get results for the entire folder (either the user's
      *    entire Dropbox or your App Folder).  If you set <code>$path_prefix</code> to
      *    "/Photos/Vacation", you'll only get results for that path and any files and folders
@@ -1378,13 +1379,17 @@ class Client
     static function getField($j, $fieldName)
     {
         if (!array_key_exists($fieldName, $j)) throw new Exception_BadResponse(
-            "missing field \"$fieldName\": $body");
+            "missing field \"$fieldName\" in ".self::q($j));
         return $j[$fieldName];
     }
 
     /**
      * Given an OAuth 2 access token, returns <code>null</code> if it is well-formed (though
      * not necessarily valid).  Otherwise, returns a string describing what's wrong with it.
+     *
+     * @param string $s
+     *
+     * @return string
      */
     static function getAccessTokenError($s)
     {

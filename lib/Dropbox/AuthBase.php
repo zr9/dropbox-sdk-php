@@ -1,6 +1,9 @@
 <?php
 namespace Dropbox;
 
+/**
+ * Base class for API authorization-related classes.
+ */
 class AuthBase
 {
     /**

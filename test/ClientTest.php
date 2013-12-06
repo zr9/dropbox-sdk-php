@@ -10,7 +10,6 @@ PHPUnit_Framework_Error_Warning::$enabled = true;
 class ClientTest extends PHPUnit_Framework_TestCase
 {
     private $client;
-    private $basePath;
 
     const E_ACCENT = "\xc3\xa9";  # UTF-8 sequence for "e with accute accent"
 
@@ -89,13 +88,6 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($size, $result['bytes']);
 
         return $result;
-    }
-
-    private function deleteItem($path)
-    {
-        echo "deleting $path\n";
-        $res = $this->client->delete($path);
-        $this->assertTrue($res['is_deleted']);
     }
 
     private function fetchUrl($url)
@@ -233,7 +225,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
     {
         $path = $this->p("revisions.txt");
         $resultA = $this->addFile($path, 100);
-        $resultB = $this->addFile($path, 200);
+        $this->addFile($path, 200);
 
         $result = $this->client->restoreFile($path, $resultA['rev']);
         $this->assertEquals(100, $result['bytes']);
@@ -279,7 +271,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $contents = "A media text file";
 
         $remotePath = $this->p("media-me.txt");
-        $up = $this->client->uploadFileFromString($remotePath, dbx\WriteMode::add(), $contents);
+        $this->client->uploadFileFromString($remotePath, dbx\WriteMode::add(), $contents);
 
         list($url, $expires) = $this->client->createTemporaryDirectLink($remotePath);
         $fetchedStr = $this->fetchUrl($url);
@@ -504,7 +496,7 @@ class ClientForChunkedUploadWithFailures extends dbx\Client
             return parent::_chunkedUpload($params, $data);
         }
         else {
-            throw \InvalidArgumentException("invalid instruction: \"".$instruction."\"");
+            throw new \InvalidArgumentException("invalid instruction: \"$instruction\"");
         }
     } 
 }

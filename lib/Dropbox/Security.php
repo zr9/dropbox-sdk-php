@@ -22,7 +22,7 @@ class Security
     {
         // Be strict with arguments.  PHP's liberal types could get us pwned.
         if (func_num_args() !== 2) {
-            throw \InvalidArgumentException("Expecting 2 args, got ".func_num_args().".");
+            throw new \InvalidArgumentException("Expecting 2 args, got ".func_num_args().".");
         }
         Checker::argString("a", $a);
         Checker::argString("b", $b);
@@ -60,6 +60,6 @@ class Security
 
         // Hopefully the above two options cover all our users.  But if not, there are
         // other platform-specific options we could add.
-        assert(False, "no suitable random number source available");
+        throw new \Exception("no suitable random number source available");
     }
 }

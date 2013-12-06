@@ -33,6 +33,8 @@ class OAuth1AccessToken
     private $secret;
 
     /**
+     * Constructor.
+     *
      * @param string $key
      *     {@link getKey()}
      * @param string $secret

@@ -159,11 +159,6 @@ class WebAuth extends WebAuthBase
         return strtr(base64_encode($string), '+/', '-_');
     }
 
-    private static function decodeCsrfToken($string)
-    {
-        return base64_decode(strtr($string, '-_', '+/'));
-    }
-
     /**
      * Call this after the user has visited the authorize URL ({@link start()}), approved your app,
      * and was redirected to your redirect URI.
@@ -201,10 +196,10 @@ class WebAuth extends WebAuthBase
         Checker::argString("queryParams['state']", $state);
 
         $error = null;
+        $errorDescription = null;
         if (isset($queryParams['error'])) {
             $error = $queryParams['error'];
             Checker::argString("queryParams['error']", $error);
-            $errorDescription = null;
             if (isset($queryParams['error_description'])) {
                 $errorDescription = $queryParams['error_description'];
                 Checker::argString("queryParams['error_description']", $errorDescription);
