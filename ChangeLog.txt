@@ -1,3 +1,6 @@
+---------------------------------------------
+1.1.2 (2013-12-10)
+
 - Bail out if 'mbstring.func_overload' is set.  We need the standard string
   functions to behave as originally defined.
 - Tweak web-file-browser.php example to work in an existing web server setup.
