@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class Dropbox\WebAuthException_BadState | Dropbox SDK for PHP</title>
+	<title>Class Dropbox\SSLTester | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
 	<script type="text/javascript" src="elementlist.js?2507320660"></script>
@@ -35,7 +35,7 @@
 				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
-				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
+				<li class="active"><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -64,7 +64,7 @@
 				<li><a href="class-Dropbox.Exception_ServerError.html">Dropbox\Exception_ServerError</a></li>
 				<li><a href="class-Dropbox.StreamReadException.html">Dropbox\StreamReadException</a></li>
 				<li><a href="class-Dropbox.WebAuthException_BadRequest.html">Dropbox\WebAuthException_BadRequest</a></li>
-				<li class="active"><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></li>
+				<li><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></li>
 				<li><a href="class-Dropbox.WebAuthException_Csrf.html">Dropbox\WebAuthException_Csrf</a></li>
 				<li><a href="class-Dropbox.WebAuthException_NotApproved.html">Dropbox\WebAuthException_NotApproved</a></li>
 				<li><a href="class-Dropbox.WebAuthException_Provider.html">Dropbox\WebAuthException_Provider</a></li>
@@ -108,32 +108,16 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class WebAuthException_BadState</h1>
+	<h1>Class SSLTester</h1>
 
 
 	<div class="description">
 	
-<p>Thrown if all the parameters are correct, but there's no CSRF token in the
-session. This probably means that the session expired.</p>
-
-<p>The recommended action is to redirect the user's browser to try the approval
-process again.</p>
+<p>Peforms a few basic checks of your PHP installation's SSL implementation to
+see if it insecure in an obvious way.</p>
 
 	</div>
 
-	<dl class="tree">
-		<dd style="padding-left:0px">
-Exception
-			
-			
-		</dd>
-		<dd style="padding-left:30px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>Dropbox\WebAuthException_BadState</span></b>			
-			
-			
-		</dd>
-	</dl>
 
 
 
@@ -148,28 +132,218 @@ Exception
 		<b>Namespace:</b> Dropbox<br />
 		
 
-		<b>Located at</b> <a href="source-class-Dropbox.WebAuthException_BadState.html#4-19" title="Go to source code">Dropbox/WebAuthException/BadState.php</a><br />
+		<b>Located at</b> <a href="source-class-Dropbox.SSLTester.html#5-112" title="Go to source code">Dropbox/SSLTester.php</a><br />
 	</div>
 
 
 
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="test" id="_test">
 
-	<table class="summary inherited">
-	<caption>Methods inherited from Exception</caption>
-	<tr>
-		<td><code>
-__construct(), 
-__toString(), 
-getCode(), 
-getFile(), 
-getLine(), 
-getMessage(), 
-getPrevious(), 
-getTrace(), 
-getTraceAsString()
-		</code></td>
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_test">#</a>
+		<code><a href="source-class-Dropbox.SSLTester.html#11-53" title="Go to source code">test</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="testMulti" id="_testMulti">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_testMulti">#</a>
+		<code><a href="source-class-Dropbox.SSLTester.html#55-72" title="Go to source code">testMulti</a>( <span>mixed <var>$tests</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="testPinnedCert" id="_testPinnedCert">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_testPinnedCert">#</a>
+		<code><a href="source-class-Dropbox.SSLTester.html#74-76" title="Go to source code">testPinnedCert</a>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="testAllowed" id="_testAllowed">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_testAllowed">#</a>
+		<code><a href="source-class-Dropbox.SSLTester.html#78-84" title="Go to source code">testAllowed</a>( <span>mixed <var>$url</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="testUntrustedCert" id="_testUntrustedCert">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_testUntrustedCert">#</a>
+		<code><a href="source-class-Dropbox.SSLTester.html#86-89" title="Go to source code">testUntrustedCert</a>( <span>mixed <var>$url</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="testHostnameMismatch" id="_testHostnameMismatch">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_testHostnameMismatch">#</a>
+		<code><a href="source-class-Dropbox.SSLTester.html#91-94" title="Go to source code">testHostnameMismatch</a>( <span>mixed <var>$url</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="testDisallowed" id="_testDisallowed">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_testDisallowed">#</a>
+		<code><a href="source-class-Dropbox.SSLTester.html#96-111" title="Go to source code">testDisallowed</a>( <span>mixed <var>$url</var></span>, <span>mixed <var>$expectedExceptionMessage</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
 	</tr>
 	</table>
+
 
 
 

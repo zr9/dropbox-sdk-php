@@ -8,7 +8,7 @@
 	<title>File Dropbox/WebAuthNoRedirect.php | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2222935599"></script>
+	<script type="text/javascript" src="elementlist.js?2507320660"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -29,10 +29,14 @@
 			<ul>
 				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
 				<li><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></li>
+				<li><a href="class-Dropbox.AuthBase.html">Dropbox\AuthBase</a></li>
 				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
 				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
+				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
+				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li class="active"><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -68,6 +72,10 @@
 			</ul>
 
 
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-error_to_exception.html">error_to_exception</a></li>
+			</ul>
 		</div>
 	</div>
 </div>
@@ -126,60 +134,65 @@
 </span></span><span id="23" class="l"><a class="l" href="#23">23: </a><span class="php-comment"> * print(&quot;1. Go to: $authorizeUrl\n&quot;);
 </span></span><span id="24" class="l"><a class="l" href="#24">24: </a><span class="php-comment"> * print(&quot;2. Click &quot;Allow&quot; (you might have to log in first).\n&quot;);
 </span></span><span id="25" class="l"><a class="l" href="#25">25: </a><span class="php-comment"> * print(&quot;3. Copy the authorization code.\n&quot;);
-</span></span><span id="26" class="l"><a class="l" href="#26">26: </a><span class="php-comment"> * $code = \trim(\readline(&quot;4. Enter the authorization code here: &quot;));
-</span></span><span id="27" class="l"><a class="l" href="#27">27: </a><span class="php-comment"> *
-</span></span><span id="28" class="l"><a class="l" href="#28">28: </a><span class="php-comment"> * try {
-</span></span><span id="29" class="l"><a class="l" href="#29">29: </a><span class="php-comment"> *    list($accessToken, $userId) = $webAuth-&gt;finish($code);
-</span></span><span id="30" class="l"><a class="l" href="#30">30: </a><span class="php-comment"> * }
-</span></span><span id="31" class="l"><a class="l" href="#31">31: </a><span class="php-comment"> * catch (dbx\Exception $ex) {
-</span></span><span id="32" class="l"><a class="l" href="#32">32: </a><span class="php-comment"> *    print(&quot;Error communicating with Dropbox API: &quot; . $ex-&gt;getMessage() . &quot;\n&quot;);
-</span></span><span id="33" class="l"><a class="l" href="#33">33: </a><span class="php-comment"> * }
-</span></span><span id="34" class="l"><a class="l" href="#34">34: </a><span class="php-comment"> *
-</span></span><span id="35" class="l"><a class="l" href="#35">35: </a><span class="php-comment"> * $client = dbx\Client($accessToken, $clientIdentifier, ...);
-</span></span><span id="36" class="l"><a class="l" href="#36">36: </a><span class="php-comment"> * &lt;/code&gt;
-</span></span><span id="37" class="l"><a class="l" href="#37">37: </a><span class="php-comment"> */</span>
-</span><span id="38" class="l"><a class="l" href="#38">38: </a><span class="php-keyword1">class</span> <a id="WebAuthNoRedirect" href="#WebAuthNoRedirect">WebAuthNoRedirect</a> <span class="php-keyword1">extends</span> WebAuthBase
-</span><span id="39" class="l"><a class="l" href="#39">39: </a>{
-</span><span id="40" class="l"><a class="l" href="#40">40: </a>    <span class="php-comment">/**
-</span></span><span id="41" class="l"><a class="l" href="#41">41: </a><span class="php-comment">     * Returns the URL of the authorization page the user must visit.  If the user approves
-</span></span><span id="42" class="l"><a class="l" href="#42">42: </a><span class="php-comment">     * your app, they will be shown the authorization code on the web page.  They will need to
-</span></span><span id="43" class="l"><a class="l" href="#43">43: </a><span class="php-comment">     * copy/paste that code into your application so your app can pass it to
-</span></span><span id="44" class="l"><a class="l" href="#44">44: </a><span class="php-comment">     * {@link finish}.
-</span></span><span id="45" class="l"><a class="l" href="#45">45: </a><span class="php-comment">     *
-</span></span><span id="46" class="l"><a class="l" href="#46">46: </a><span class="php-comment">     * @return string
-</span></span><span id="47" class="l"><a class="l" href="#47">47: </a><span class="php-comment">     *    An authorization URL.  Redirect the user's browser to this URL.  After the user decides
-</span></span><span id="48" class="l"><a class="l" href="#48">48: </a><span class="php-comment">     *    whether to authorize your app or not, Dropbox will show the user an authorization code,
-</span></span><span id="49" class="l"><a class="l" href="#49">49: </a><span class="php-comment">     *    which the user will need to give to your application (e.g. via copy/paste).
-</span></span><span id="50" class="l"><a class="l" href="#50">50: </a><span class="php-comment">     */</span>
-</span><span id="51" class="l"><a class="l" href="#51">51: </a>    <span class="php-keyword1">function</span> <a id="_start" href="#_start">start</a>()
-</span><span id="52" class="l"><a class="l" href="#52">52: </a>    {
-</span><span id="53" class="l"><a class="l" href="#53">53: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_getAuthorizeUrl(<span class="php-keyword1">null</span>, <span class="php-keyword1">null</span>);
-</span><span id="54" class="l"><a class="l" href="#54">54: </a>    }
-</span><span id="55" class="l"><a class="l" href="#55">55: </a>
-</span><span id="56" class="l"><a class="l" href="#56">56: </a>    <span class="php-comment">/**
-</span></span><span id="57" class="l"><a class="l" href="#57">57: </a><span class="php-comment">     * Call this after the user has visited the authorize URL returned by {@link start()},
-</span></span><span id="58" class="l"><a class="l" href="#58">58: </a><span class="php-comment">     * approved your app, was presented with an authorization code by Dropbox, and has copy/paste'd
-</span></span><span id="59" class="l"><a class="l" href="#59">59: </a><span class="php-comment">     * that authorization code into your app.
-</span></span><span id="60" class="l"><a class="l" href="#60">60: </a><span class="php-comment">     *
-</span></span><span id="61" class="l"><a class="l" href="#61">61: </a><span class="php-comment">     * @param string $code
-</span></span><span id="62" class="l"><a class="l" href="#62">62: </a><span class="php-comment">     *    The authorization code provided to the user by Dropbox.
+</span></span><span id="26" class="l"><a class="l" href="#26">26: </a><span class="php-comment"> * print(&quot;Enter the authorization code here: &quot;);
+</span></span><span id="27" class="l"><a class="l" href="#27">27: </a><span class="php-comment"> * $code = \trim(\fgets(STDIN));
+</span></span><span id="28" class="l"><a class="l" href="#28">28: </a><span class="php-comment"> *
+</span></span><span id="29" class="l"><a class="l" href="#29">29: </a><span class="php-comment"> * try {
+</span></span><span id="30" class="l"><a class="l" href="#30">30: </a><span class="php-comment"> *    list($accessToken, $userId) = $webAuth-&gt;finish($code);
+</span></span><span id="31" class="l"><a class="l" href="#31">31: </a><span class="php-comment"> * }
+</span></span><span id="32" class="l"><a class="l" href="#32">32: </a><span class="php-comment"> * catch (dbx\Exception $ex) {
+</span></span><span id="33" class="l"><a class="l" href="#33">33: </a><span class="php-comment"> *    print(&quot;Error communicating with Dropbox API: &quot; . $ex-&gt;getMessage() . &quot;\n&quot;);
+</span></span><span id="34" class="l"><a class="l" href="#34">34: </a><span class="php-comment"> * }
+</span></span><span id="35" class="l"><a class="l" href="#35">35: </a><span class="php-comment"> *
+</span></span><span id="36" class="l"><a class="l" href="#36">36: </a><span class="php-comment"> * $client = dbx\Client($accessToken, $clientIdentifier, ...);
+</span></span><span id="37" class="l"><a class="l" href="#37">37: </a><span class="php-comment"> * &lt;/code&gt;
+</span></span><span id="38" class="l"><a class="l" href="#38">38: </a><span class="php-comment"> */</span>
+</span><span id="39" class="l"><a class="l" href="#39">39: </a><span class="php-keyword1">class</span> <a id="WebAuthNoRedirect" href="#WebAuthNoRedirect">WebAuthNoRedirect</a> <span class="php-keyword1">extends</span> WebAuthBase
+</span><span id="40" class="l"><a class="l" href="#40">40: </a>{
+</span><span id="41" class="l"><a class="l" href="#41">41: </a>    <span class="php-comment">/**
+</span></span><span id="42" class="l"><a class="l" href="#42">42: </a><span class="php-comment">     * Returns the URL of the authorization page the user must visit.  If the user approves
+</span></span><span id="43" class="l"><a class="l" href="#43">43: </a><span class="php-comment">     * your app, they will be shown the authorization code on the web page.  They will need to
+</span></span><span id="44" class="l"><a class="l" href="#44">44: </a><span class="php-comment">     * copy/paste that code into your application so your app can pass it to
+</span></span><span id="45" class="l"><a class="l" href="#45">45: </a><span class="php-comment">     * {@link finish}.
+</span></span><span id="46" class="l"><a class="l" href="#46">46: </a><span class="php-comment">     *
+</span></span><span id="47" class="l"><a class="l" href="#47">47: </a><span class="php-comment">     * See &lt;a href=&quot;https://www.dropbox.com/developers/core/docs#oa2-authorize&quot;&gt;/oauth2/authorize&lt;/a&gt;.
+</span></span><span id="48" class="l"><a class="l" href="#48">48: </a><span class="php-comment">     *
+</span></span><span id="49" class="l"><a class="l" href="#49">49: </a><span class="php-comment">     * @return string
+</span></span><span id="50" class="l"><a class="l" href="#50">50: </a><span class="php-comment">     *    An authorization URL.  Direct the user's browser to this URL.  After the user decides
+</span></span><span id="51" class="l"><a class="l" href="#51">51: </a><span class="php-comment">     *    whether to authorize your app or not, Dropbox will show the user an authorization code,
+</span></span><span id="52" class="l"><a class="l" href="#52">52: </a><span class="php-comment">     *    which the user will need to give to your application (e.g. via copy/paste).
+</span></span><span id="53" class="l"><a class="l" href="#53">53: </a><span class="php-comment">     */</span>
+</span><span id="54" class="l"><a class="l" href="#54">54: </a>    <span class="php-keyword1">function</span> <a id="_start" href="#_start">start</a>()
+</span><span id="55" class="l"><a class="l" href="#55">55: </a>    {
+</span><span id="56" class="l"><a class="l" href="#56">56: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_getAuthorizeUrl(<span class="php-keyword1">null</span>, <span class="php-keyword1">null</span>);
+</span><span id="57" class="l"><a class="l" href="#57">57: </a>    }
+</span><span id="58" class="l"><a class="l" href="#58">58: </a>
+</span><span id="59" class="l"><a class="l" href="#59">59: </a>    <span class="php-comment">/**
+</span></span><span id="60" class="l"><a class="l" href="#60">60: </a><span class="php-comment">     * Call this after the user has visited the authorize URL returned by {@link start()},
+</span></span><span id="61" class="l"><a class="l" href="#61">61: </a><span class="php-comment">     * approved your app, was presented with an authorization code by Dropbox, and has copy/paste'd
+</span></span><span id="62" class="l"><a class="l" href="#62">62: </a><span class="php-comment">     * that authorization code into your app.
 </span></span><span id="63" class="l"><a class="l" href="#63">63: </a><span class="php-comment">     *
-</span></span><span id="64" class="l"><a class="l" href="#64">64: </a><span class="php-comment">     * @return array
-</span></span><span id="65" class="l"><a class="l" href="#65">65: </a><span class="php-comment">     *    A &lt;code&gt;list(string $accessToken, string $userId)&lt;/code&gt;, where
-</span></span><span id="66" class="l"><a class="l" href="#66">66: </a><span class="php-comment">     *    &lt;code&gt;$accessToken&lt;/code&gt; can be used to construct a {@link Client} and
-</span></span><span id="67" class="l"><a class="l" href="#67">67: </a><span class="php-comment">     *    &lt;code&gt;$userId&lt;/code&gt; is the user ID of the user's Dropbox account.
+</span></span><span id="64" class="l"><a class="l" href="#64">64: </a><span class="php-comment">     * See &lt;a href=&quot;https://www.dropbox.com/developers/core/docs#oa2-token&quot;&gt;/oauth2/token&lt;/a&gt;.
+</span></span><span id="65" class="l"><a class="l" href="#65">65: </a><span class="php-comment">     *
+</span></span><span id="66" class="l"><a class="l" href="#66">66: </a><span class="php-comment">     * @param string $code
+</span></span><span id="67" class="l"><a class="l" href="#67">67: </a><span class="php-comment">     *    The authorization code provided to the user by Dropbox.
 </span></span><span id="68" class="l"><a class="l" href="#68">68: </a><span class="php-comment">     *
-</span></span><span id="69" class="l"><a class="l" href="#69">69: </a><span class="php-comment">     * @throws Exception
-</span></span><span id="70" class="l"><a class="l" href="#70">70: </a><span class="php-comment">     *    Thrown if there's an error getting the access token from Dropbox.
-</span></span><span id="71" class="l"><a class="l" href="#71">71: </a><span class="php-comment">     */</span>
-</span><span id="72" class="l"><a class="l" href="#72">72: </a>    <span class="php-keyword1">function</span> <a id="_finish" href="#_finish">finish</a>(<span class="php-var">$code</span>)
-</span><span id="73" class="l"><a class="l" href="#73">73: </a>    {
-</span><span id="74" class="l"><a class="l" href="#74">74: </a>        Checker::argStringNonEmpty(<span class="php-quote">&quot;code&quot;</span>, <span class="php-var">$code</span>);
-</span><span id="75" class="l"><a class="l" href="#75">75: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_finish(<span class="php-var">$code</span>, <span class="php-keyword1">null</span>);
-</span><span id="76" class="l"><a class="l" href="#76">76: </a>    }
-</span><span id="77" class="l"><a class="l" href="#77">77: </a>}
-</span><span id="78" class="l"><a class="l" href="#78">78: </a>
-</span><span id="79" class="l"><a class="l" href="#79">79: </a></span></code></pre>
+</span></span><span id="69" class="l"><a class="l" href="#69">69: </a><span class="php-comment">     * @return array
+</span></span><span id="70" class="l"><a class="l" href="#70">70: </a><span class="php-comment">     *    A &lt;code&gt;list(string $accessToken, string $userId)&lt;/code&gt;, where
+</span></span><span id="71" class="l"><a class="l" href="#71">71: </a><span class="php-comment">     *    &lt;code&gt;$accessToken&lt;/code&gt; can be used to construct a {@link Client} and
+</span></span><span id="72" class="l"><a class="l" href="#72">72: </a><span class="php-comment">     *    &lt;code&gt;$userId&lt;/code&gt; is the user ID of the user's Dropbox account.
+</span></span><span id="73" class="l"><a class="l" href="#73">73: </a><span class="php-comment">     *
+</span></span><span id="74" class="l"><a class="l" href="#74">74: </a><span class="php-comment">     * @throws Exception
+</span></span><span id="75" class="l"><a class="l" href="#75">75: </a><span class="php-comment">     *    Thrown if there's an error getting the access token from Dropbox.
+</span></span><span id="76" class="l"><a class="l" href="#76">76: </a><span class="php-comment">     */</span>
+</span><span id="77" class="l"><a class="l" href="#77">77: </a>    <span class="php-keyword1">function</span> <a id="_finish" href="#_finish">finish</a>(<span class="php-var">$code</span>)
+</span><span id="78" class="l"><a class="l" href="#78">78: </a>    {
+</span><span id="79" class="l"><a class="l" href="#79">79: </a>        Checker::argStringNonEmpty(<span class="php-quote">&quot;code&quot;</span>, <span class="php-var">$code</span>);
+</span><span id="80" class="l"><a class="l" href="#80">80: </a>        <span class="php-keyword1">return</span> <span class="php-var">$this</span>-&gt;_finish(<span class="php-var">$code</span>, <span class="php-keyword1">null</span>);
+</span><span id="81" class="l"><a class="l" href="#81">81: </a>    }
+</span><span id="82" class="l"><a class="l" href="#82">82: </a>}
+</span><span id="83" class="l"><a class="l" href="#83">83: </a>
+</span><span id="84" class="l"><a class="l" href="#84">84: </a></span></code></pre>
 
 	<div id="footer">
 		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>

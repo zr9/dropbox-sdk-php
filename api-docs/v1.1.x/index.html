@@ -27,10 +27,14 @@
 			<ul>
 				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
 				<li><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></li>
+				<li><a href="class-Dropbox.AuthBase.html">Dropbox\AuthBase</a></li>
 				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
 				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
+				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
+				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -66,6 +70,10 @@
 			</ul>
 
 
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-error_to_exception.html">error_to_exception</a></li>
+			</ul>
 		</div>
 	</div>
 </div>
@@ -116,6 +124,10 @@
 	<td>A class that gives get/put/clear access to a single entry in an array.</td>
 </tr>
 <tr>
+	<td class="name"><a href="class-Dropbox.AuthBase.html">Dropbox\AuthBase</a></td>
+	<td>Base class for API authorization-related classes.</td>
+</tr>
+<tr>
 	<td class="name"><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></td>
 	<td>This class contains methods to load an AppInfo and AccessToken from a JSON file.
 This can help simplify simple scripts (such as the example programs that come
@@ -127,12 +139,30 @@ with the SDK) but is probably not useful in typical Dropbox API apps.</td>
 gotten an AccessToken via <code><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></code>.</td>
 </tr>
 <tr>
+	<td class="name"><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></td>
+	<td>Use with <code><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></code> to convert old OAuth 1 access tokens to OAuth 2
+access tokens. This SDK doesn't support using OAuth 1 access tokens for regular
+API calls.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></td>
+	<td>Lets you convert OAuth 1 access tokens to OAuth 2 access tokens. First call
+OAuth1AccessTokenUpgrader::createOAuth2AccessToken() to get an OAuth 2
+access token. If that succeeds, call OAuth1AccessTokenUpgrader::disableOAuth1AccessToken() to disable the OAuth 1
+access token.</td>
+</tr>
+<tr>
 	<td class="name"><a href="class-Dropbox.Path.html">Dropbox\Path</a></td>
 	<td>Path validation functions.</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-Dropbox.Security.html">Dropbox\Security</a></td>
 	<td>Helper functions for security-related things.</td>
+</tr>
+<tr>
+	<td class="name"><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></td>
+	<td>Peforms a few basic checks of your PHP installation's SSL implementation to see
+if it insecure in an obvious way.</td>
 </tr>
 <tr>
 	<td class="name"><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></td>
@@ -254,6 +284,13 @@ user's session. This is blocked to prevent CSRF attacks.</td>
 </table>
 
 
+<table class="summary" id="functions">
+<caption>Functions summary</caption>
+<tr>
+	<td class="name"><a href="function-error_to_exception.html">error_to_exception</a></td>
+	<td></td>
+</tr>
+</table>
 </div>
 
 	<div id="footer">

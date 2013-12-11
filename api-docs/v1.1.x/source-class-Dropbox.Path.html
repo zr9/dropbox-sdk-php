@@ -8,7 +8,7 @@
 	<title>File Dropbox/Path.php | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2222935599"></script>
+	<script type="text/javascript" src="elementlist.js?2507320660"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -29,10 +29,14 @@
 			<ul>
 				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
 				<li><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></li>
+				<li><a href="class-Dropbox.AuthBase.html">Dropbox\AuthBase</a></li>
 				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
 				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
+				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li class="active"><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
+				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -68,6 +72,10 @@
 			</ul>
 
 
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-error_to_exception.html">error_to_exception</a></li>
+			</ul>
 		</div>
 	</div>
 </div>
@@ -251,15 +259,28 @@
 </span></span><span id="148" class="l"><a class="l" href="#148">148: </a><span class="php-comment">     * @param mixed $value
 </span></span><span id="149" class="l"><a class="l" href="#149">149: </a><span class="php-comment">     * @throws \InvalidArgumentException
 </span></span><span id="150" class="l"><a class="l" href="#150">150: </a><span class="php-comment">     */</span>
-</span><span id="151" class="l"><a class="l" href="#151">151: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_checkArgNonRoot" href="#_checkArgNonRoot">checkArgNonRoot</a>(<span class="php-var">$argName</span>, <span class="php-var">$value</span>)
+</span><span id="151" class="l"><a class="l" href="#151">151: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_checkArgOrNull" href="#_checkArgOrNull">checkArgOrNull</a>(<span class="php-var">$argName</span>, <span class="php-var">$value</span>)
 </span><span id="152" class="l"><a class="l" href="#152">152: </a>    {
-</span><span id="153" class="l"><a class="l" href="#153">153: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$value</span> === <span class="php-keyword1">null</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">' must not be null&quot;</span>);
-</span><span id="154" class="l"><a class="l" href="#154">154: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">is_string</span>(<span class="php-var">$value</span>)) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">' must be a string&quot;</span>);
-</span><span id="155" class="l"><a class="l" href="#155">155: </a>        <span class="php-var">$error</span> = self::findErrorNonRoot(<span class="php-var">$value</span>);
-</span><span id="156" class="l"><a class="l" href="#156">156: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$error</span> !== <span class="php-keyword1">null</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">'': bad path: </span><span class="php-var">$error</span><span class="php-quote">: &quot;</span>.<span class="php-keyword2">var_export</span>(<span class="php-var">$value</span>, <span class="php-keyword1">true</span>));
-</span><span id="157" class="l"><a class="l" href="#157">157: </a>    }
-</span><span id="158" class="l"><a class="l" href="#158">158: </a>}
-</span><span id="159" class="l"><a class="l" href="#159">159: </a></span></code></pre>
+</span><span id="153" class="l"><a class="l" href="#153">153: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$value</span> === <span class="php-keyword1">null</span>) <span class="php-keyword1">return</span>;
+</span><span id="154" class="l"><a class="l" href="#154">154: </a>        self::checkArg(<span class="php-var">$argName</span>, <span class="php-var">$value</span>);
+</span><span id="155" class="l"><a class="l" href="#155">155: </a>    }
+</span><span id="156" class="l"><a class="l" href="#156">156: </a>
+</span><span id="157" class="l"><a class="l" href="#157">157: </a>    <span class="php-comment">/**
+</span></span><span id="158" class="l"><a class="l" href="#158">158: </a><span class="php-comment">     * @internal
+</span></span><span id="159" class="l"><a class="l" href="#159">159: </a><span class="php-comment">     *
+</span></span><span id="160" class="l"><a class="l" href="#160">160: </a><span class="php-comment">     * @param string $argName
+</span></span><span id="161" class="l"><a class="l" href="#161">161: </a><span class="php-comment">     * @param mixed $value
+</span></span><span id="162" class="l"><a class="l" href="#162">162: </a><span class="php-comment">     * @throws \InvalidArgumentException
+</span></span><span id="163" class="l"><a class="l" href="#163">163: </a><span class="php-comment">     */</span>
+</span><span id="164" class="l"><a class="l" href="#164">164: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_checkArgNonRoot" href="#_checkArgNonRoot">checkArgNonRoot</a>(<span class="php-var">$argName</span>, <span class="php-var">$value</span>)
+</span><span id="165" class="l"><a class="l" href="#165">165: </a>    {
+</span><span id="166" class="l"><a class="l" href="#166">166: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$value</span> === <span class="php-keyword1">null</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">' must not be null&quot;</span>);
+</span><span id="167" class="l"><a class="l" href="#167">167: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">is_string</span>(<span class="php-var">$value</span>)) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">' must be a string&quot;</span>);
+</span><span id="168" class="l"><a class="l" href="#168">168: </a>        <span class="php-var">$error</span> = self::findErrorNonRoot(<span class="php-var">$value</span>);
+</span><span id="169" class="l"><a class="l" href="#169">169: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$error</span> !== <span class="php-keyword1">null</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">'': bad path: </span><span class="php-var">$error</span><span class="php-quote">: &quot;</span>.<span class="php-keyword2">var_export</span>(<span class="php-var">$value</span>, <span class="php-keyword1">true</span>));
+</span><span id="170" class="l"><a class="l" href="#170">170: </a>    }
+</span><span id="171" class="l"><a class="l" href="#171">171: </a>}
+</span><span id="172" class="l"><a class="l" href="#172">172: </a></span></code></pre>
 
 	<div id="footer">
 		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>

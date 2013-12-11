@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class Dropbox\WebAuthException_BadState | Dropbox SDK for PHP</title>
+	<title>Class Dropbox\OAuth1AccessToken | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
 	<script type="text/javascript" src="elementlist.js?2507320660"></script>
@@ -31,7 +31,7 @@
 				<li><a href="class-Dropbox.AuthBase.html">Dropbox\AuthBase</a></li>
 				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
 				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
-				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
+				<li class="active"><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
 				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
@@ -64,7 +64,7 @@
 				<li><a href="class-Dropbox.Exception_ServerError.html">Dropbox\Exception_ServerError</a></li>
 				<li><a href="class-Dropbox.StreamReadException.html">Dropbox\StreamReadException</a></li>
 				<li><a href="class-Dropbox.WebAuthException_BadRequest.html">Dropbox\WebAuthException_BadRequest</a></li>
-				<li class="active"><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></li>
+				<li><a href="class-Dropbox.WebAuthException_BadState.html">Dropbox\WebAuthException_BadState</a></li>
 				<li><a href="class-Dropbox.WebAuthException_Csrf.html">Dropbox\WebAuthException_Csrf</a></li>
 				<li><a href="class-Dropbox.WebAuthException_NotApproved.html">Dropbox\WebAuthException_NotApproved</a></li>
 				<li><a href="class-Dropbox.WebAuthException_Provider.html">Dropbox\WebAuthException_Provider</a></li>
@@ -108,32 +108,17 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class WebAuthException_BadState</h1>
+	<h1>Class OAuth1AccessToken</h1>
 
 
 	<div class="description">
 	
-<p>Thrown if all the parameters are correct, but there's no CSRF token in the
-session. This probably means that the session expired.</p>
-
-<p>The recommended action is to redirect the user's browser to try the approval
-process again.</p>
+<p>Use with <code><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></code> to convert old OAuth 1 access tokens to OAuth
+2 access tokens. This SDK doesn't support using OAuth 1 access tokens for
+regular API calls.</p>
 
 	</div>
 
-	<dl class="tree">
-		<dd style="padding-left:0px">
-Exception
-			
-			
-		</dd>
-		<dd style="padding-left:30px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>Dropbox\WebAuthException_BadState</span></b>			
-			
-			
-		</dd>
-	</dl>
 
 
 
@@ -148,28 +133,133 @@ Exception
 		<b>Namespace:</b> Dropbox<br />
 		
 
-		<b>Located at</b> <a href="source-class-Dropbox.WebAuthException_BadState.html#4-19" title="Go to source code">Dropbox/WebAuthException/BadState.php</a><br />
+		<b>Located at</b> <a href="source-class-Dropbox.OAuth1AccessToken.html#4-61" title="Go to source code">Dropbox/OAuth1AccessToken.php</a><br />
 	</div>
 
 
 
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="getKey" id="_getKey">
 
-	<table class="summary inherited">
-	<caption>Methods inherited from Exception</caption>
-	<tr>
-		<td><code>
-__construct(), 
-__toString(), 
-getCode(), 
-getFile(), 
-getLine(), 
-getMessage(), 
-getPrevious(), 
-getTrace(), 
-getTraceAsString()
-		</code></td>
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getKey">#</a>
+		<code><a href="source-class-Dropbox.OAuth1AccessToken.html#11-16" title="Go to source code">getKey</a>( )</code>
+
+		<div class="description short">
+			
+<p>The OAuth 1 access token key.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>The OAuth 1 access token key.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getSecret" id="_getSecret">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getSecret">#</a>
+		<code><a href="source-class-Dropbox.OAuth1AccessToken.html#21-30" title="Go to source code">getSecret</a>( )</code>
+
+		<div class="description short">
+			
+<p>The OAuth 1 access token secret.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>The OAuth 1 access token secret.</p>
+
+<p>Make sure that this is kept a secret. Someone with your app secret can
+impesonate your application. People sometimes ask for help on the Dropbox API
+forums and copy/paste code that includes their app secret. Do not do that.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__construct" id="___construct">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___construct">#</a>
+		<code><a href="source-class-Dropbox.OAuth1AccessToken.html#35-50" title="Go to source code">__construct</a>( <span>string <var>$key</var></span>, <span>string <var>$secret</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Constructor.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Constructor.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$key</var></dt>
+					<dd><code>string</code><br>$key <code><a href="class-Dropbox.OAuth1AccessToken.html#_getKey">Dropbox\OAuth1AccessToken::getKey()</a></code></dd>
+					<dt><var>$secret</var></dt>
+					<dd><code>string</code><br>$secret <code><a href="class-Dropbox.OAuth1AccessToken.html#_getSecret">Dropbox\OAuth1AccessToken::getSecret()</a></code></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
 	</tr>
 	</table>
+
 
 
 

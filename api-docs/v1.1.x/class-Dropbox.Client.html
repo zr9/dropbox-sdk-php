@@ -7,7 +7,7 @@
 	<title>Class Dropbox\Client | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2222935599"></script>
+	<script type="text/javascript" src="elementlist.js?2507320660"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -28,10 +28,14 @@
 			<ul>
 				<li><a href="class-Dropbox.AppInfo.html">Dropbox\AppInfo</a></li>
 				<li><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntryStore</a></li>
+				<li><a href="class-Dropbox.AuthBase.html">Dropbox\AuthBase</a></li>
 				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
 				<li class="active"><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
+				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
+				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
+				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -67,6 +71,10 @@
 			</ul>
 
 
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-error_to_exception.html">error_to_exception</a></li>
+			</ul>
 		</div>
 	</div>
 </div>
@@ -126,7 +134,7 @@ gotten an AccessToken via <code><a href="class-Dropbox.WebAuth.html">Dropbox\Web
 		<b>Namespace:</b> Dropbox<br />
 		
 
-		<b>Located at</b> <a href="source-class-Dropbox.Client.html#4-1363" title="Go to source code">Dropbox/Client.php</a><br />
+		<b>Located at</b> <a href="source-class-Dropbox.Client.html#4-1500" title="Go to source code">Dropbox/Client.php</a><br />
 	</div>
 
 
@@ -271,6 +279,45 @@ server should use to localize those strings.</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="getHost" id="_getHost">
+
+		<td class="attributes"><code>
+			 public 
+			Host
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getHost">#</a>
+		<code><a href="source-class-Dropbox.Client.html#59-64" title="Go to source code">getHost</a>( )</code>
+
+		<div class="description short">
+			
+<p>The Host object that determines the hostnames we make requests
+to.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>The Host object that determines the hostnames we make requests
+to.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>Host</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="__construct" id="___construct">
 
 		<td class="attributes"><code>
@@ -282,7 +329,7 @@ server should use to localize those strings.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><a href="source-class-Dropbox.Client.html#59-96" title="Go to source code">__construct</a>( <span>string <var>$accessToken</var></span>, <span>string <var>$clientIdentifier</var></span>, <span>null|string <var>$userLocale</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#66-103" title="Go to source code">__construct</a>( <span>string <var>$accessToken</var></span>, <span>string <var>$clientIdentifier</var></span>, <span>null|string <var>$userLocale</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -313,6 +360,101 @@ server should use to localize those strings.</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="appendFilePath" id="_appendFilePath">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_appendFilePath">#</a>
+		<code><a href="source-class-Dropbox.Client.html#110-125" title="Go to source code">appendFilePath</a>( <span>string <var>$base</var></span>, <span>string <var>$path</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Given a <code><span class="php-var">$base</span></code> path for an API
+endpoint (for example, "/files"), append a Dropbox API file path to the end of
+that URL. Special characters in the file will be encoded properly.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Given a <code><span class="php-var">$base</span></code> path for an API
+endpoint (for example, "/files"), append a Dropbox API file path to the end of
+that URL. Special characters in the file will be encoded properly.</p>
+
+<p>This is for endpoints like "/files" takes the path on the URL and not as a
+separate query or POST parameter.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$base</var></dt>
+					<dd><code>string</code><br>$base</dd>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="disableAccessToken" id="_disableAccessToken">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_disableAccessToken">#</a>
+		<code><a href="source-class-Dropbox.Client.html#127-139" title="Go to source code">disableAccessToken</a>( )</code>
+
+		<div class="description short">
+			
+<p>Make an API call to disable the access token that you constructed this
+<code>Client</code> with. After calling this, API calls made with this
+<code>Client</code> will fail.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Make an API call to disable the access token that you constructed this
+<code>Client</code> with. After calling this, API calls made with this
+<code>Client</code> will fail.</p>
+
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#disable-token">/disable_access_token</a>.</p>
+
+
+
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="getAccountInfo" id="_getAccountInfo">
 
 		<td class="attributes"><code>
@@ -324,17 +466,17 @@ server should use to localize those strings.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getAccountInfo">#</a>
-		<code><a href="source-class-Dropbox.Client.html#110-129" title="Go to source code">getAccountInfo</a>( )</code>
+		<code><a href="source-class-Dropbox.Client.html#141-160" title="Go to source code">getAccountInfo</a>( )</code>
 
 		<div class="description short">
 			
-<p>Returns a basic account and quota information.</p>
+<p>Make an API call to get basic account and quota information.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Returns a basic account and quota information.</p>
+<p>Make an API call to get basic account and quota information.</p>
 
 <pre>
 <span class="php-var">$client</span> = ...
@@ -352,7 +494,7 @@ class="php-var">$accountInfo</span>);
 				<h4>Returns</h4>
 				<div class="list">
 					<code>array</code><br>See <a
-href="https://www.dropbox.com/developers/core/api#account-info">/account/info</a>.<br />
+href="https://www.dropbox.com/developers/core/docs#account-info">/account/info</a>.<br />
 				</div>
 
 				<h4>Throws</h4>
@@ -376,7 +518,7 @@ href="https://www.dropbox.com/developers/core/api#account-info">/account/info</a
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getFile">#</a>
-		<code><a href="source-class-Dropbox.Client.html#131-185" title="Go to source code">getFile</a>( <span>string <var>$path</var></span>, <span>resource <var>$outStream</var></span>, <span>string|null <var>$rev</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#162-216" title="Go to source code">getFile</a>( <span>string <var>$path</var></span>, <span>resource <var>$outStream</var></span>, <span>string|null <var>$rev</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -395,15 +537,17 @@ returned.</p>
 <pre>
 <span class="php-var">$client</span> = ...;
 <span
+class="php-var">$fd</span> = <span class="php-keyword2">fopen</span>(<span
+class="php-quote">&quot;./Frog.jpeg&quot;</span>, <span
+class="php-quote">&quot;wb&quot;</span>);
+<span
 class="php-var">$metadata</span> = <span
 class="php-var">$client</span>-&gt;getFile(<span
-class="php-quote">&quot;/Photos/Frog.jpeg&quot;</span>,
-                             <span
-class="php-keyword2">fopen</span>(<span
-class="php-quote">&quot;./Frog.jpeg&quot;</span>, <span
-class="php-quote">&quot;wb&quot;</span>));
-<span
-class="php-keyword2">print_r</span>(<span
+class="php-quote">&quot;/Photos/Frog.jpeg&quot;</span>, <span
+class="php-var">$fd</span>);
+<span class="php-keyword2">fclose</span>(<span
+class="php-var">$fd</span>);
+<span class="php-keyword2">print_r</span>(<span
 class="php-var">$metadata</span>);
 </pre>
 
@@ -424,7 +568,7 @@ version of a file, pass in value of the file metadata's "rev" field.</dd>
 				<h4>Returns</h4>
 				<div class="list">
 					<code>null|array</code><br>The <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for the file at the given $path and $rev, or <code><span
 class="php-keyword1">null</span></code> if the file doesn't exist,<br />
 				</div>
@@ -450,7 +594,7 @@ class="php-keyword1">null</span></code> if the file doesn't exist,<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_uploadFile">#</a>
-		<code><a href="source-class-Dropbox.Client.html#201-266" title="Go to source code">uploadFile</a>( <span>string <var>$path</var></span>, <span><code><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></code> <var>$writeMode</var></span>, <span>resource <var>$inStream</var></span>, <span>integer|null <var>$numBytes</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#232-297" title="Go to source code">uploadFile</a>( <span>string <var>$path</var></span>, <span><code><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></code> <var>$writeMode</var></span>, <span>resource <var>$inStream</var></span>, <span>integer|null <var>$numBytes</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -549,7 +693,7 @@ efficient upload (fewer network round-trips) for files smaller than 8 MB.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_uploadFileFromString">#</a>
-		<code><a href="source-class-Dropbox.Client.html#268-306" title="Go to source code">uploadFileFromString</a>( <span>string <var>$path</var></span>, <span><code><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></code> <var>$writeMode</var></span>, <span>string <var>$data</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#299-337" title="Go to source code">uploadFileFromString</a>( <span>string <var>$path</var></span>, <span><code><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></code> <var>$writeMode</var></span>, <span>string <var>$data</var></span> )</code>
 
 		<div class="description short">
 			
@@ -616,7 +760,7 @@ class="php-keyword2">print_r</span>(<span class="php-var">$md</span>);
 
 		<td class="name"><div>
 		<a class="anchor" href="#_uploadFileChunked">#</a>
-		<code><a href="source-class-Dropbox.Client.html#308-351" title="Go to source code">uploadFileChunked</a>( <span>string <var>$path</var></span>, <span><code><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></code> <var>$writeMode</var></span>, <span>resource <var>$inStream</var></span>, <span>integer|null <var>$numBytes</var> = <span class="php-keyword1">null</span></span>, <span>integer|null <var>$chunkSize</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#339-382" title="Go to source code">uploadFileChunked</a>( <span>string <var>$path</var></span>, <span><code><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></code> <var>$writeMode</var></span>, <span>resource <var>$inStream</var></span>, <span>integer|null <var>$numBytes</var> = <span class="php-keyword1">null</span></span>, <span>integer|null <var>$chunkSize</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -678,7 +822,7 @@ use a reasonable default.</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_chunkedUploadStart">#</a>
-		<code><a href="source-class-Dropbox.Client.html#499-535" title="Go to source code">chunkedUploadStart</a>( <span>string <var>$data</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#530-566" title="Go to source code">chunkedUploadStart</a>( <span>string <var>$data</var></span> )</code>
 
 		<div class="description short">
 			
@@ -728,7 +872,7 @@ the number of bytes that were successfully uploaded.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_chunkedUploadContinue">#</a>
-		<code><a href="source-class-Dropbox.Client.html#537-597" title="Go to source code">chunkedUploadContinue</a>( <span>string <var>$uploadId</var></span>, <span>integer <var>$byteOffset</var></span>, <span>string <var>$data</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#568-628" title="Go to source code">chunkedUploadContinue</a>( <span>string <var>$uploadId</var></span>, <span>integer <var>$byteOffset</var></span>, <span>string <var>$data</var></span> )</code>
 
 		<div class="description short">
 			
@@ -788,7 +932,7 @@ need to adjust your input to match.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_chunkedUploadFinish">#</a>
-		<code><a href="source-class-Dropbox.Client.html#626-665" title="Go to source code">chunkedUploadFinish</a>( <span>string <var>$uploadId</var></span>, <span>string <var>$path</var></span>, <span><code><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></code> <var>$writeMode</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#657-698" title="Go to source code">chunkedUploadFinish</a>( <span>string <var>$uploadId</var></span>, <span>string <var>$path</var></span>, <span><code><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></code> <var>$writeMode</var></span> )</code>
 
 		<div class="description short">
 			
@@ -801,6 +945,9 @@ upload session.</p>
 			
 <p>Creates a file on Dropbox using the accumulated contents of the given chunked
 upload session.</p>
+
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#commit-chunked-upload">/commit_chunked_upload</a>.</p>
 
 
 
@@ -820,7 +967,7 @@ via <code><a href="class-Dropbox.Client.html#_chunkedUploadStart">Dropbox\Client
 					<code>array|null</code><br>If <code><span class="php-keyword1">null</span></code>, it means the Dropbox
 server wasn't aware of the <code><span class="php-var">$uploadId</span></code>
 you gave it. Otherwise, you get back the <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for the newly-created file.<br />
 				</div>
 
@@ -845,7 +992,7 @@ object</a> for the newly-created file.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getMetadata">#</a>
-		<code><a href="source-class-Dropbox.Client.html#688-712" title="Go to source code">getMetadata</a>( <span>string <var>$path</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#722-746" title="Go to source code">getMetadata</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -878,7 +1025,7 @@ class="php-keyword2">print_r</span>(<span class="php-var">$md</span>);
 				<h4>Returns</h4>
 				<div class="list">
 					<code>array|null</code><br>If there is a file or folder at the given path, you'll get back the <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for that file or folder. If not, you'll get back <code><span
 class="php-keyword1">null</span></code>.<br />
 				</div>
@@ -904,7 +1051,7 @@ class="php-keyword1">null</span></code>.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getMetadataWithChildren">#</a>
-		<code><a href="source-class-Dropbox.Client.html#714-740" title="Go to source code">getMetadataWithChildren</a>( <span>string <var>$path</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#748-774" title="Go to source code">getMetadataWithChildren</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -941,7 +1088,7 @@ class="php-keyword2">print_r</span>(<span class="php-var">$md</span>);
 				<h4>Returns</h4>
 				<div class="list">
 					<code>array|null</code><br>If there is a file or folder at the given path, you'll get back the <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for that file or folder, along with all immediate children if it's a
 folder. If not, you'll get back <code><span
 class="php-keyword1">null</span></code>.<br />
@@ -968,7 +1115,7 @@ class="php-keyword1">null</span></code>.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getMetadataWithChildrenIfChanged">#</a>
-		<code><a href="source-class-Dropbox.Client.html#762-821" title="Go to source code">getMetadataWithChildrenIfChanged</a>( <span>string <var>$path</var></span>, <span>string <var>$previousFolderHash</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#796-855" title="Go to source code">getMetadataWithChildrenIfChanged</a>( <span>string <var>$path</var></span>, <span>string <var>$previousFolderHash</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1051,7 +1198,7 @@ class="php-keyword1">null</span>)</code>. If the metadata of the folder or any
 of its children has changed, you'll get <code><span
 class="php-keyword1">list</span>(<span class="php-keyword1">true</span>, <span
 class="php-var">$newMetadata</span>)</code>. $metadata is a <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a>.<br />
 				</div>
 
@@ -1076,7 +1223,7 @@ object</a>.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getDelta">#</a>
-		<code><a href="source-class-Dropbox.Client.html#823-849" title="Go to source code">getDelta</a>( <span>string|null <var>$cursor</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#857-892" title="Go to source code">getDelta</a>( <span>string|null <var>$cursor</var> = <span class="php-keyword1">null</span></span>, <span>string|null <var>$pathPrefix</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1098,11 +1245,17 @@ Dropbox.</p>
 					<dd><code>string|null</code><br>$cursor If this is the first time you're calling this, pass in <code><span
 class="php-keyword1">null</span></code>. Otherwise, pass in whatever cursor was
 returned by the previous call.</dd>
+					<dt><var>$pathPrefix</var></dt>
+					<dd><code>string|null</code><br>$pathPrefix If <code><span class="php-keyword1">null</span></code>, you'll get
+results for the entire folder (either the user's entire Dropbox or your App
+Folder). If you set <code><span class="php-var">$path_prefix</span></code> to
+"/Photos/Vacation", you'll only get results for that path and any files and
+folders under it.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>array</code><br>A <a href="https://www.dropbox.com/developers/core/api#delta">delta page</a>,
+					<code>array</code><br>A <a href="https://www.dropbox.com/developers/core/docs#delta">delta page</a>,
 which contains a list of changes to apply along with a new "cursor" that should
 be passed into future <code>getDelta</code> calls. If the "reset" field is
 <code><span class="php-keyword1">true</span></code>, you should clear your local
@@ -1133,7 +1286,7 @@ to get more results, otherwise wait a while (at least 5 minutes) before calling
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getRevisions">#</a>
-		<code><a href="source-class-Dropbox.Client.html#851-883" title="Go to source code">getRevisions</a>( <span>string <var>$path</var></span>, <span>integer|null <var>$limit</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#894-926" title="Go to source code">getRevisions</a>( <span>string <var>$path</var></span>, <span>integer|null <var>$limit</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1148,7 +1301,7 @@ path.</p>
 path.</p>
 
 <p>See <a
-href="https://www.dropbox.com/developers/core/api#revisions">/revisions</a>.</p>
+href="https://www.dropbox.com/developers/core/docs#revisions">/revisions</a>.</p>
 
 
 
@@ -1189,7 +1342,7 @@ that path.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_restoreFile">#</a>
-		<code><a href="source-class-Dropbox.Client.html#885-917" title="Go to source code">restoreFile</a>( <span>string <var>$path</var></span>, <span>string <var>$rev</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#928-960" title="Go to source code">restoreFile</a>( <span>string <var>$path</var></span>, <span>string <var>$rev</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1206,7 +1359,7 @@ copy. This will create a new revision, but the file contents will match the
 revision you specified.</p>
 
 <p>See <a
-href="https://www.dropbox.com/developers/core/api#restore">/restore</a>.</p>
+href="https://www.dropbox.com/developers/core/docs#restore">/restore</a>.</p>
 
 
 
@@ -1221,7 +1374,7 @@ href="https://www.dropbox.com/developers/core/api#restore">/restore</a>.</p>
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>The <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a><br />
 				</div>
 
@@ -1246,7 +1399,7 @@ object</a><br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_searchFileNames">#</a>
-		<code><a href="source-class-Dropbox.Client.html#919-960" title="Go to source code">searchFileNames</a>( <span>string <var>$basePath</var></span>, <span>string <var>$query</var></span>, <span>integer|null <var>$limit</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$includeDeleted</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#962-1005" title="Go to source code">searchFileNames</a>( <span>string <var>$basePath</var></span>, <span>string <var>$query</var></span>, <span>integer|null <var>$limit</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$includeDeleted</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1259,6 +1412,9 @@ string.</p>
 			
 <p>Returns metadata for all files and folders whose filename matches the query
 string.</p>
+
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#search">/search</a>.</p>
 
 
 
@@ -1303,7 +1459,7 @@ query.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_createShareableLink">#</a>
-		<code><a href="source-class-Dropbox.Client.html#962-993" title="Go to source code">createShareableLink</a>( <span>string <var>$path</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1007-1038" title="Go to source code">createShareableLink</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1322,7 +1478,7 @@ thumbnail or some other preview of the file, along with a download link to
 download the actual file.</p>
 
 <p>See <a
-href="https://www.dropbox.com/developers/core/api#shares">/shares</a>.</p>
+href="https://www.dropbox.com/developers/core/docs#shares">/shares</a>.</p>
 
 
 
@@ -1359,7 +1515,7 @@ to (UTF-8).</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_createTemporaryDirectLink">#</a>
-		<code><a href="source-class-Dropbox.Client.html#995-1024" title="Go to source code">createTemporaryDirectLink</a>( <span>string <var>$path</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1040-1071" title="Go to source code">createTemporaryDirectLink</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1373,6 +1529,9 @@ authentication. This link will expire in a few hours.</p>
 <p>Creates and returns a direct link to a file. This link can be used without
 authentication. This link will expire in a few hours.</p>
 
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#media">/media</a>.</p>
+
 
 
 				<h4>Parameters</h4>
@@ -1384,10 +1543,11 @@ authentication. This link will expire in a few hours.</p>
 				<h4>Returns</h4>
 				<div class="list">
 					<code>array</code><br>A <code><span class="php-keyword1">list</span>(string <span
-class="php-var">$url</span>, \DateTime <span class="php-var">$expires</span>)
-where &lt;code&gt;<span class="php-var">$url</span></code> is a direct link to
-the requested file and <code><span class="php-var">$expires</span></code> is a
-standard PHP <code>\DateTime</code> representing when <code><span
+class="php-var">$url</span>, \DateTime <span
+class="php-var">$expires</span>)</code> where <code><span
+class="php-var">$url</span></code> is a direct link to the requested file and
+<code><span class="php-var">$expires</span></code> is a standard PHP
+<code>\DateTime</code> representing when <code><span
 class="php-var">$url</span></code> will stop working.<br />
 				</div>
 
@@ -1412,7 +1572,7 @@ class="php-var">$url</span></code> will stop working.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_createCopyRef">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1026-1056" title="Go to source code">createCopyRef</a>( <span>string <var>$path</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1073-1105" title="Go to source code">createCopyRef</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1430,6 +1590,9 @@ file across different Dropbox accounts without downloading and re-uploading.</p>
 account and call <code>createCopyRef</code>. Then, create a <code>Client</code>
 using the access token for another account and call <code>copyFromCopyRef</code>
 using the copy ref. (You need to use the same app key both times.)</p>
+
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#copy_ref">/copy_ref</a>.</p>
 
 
 
@@ -1466,7 +1629,7 @@ using the copy ref. (You need to use the same app key both times.)</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getThumbnail">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1058-1115" title="Go to source code">getThumbnail</a>( <span>string <var>$path</var></span>, <span>string <var>$format</var></span>, <span>string <var>$size</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1107-1165" title="Go to source code">getThumbnail</a>( <span>string <var>$path</var></span>, <span>string <var>$format</var></span>, <span>string <var>$size</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1477,6 +1640,9 @@ using the copy ref. (You need to use the same app key both times.)</p>
 		<div class="description detailed hidden">
 			
 <p>Gets a thumbnail image representation of the file at the given path.</p>
+
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#thumbnails">/thumbnails</a>.</p>
 
 
 
@@ -1509,7 +1675,7 @@ class="php-keyword1">list</span>(<span class="php-keyword1">array</span> <span
 class="php-var">$metadata</span>, string <span
 class="php-var">$data</span>)</code> where <code><span
 class="php-var">$metadata</span></code> is the file's <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> and $data is the raw data for the thumbnail image. If the file
 doesn't exist, you'll get <code><span class="php-keyword1">null</span></code>.<br />
 				</div>
@@ -1535,7 +1701,7 @@ doesn't exist, you'll get <code><span class="php-keyword1">null</span></code>.<b
 
 		<td class="name"><div>
 		<a class="anchor" href="#_copy">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1117-1149" title="Go to source code">copy</a>( <span>string <var>$fromPath</var></span>, <span>string <var>$toPath</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1167-1201" title="Go to source code">copy</a>( <span>string <var>$fromPath</var></span>, <span>string <var>$toPath</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1546,6 +1712,9 @@ doesn't exist, you'll get <code><span class="php-keyword1">null</span></code>.<b
 		<div class="description detailed hidden">
 			
 <p>Copies a file or folder to a new location</p>
+
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#fileops-copy">/fileops/copy</a>.</p>
 
 
 
@@ -1560,7 +1729,7 @@ doesn't exist, you'll get <code><span class="php-keyword1">null</span></code>.<b
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>The <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for the new file or folder.<br />
 				</div>
 
@@ -1585,7 +1754,7 @@ object</a> for the new file or folder.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_copyFromCopyRef">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1151-1185" title="Go to source code">copyFromCopyRef</a>( <span>string <var>$copyRef</var></span>, <span>string <var>$toPath</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1203-1239" title="Go to source code">copyFromCopyRef</a>( <span>string <var>$copyRef</var></span>, <span>string <var>$toPath</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1598,6 +1767,9 @@ different Dropbox account).</p>
 			
 <p>Creates a file or folder based on an existing copy ref (possibly from a
 different Dropbox account).</p>
+
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#fileops-copy">/fileops/copy</a>.</p>
 
 
 
@@ -1612,7 +1784,7 @@ different Dropbox account).</p>
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>The <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for the new file or folder.<br />
 				</div>
 
@@ -1637,7 +1809,7 @@ object</a> for the new file or folder.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_createFolder">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1187-1216" title="Go to source code">createFolder</a>( <span>string <var>$path</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1241-1272" title="Go to source code">createFolder</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1648,6 +1820,9 @@ object</a> for the new file or folder.<br />
 		<div class="description detailed hidden">
 			
 <p>Creates a folder.</p>
+
+<p>See <a
+href="https://www.dropbox.com/developers/core/docs#fileops-create-folder">/fileops/create_folder</a>.</p>
 
 
 
@@ -1660,7 +1835,7 @@ object</a> for the new file or folder.<br />
 				<h4>Returns</h4>
 				<div class="list">
 					<code>array|null</code><br>If successful, you'll get back the <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for the newly-created folder. If not successful, you'll get
 <code><span class="php-keyword1">null</span></code>.<br />
 				</div>
@@ -1686,7 +1861,7 @@ object</a> for the newly-created folder. If not successful, you'll get
 
 		<td class="name"><div>
 		<a class="anchor" href="#_delete">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1218-1247" title="Go to source code">delete</a>( <span>string <var>$path</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1274-1303" title="Go to source code">delete</a>( <span>string <var>$path</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1699,7 +1874,7 @@ object</a> for the newly-created folder. If not successful, you'll get
 <p>Deletes a file or folder</p>
 
 <p>See <a
-href="https://www.dropbox.com/developers/core/api#fileops-delete">/fileops/delete</a>.</p>
+href="https://www.dropbox.com/developers/core/docs#fileops-delete">/fileops/delete</a>.</p>
 
 
 
@@ -1712,7 +1887,7 @@ href="https://www.dropbox.com/developers/core/api#fileops-delete">/fileops/delet
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>The <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for the deleted file or folder.<br />
 				</div>
 
@@ -1737,7 +1912,7 @@ object</a> for the deleted file or folder.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_move">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1249-1283" title="Go to source code">move</a>( <span>string <var>$fromPath</var></span>, <span>string <var>$toPath</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1305-1339" title="Go to source code">move</a>( <span>string <var>$fromPath</var></span>, <span>string <var>$toPath</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1750,7 +1925,7 @@ object</a> for the deleted file or folder.<br />
 <p>Moves a file or folder to a new location.</p>
 
 <p>See <a
-href="https://www.dropbox.com/developers/core/api#fileops-move">/fileops/move</a>.</p>
+href="https://www.dropbox.com/developers/core/docs#fileops-move">/fileops/move</a>.</p>
 
 
 
@@ -1765,7 +1940,7 @@ href="https://www.dropbox.com/developers/core/api#fileops-move">/fileops/move</a
 				<h4>Returns</h4>
 				<div class="list">
 					<code>mixed</code><br>The <a
-href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
 object</a> for the destination file or folder.<br />
 				</div>
 
@@ -1773,6 +1948,201 @@ object</a> for the destination file or folder.<br />
 				<div class="list">
 					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br />
 				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="buildUrlForGetOrPut" id="_buildUrlForGetOrPut">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_buildUrlForGetOrPut">#</a>
+		<code><a href="source-class-Dropbox.Client.html#1341-1358" title="Go to source code">buildUrlForGetOrPut</a>( <span>mixed <var>$host</var></span>, <span>mixed <var>$path</var></span>, <span>null <var>$params</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Build a URL for making a GET or PUT request. Will add the "locale"
+parameter.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Build a URL for making a GET or PUT request. Will add the "locale"
+parameter.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$host</var></dt>
+					<dd><code>mixed</code><br>$host Either the "API" or "API content" hostname from <code><a href="class-Dropbox.Client.html#_getHost">Dropbox\Client::getHost()</a></code>.</dd>
+					<dt><var>$path</var></dt>
+					<dd><code>mixed</code><br>$path The "path" part of the URL. For example, "/account/info".</dd>
+					<dt><var>$params</var></dt>
+					<dd><code>null</code><br>$params URL parameters. For POST requests, do not put the parameters here.
+Include them in the request body instead.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="doGet" id="_doGet">
+
+		<td class="attributes"><code>
+			 public 
+			HttpResponse
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_doGet">#</a>
+		<code><a href="source-class-Dropbox.Client.html#1360-1380" title="Go to source code">doGet</a>( <span>string <var>$host</var></span>, <span>string <var>$path</var></span>, <span>array|null <var>$params</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Perform an OAuth-2-authorized GET request to the Dropbox API. Will
+automatically fill in "User-Agent" and "locale" as well.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Perform an OAuth-2-authorized GET request to the Dropbox API. Will
+automatically fill in "User-Agent" and "locale" as well.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$host</var></dt>
+					<dd><code>string</code><br>$host Either the "API" or "API content" hostname from <code><a href="class-Dropbox.Client.html#_getHost">Dropbox\Client::getHost()</a></code>.</dd>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The "path" part of the URL. For example, "/account/info".</dd>
+					<dt><var>$params</var></dt>
+					<dd><code>array|null</code><br>$params GET parameters.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>HttpResponse</code><br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="doPost" id="_doPost">
+
+		<td class="attributes"><code>
+			 public 
+			HttpResponse
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_doPost">#</a>
+		<code><a href="source-class-Dropbox.Client.html#1382-1402" title="Go to source code">doPost</a>( <span>string <var>$host</var></span>, <span>string <var>$path</var></span>, <span>array|null <var>$params</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Perform an OAuth-2-authorized POST request to the Dropbox API. Will
+automatically fill in "User-Agent" and "locale" as well.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Perform an OAuth-2-authorized POST request to the Dropbox API. Will
+automatically fill in "User-Agent" and "locale" as well.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$host</var></dt>
+					<dd><code>string</code><br>$host Either the "API" or "API content" hostname from <code><a href="class-Dropbox.Client.html#_getHost">Dropbox\Client::getHost()</a></code>.</dd>
+					<dt><var>$path</var></dt>
+					<dd><code>string</code><br>$path The "path" part of the URL. For example, "/commit_chunked_upload".</dd>
+					<dt><var>$params</var></dt>
+					<dd><code>array|null</code><br>$params POST parameters.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>HttpResponse</code><br />
+				</div>
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="mkCurl" id="_mkCurl">
+
+		<td class="attributes"><code>
+			 public 
+			Curl
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_mkCurl">#</a>
+		<code><a href="source-class-Dropbox.Client.html#1404-1416" title="Go to source code">mkCurl</a>( <span>string <var>$url</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Create a Curl object that is pre-configured with <code><a href="class-Dropbox.Client.html#_getClientIdentifier">Dropbox\Client::getClientIdentifier()</a></code>, and the proper OAuth 2 "Authorization" header.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Create a Curl object that is pre-configured with <code><a href="class-Dropbox.Client.html#_getClientIdentifier">Dropbox\Client::getClientIdentifier()</a></code>, and the proper OAuth 2 "Authorization" header.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$url</var></dt>
+					<dd><code>string</code><br>$url Generate this URL using buildUrl().</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>Curl</code><br />
+				</div>
+
 
 
 
@@ -1790,7 +2160,7 @@ object</a> for the destination file or folder.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_parseDateTime">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1326-1345" title="Go to source code">parseDateTime</a>( <span>string <var>$apiDateTimeString</var></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1418-1437" title="Go to source code">parseDateTime</a>( <span>string <var>$apiDateTimeString</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1824,6 +2194,54 @@ date/times formatted like: <code><span class="php-quote">&quot;Sat, 21 Aug 2010
 					<code><code><a href="class-Dropbox.Exception_BadResponse.html">Dropbox\Exception_BadResponse</a></code></code><br>Thrown if <code><span class="php-var">$apiDateTimeString</span></code> isn't
 correctly formatted.<br />
 				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getAccessTokenError" id="_getAccessTokenError">
+
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getAccessTokenError">#</a>
+		<code><a href="source-class-Dropbox.Client.html#1456-1470" title="Go to source code">getAccessTokenError</a>( <span>string <var>$s</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Given an OAuth 2 access token, returns <code><span
+class="php-keyword1">null</span></code> if it is well-formed (though not
+necessarily valid). Otherwise, returns a string describing what's wrong with
+it.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Given an OAuth 2 access token, returns <code><span
+class="php-keyword1">null</span></code> if it is well-formed (though not
+necessarily valid). Otherwise, returns a string describing what's wrong with
+it.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$s</var></dt>
+					<dd><code>string</code><br>$s</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
 
 
 

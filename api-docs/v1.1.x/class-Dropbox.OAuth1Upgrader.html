@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class Dropbox\WebAuthNoRedirect | Dropbox SDK for PHP</title>
+	<title>Class Dropbox\OAuth1Upgrader | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
 	<script type="text/javascript" src="elementlist.js?2507320660"></script>
@@ -32,13 +32,13 @@
 				<li><a href="class-Dropbox.AuthInfo.html">Dropbox\AuthInfo</a></li>
 				<li><a href="class-Dropbox.Client.html">Dropbox\Client</a></li>
 				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
-				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
+				<li class="active"><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
 				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
-				<li class="active"><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
+				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
 				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
 			</ul>
 
@@ -108,19 +108,15 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class WebAuthNoRedirect</h1>
+	<h1>Class OAuth1Upgrader</h1>
 
 
 	<div class="description">
 	
-<p>OAuth 2 code-based authorization for apps that can't provide a redirect URI,
-typically command-line example apps.</p>
-
-<p>Use <code><a href="class-Dropbox.WebAuth.html#_start">Dropbox\WebAuth::start()</a></code> and WebAuth::getToken() to guide your
-user through the process of giving your app access to their Dropbox account. At
-the end, you will have an AccessToken, which you can pass to <code><a href="class-Dropbox.Client.html">Dropbox\Client</a></code> and start making API calls.</p>
-
-<p>Example:</p>
+<p>Lets you convert OAuth 1 access tokens to OAuth 2 access tokens. First call
+OAuth1AccessTokenUpgrader::createOAuth2AccessToken() to get an OAuth 2
+access token. If that succeeds, call OAuth1AccessTokenUpgrader::disableOAuth1AccessToken() to disable the OAuth 1
+access token.</p>
 
 <pre>
 <span class="php-keyword1">use</span> \Dropbox <span
@@ -131,56 +127,20 @@ class="php-var">$appInfo</span> = dbx\AppInfo::loadFromJsonFile(...);
 class="php-var">$clientIdentifier</span> = <span
 class="php-quote">&quot;my-app/1.0&quot;</span>;
 <span
-class="php-var">$webAuth</span> = <span
-class="php-keyword1">new</span> dbx\WebAuthNoRedirect(<span
+class="php-var">$oauth1AccessToken</span> = dbx\OAuth1AccessToken(...);
+
+<span
+class="php-var">$upgrader</span> = <span
+class="php-keyword1">new</span> dbx\OAuth1AccessTokenUpgrader(<span
 class="php-var">$appInfo</span>, <span
 class="php-var">$clientIdentifier</span>, ...);
-
 <span
-class="php-var">$authorizeUrl</span> = <span
-class="php-var">$webAuth</span>-&gt;start();
-
+class="php-var">$oauth2AccessToken</span> = <span
+class="php-var">$upgrader</span>-&gt;getOAuth2AccessToken(<span
+class="php-var">$oauth1AccessToken</span>);
 <span
-class="php-keyword1">print</span>(<span
-class="php-quote">&quot;1. Go to: </span><span
-class="php-var">$authorizeUrl</span><span
-class="php-quote">\n&quot;</span>);
-<span
-class="php-keyword1">print</span>(<span
-class="php-quote">&quot;2. Click &quot;</span>Allow<span
-class="php-quote">&quot; (you might have to log in first).\n&quot;</span>);
-<span
-class="php-keyword1">print</span>(<span
-class="php-quote">&quot;3. Copy the authorization code.\n&quot;</span>);
-<span
-class="php-keyword1">print</span>(<span
-class="php-quote">&quot;Enter the authorization code here: &quot;</span>);
-<span
-class="php-var">$code</span> = \<span class="php-keyword2">trim</span>(\<span
-class="php-keyword2">fgets</span>(STDIN));
-
-<span
-class="php-keyword1">try</span> {
-   <span
-class="php-keyword1">list</span>(<span
-class="php-var">$accessToken</span>, <span
-class="php-var">$userId</span>) = <span
-class="php-var">$webAuth</span>-&gt;finish(<span
-class="php-var">$code</span>);
-}
-<span
-class="php-keyword1">catch</span> (dbx\Exception <span
-class="php-var">$ex</span>) {
-   <span class="php-keyword1">print</span>(<span
-class="php-quote">&quot;Error communicating with Dropbox API: &quot;</span> . <span
-class="php-var">$ex</span>-&gt;getMessage() . <span
-class="php-quote">&quot;\n&quot;</span>);
-}
-
-<span
-class="php-var">$client</span> = dbx\Client(<span
-class="php-var">$accessToken</span>, <span
-class="php-var">$clientIdentifier</span>, ...);
+class="php-var">$upgrader</span>-&gt;disableOAuth1AccessToken(<span
+class="php-var">$oauth1AccessToken</span>);
 </pre>
 
 	</div>
@@ -194,14 +154,7 @@ class="php-var">$clientIdentifier</span>, ...);
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
-			<a href="class-Dropbox.WebAuthBase.html"><span>Dropbox\WebAuthBase</span></a>
-			
-			
-			
-		</dd>
-		<dd style="padding-left:60px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>Dropbox\WebAuthNoRedirect</span></b>			
+<b><span>Dropbox\OAuth1Upgrader</span></b>			
 			
 			
 		</dd>
@@ -220,14 +173,14 @@ class="php-var">$clientIdentifier</span>, ...);
 		<b>Namespace:</b> Dropbox<br />
 		
 
-		<b>Located at</b> <a href="source-class-Dropbox.WebAuthNoRedirect.html#4-82" title="Go to source code">Dropbox/WebAuthNoRedirect.php</a><br />
+		<b>Located at</b> <a href="source-class-Dropbox.OAuth1Upgrader.html#4-103" title="Go to source code">Dropbox/OAuth1Upgrader.php</a><br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="start" id="_start">
+	<tr data-order="createOAuth2AccessToken" id="_createOAuth2AccessToken">
 
 		<td class="attributes"><code>
 			 public 
@@ -237,93 +190,85 @@ class="php-var">$clientIdentifier</span>, ...);
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_start">#</a>
-		<code><a href="source-class-Dropbox.WebAuthNoRedirect.html#41-57" title="Go to source code">start</a>( )</code>
+		<a class="anchor" href="#_createOAuth2AccessToken">#</a>
+		<code><a href="source-class-Dropbox.OAuth1Upgrader.html#23-61" title="Go to source code">createOAuth2AccessToken</a>( <span><code><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></code> <var>$oauth1AccessToken</var></span> )</code>
 
 		<div class="description short">
 			
-<p>Returns the URL of the authorization page the user must visit. If the user
-approves your app, they will be shown the authorization code on the web page.
-They will need to copy/paste that code into your application so your app can
-pass it to <code><a href="class-Dropbox.WebAuthNoRedirect.html#_finish">Dropbox\WebAuthNoRedirect::finish()</a></code>.</p>
+<p>Given an existing active OAuth 1 access token, make a Dropbox API call to get
+a new OAuth 2 access token that represents the same user and app.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Returns the URL of the authorization page the user must visit. If the user
-approves your app, they will be shown the authorization code on the web page.
-They will need to copy/paste that code into your application so your app can
-pass it to <code><a href="class-Dropbox.WebAuthNoRedirect.html#_finish">Dropbox\WebAuthNoRedirect::finish()</a></code>.</p>
+<p>Given an existing active OAuth 1 access token, make a Dropbox API call to get
+a new OAuth 2 access token that represents the same user and app.</p>
 
 <p>See <a
-href="https://www.dropbox.com/developers/core/docs#oa2-authorize">/oauth2/authorize</a>.</p>
+href="https://www.dropbox.com/developers/core/docs#oa1-from-oa1">/oauth2/token_from_oauth1</a>.</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$oauth1AccessToken</var></dt>
+					<dd><code><code><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></code></code><br>$oauth1AccessToken</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>string</code><br>An authorization URL. Direct the user's browser to this URL. After the user
-decides whether to authorize your app or not, Dropbox will show the user an
-authorization code, which the user will need to give to your application (e.g.
-via copy/paste).<br />
+					<code>string</code><br>The OAuth 2 access token.<br />
 				</div>
 
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br />
+				</div>
 
 
 
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="finish" id="_finish">
+	<tr data-order="disableOAuth1AccessToken" id="_disableOAuth1AccessToken">
 
 		<td class="attributes"><code>
 			 public 
-			array
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_finish">#</a>
-		<code><a href="source-class-Dropbox.WebAuthNoRedirect.html#59-81" title="Go to source code">finish</a>( <span>string <var>$code</var></span> )</code>
+		<a class="anchor" href="#_disableOAuth1AccessToken">#</a>
+		<code><a href="source-class-Dropbox.OAuth1Upgrader.html#63-79" title="Go to source code">disableOAuth1AccessToken</a>( <span><code><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></code> <var>$oauth1AccessToken</var></span> )</code>
 
 		<div class="description short">
 			
-<p>Call this after the user has visited the authorize URL returned by <code><a href="class-Dropbox.WebAuthNoRedirect.html#_start">Dropbox\WebAuthNoRedirect::start()</a></code>, approved your app, was presented with an authorization code by
-Dropbox, and has copy/paste'd that authorization code into your app.</p>
+<p>Make a Dropbox API call to disable the given OAuth 1 access token.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>Call this after the user has visited the authorize URL returned by <code><a href="class-Dropbox.WebAuthNoRedirect.html#_start">Dropbox\WebAuthNoRedirect::start()</a></code>, approved your app, was presented with an authorization code by
-Dropbox, and has copy/paste'd that authorization code into your app.</p>
+<p>Make a Dropbox API call to disable the given OAuth 1 access token.</p>
 
 <p>See <a
-href="https://www.dropbox.com/developers/core/docs#oa2-token">/oauth2/token</a>.</p>
+href="https://www.dropbox.com/developers/core/docs#disable-token">/disable_access_token</a>.</p>
 
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$code</var></dt>
-					<dd><code>string</code><br>$code The authorization code provided to the user by Dropbox.</dd>
+					<dt><var>$oauth1AccessToken</var></dt>
+					<dd><code><code><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></code></code><br>$oauth1AccessToken</dd>
 				</dl></div>
 
-				<h4>Returns</h4>
-				<div class="list">
-					<code>array</code><br>A <code><span class="php-keyword1">list</span>(string <span
-class="php-var">$accessToken</span>, string <span
-class="php-var">$userId</span>)</code>, where <code><span
-class="php-var">$accessToken</span></code> can be used to construct a <code><a href="class-Dropbox.Client.html">Dropbox\Client</a></code> and <code><span class="php-var">$userId</span></code> is the user ID of
-the user's Dropbox account.<br />
-				</div>
 
 				<h4>Throws</h4>
 				<div class="list">
-					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br>Thrown if there's an error getting the access token from Dropbox.<br />
+					<code><code><a href="class-Dropbox.Exception.html">Dropbox\Exception</a></code></code><br />
 				</div>
 
 
