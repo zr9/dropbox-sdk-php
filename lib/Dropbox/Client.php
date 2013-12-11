@@ -109,6 +109,8 @@ class Client
      * Disable the access token that you constructed this <code>Client</code> with.
      * After calling this, API calls made with this <code>Client</code> will fail.
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#disable-token">/disable_access_token</a>.
+     *
      * @throws Exception
      */
     function disableAccessToken()
@@ -127,7 +129,7 @@ class Client
      * </code>
      *
      * @return array
-     *    See <a href="https://www.dropbox.com/developers/core/api#account-info">/account/info</a>.
+     *    See <a href="https://www.dropbox.com/developers/core/docs#account-info">/account/info</a>.
      *
      * @throws Exception
      */
@@ -161,7 +163,7 @@ class Client
      *   If you want a specific version of a file, pass in value of the file metadata's "rev" field.
      *
      * @return null|array
-     *   The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *   The <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
      *   object</a> for the file at the given $path and $rev, or <code>null</code> if the file
      *   doesn't exist,
      *
@@ -246,7 +248,7 @@ class Client
      *    than 8 MB.
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details>metadata
      *    object</a> for the newly-added file.
      *
      * @throws Exception
@@ -298,7 +300,7 @@ class Client
      *    The data to use for the contents of the file.
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details>metadata
      *    object</a> for the newly-added file.
      *
      * @throws Exception
@@ -341,7 +343,7 @@ class Client
      *    <code>null</code> and the library will use a reasonable default.
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details>metadata
      *    object</a> for the newly-added file.
      *
      * @throws Exception
@@ -378,7 +380,7 @@ class Client
      * @param int $chunkSize
      *
      * @return array
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details>metadata
      *    object</a> for the newly-added file.
      */
     private function _uploadFileChunked($path, $writeMode, $inStream, $numBytes, $chunkSize)
@@ -638,6 +640,8 @@ class Client
     /**
      * Creates a file on Dropbox using the accumulated contents of the given chunked upload session.
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#commit-chunked-upload">/commit_chunked_upload</a>.
+     *
      * @param string $uploadId
      *     The unique identifier for the chunked upload session.  This is obtained via
      *     {@link chunkedUploadStart}.
@@ -652,7 +656,7 @@ class Client
      *    If <code>null</code>, it means the Dropbox server wasn't aware of the
      *    <code>$uploadId</code> you gave it.
      *    Otherwise, you get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata object</a>
      *    for the newly-created file.
      *
      * @throws Exception
@@ -712,7 +716,7 @@ class Client
      *
      * @return array|null
      *    If there is a file or folder at the given path, you'll get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata object</a>
      *    for that file or folder.  If not, you'll get back <code>null</code>.
      *
      * @throws Exception
@@ -739,7 +743,7 @@ class Client
      *
      * @return array|null
      *    If there is a file or folder at the given path, you'll get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata object</a>
      *    for that file or folder, along with all immediate children if it's a folder.  If not,
      *    you'll get back <code>null</code>.
      *
@@ -806,7 +810,7 @@ class Client
      *    A <code>list(boolean $changed, array $metadata)</code>.  If the metadata hasn't changed,
      *    you'll get <code>list(false, null)</code>.  If the metadata of the folder or any of its
      *    children has changed, you'll get <code>list(true, $newMetadata)</code>.  $metadata is a
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>.
+     *    <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata object</a>.
      *
      * @throws Exception
      */
@@ -847,7 +851,7 @@ class Client
      *    under it.
      *
      * @return array
-     *    A <a href="https://www.dropbox.com/developers/core/api#delta">delta page</a>, which
+     *    A <a href="https://www.dropbox.com/developers/core/docs#delta">delta page</a>, which
      *    contains a list of changes to apply along with a new "cursor" that should be passed into
      *    future <code>getDelta</code> calls.  If the "reset" field is <code>true</code>, you
      *    should clear your local state before applying the changes.  If the "has_more" field is
@@ -873,7 +877,7 @@ class Client
     /**
      * Gets the metadata for all the file revisions (up to a limit) for a given path.
      *
-     * See <a href="https://www.dropbox.com/developers/core/api#revisions">/revisions</a>.
+     * See <a href="https://www.dropbox.com/developers/core/docs#revisions">/revisions</a>.
      *
      * @param string path
      *    The Dropbox path that you want file revision metadata for (UTF-8).
@@ -882,7 +886,7 @@ class Client
      *    The maximum number of revisions to return.
      *
      * @return array|null
-     *    A list of <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    A list of <a href="https://www.dropbox.com/developers/core/docs#metadata-details>metadata
      *    objects</a>, one for each file revision.  The later revisions appear first in the list.
      *    If <code>null</code>, then there were too many revisions at that path.
      *
@@ -908,7 +912,7 @@ class Client
      * Takes a copy of the file at the given revision and saves it over the current copy.  This
      * will create a new revision, but the file contents will match the revision you specified.
      *
-     * See <a href="https://www.dropbox.com/developers/core/api#restore">/restore</a>.
+     * See <a href="https://www.dropbox.com/developers/core/docs#restore">/restore</a>.
      *
      * @param string $path
      *    The Dropbox path of the file to restore (UTF-8).
@@ -917,7 +921,7 @@ class Client
      *    The revision to restore the contents to.
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
      *    object</a>
      *
      * @throws Exception
@@ -941,6 +945,8 @@ class Client
     /**
      * Returns metadata for all files and folders whose filename matches the query string.
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#search">/search</a>.
+     *
      * @param string $basePath
      *    The path to limit the search to (UTF-8).  Pass in "/" to search everything.
      *
@@ -955,7 +961,7 @@ class Client
      *    Whether to include deleted files in the results.
      *
      * @return mixed
-     *    A list of <a href="https://www.dropbox.com/developers/core/api#metadata-details>metadata
+     *    A list of <a href="https://www.dropbox.com/developers/core/docs#metadata-details>metadata
      *    objects</a> of files that match the search query.
      *
      * @throws Exception
@@ -986,7 +992,7 @@ class Client
      * used without authentication.  The preview page may contain a thumbnail or some other
      * preview of the file, along with a download link to download the actual file.
      *
-     * See <a href="https://www.dropbox.com/developers/core/api#shares">/shares</a>.
+     * See <a href="https://www.dropbox.com/developers/core/docs#shares">/shares</a>.
      *
      * @param string $path
      *    The Dropbox path to the file or folder you want to create a shareable link to (UTF-8).
@@ -1018,13 +1024,15 @@ class Client
      * Creates and returns a direct link to a file.  This link can be used without authentication.
      * This link will expire in a few hours.
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#media">/media</a>.
+     *
      * @param string $path
      *    The Dropbox path to a file or folder (UTF-8).
      *
      * @return array
-     *    A <code>list(string $url, \DateTime $expires) where <code>$url</code> is a direct link to
-     *    the requested file and <code>$expires</code> is a standard PHP <code>\DateTime</code>
-     *    representing when <code>$url</code> will stop working.
+     *    A <code>list(string $url, \DateTime $expires)</code> where <code>$url</code> is a direct
+     *    link to the requested file and <code>$expires</code> is a standard PHP
+     *    <code>\DateTime</code> representing when <code>$url</code> will stop working.
      *
      * @throws Exception
      */
@@ -1054,6 +1062,8 @@ class Client
      * another account and call <code>copyFromCopyRef</code> using the copy ref.  (You need to use
      * the same app key both times.)
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#copy_ref">/copy_ref</a>.
+     *
      * @param string path
      *    The Dropbox path of the file or folder you want to create a copy ref for (UTF-8).
      *
@@ -1080,6 +1090,8 @@ class Client
     /**
      * Gets a thumbnail image representation of the file at the given path.
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#thumbnails">/thumbnails</a>.
+     *
      * @param string $path
      *    The path to the file you want a thumbnail for (UTF-8).
      *
@@ -1099,7 +1111,7 @@ class Client
      * @return array|null
      *    If the file exists, you'll get <code>list(array $metadata, string $data)</code> where
      *    <code>$metadata</code> is the file's
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata object</a>
      *    and $data is the raw data for the thumbnail image.  If the file doesn't exist, you'll
      *    get <code>null</code>.
      *
@@ -1139,6 +1151,8 @@ class Client
     /**
      * Copies a file or folder to a new location
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#fileops-copy">/fileops/copy</a>.
+     *
      * @param string $fromPath
      *    The Dropbox path of the file or folder you want to copy (UTF-8).
      *
@@ -1146,7 +1160,7 @@ class Client
      *    The destination Dropbox path (UTF-8).
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
      *    object</a> for the new file or folder.
      *
      * @throws Exception
@@ -1174,6 +1188,8 @@ class Client
      * Creates a file or folder based on an existing copy ref (possibly from a different Dropbox
      * account).
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#fileops-copy">/fileops/copy</a>.
+     *
      * @param string $copyRef
      *    A copy ref obtained via the {@link createCopyRef()} call.
      *
@@ -1181,7 +1197,7 @@ class Client
      *    The Dropbox path you want to copy the file or folder to (UTF-8).
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
      *    object</a> for the new file or folder.
      *
      * @throws Exception
@@ -1209,12 +1225,14 @@ class Client
     /**
      * Creates a folder.
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#fileops-create-folder">/fileops/create_folder</a>.
+     *
      * @param string $path
      *    The Dropbox path at which to create the folder (UTF-8).
      *
      * @return array|null
      *    If successful, you'll get back the
-     *    <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata object</a>
+     *    <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata object</a>
      *    for the newly-created folder.  If not successful, you'll get <code>null</code>.
      *
      * @throws Exception
@@ -1240,13 +1258,13 @@ class Client
     /**
      * Deletes a file or folder
      *
-     * See <a href="https://www.dropbox.com/developers/core/api#fileops-delete">/fileops/delete</a>.
+     * See <a href="https://www.dropbox.com/developers/core/docs#fileops-delete">/fileops/delete</a>.
      *
      * @param string $path
      *    The Dropbox path of the file or folder to delete (UTF-8).
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
      *    object</a> for the deleted file or folder.
      *
      * @throws Exception
@@ -1271,7 +1289,7 @@ class Client
     /**
      * Moves a file or folder to a new location.
      *
-     * See <a href="https://www.dropbox.com/developers/core/api#fileops-move">/fileops/move</a>.
+     * See <a href="https://www.dropbox.com/developers/core/docs#fileops-move">/fileops/move</a>.
      *
      * @param string $fromPath
      *    The source Dropbox path (UTF-8).
@@ -1280,7 +1298,7 @@ class Client
      *    The destination Dropbox path (UTF-8).
      *
      * @return mixed
-     *    The <a href="https://www.dropbox.com/developers/core/api#metadata-details">metadata
+     *    The <a href="https://www.dropbox.com/developers/core/docs#metadata-details">metadata
      *    object</a> for the destination file or folder.
      *
      * @throws Exception

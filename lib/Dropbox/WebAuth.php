@@ -130,6 +130,8 @@ class WebAuth extends WebAuthBase
      * the constructor.  This CSRF token will be checked on {@link finish()} to prevent
      * request forgery.
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#oa2-authorize">/oauth2/authorize</a>.
+     *
      * @param string|null $urlState
      *    Any data you would like to keep in the URL through the authorization process.
      *    This exact state will be returned to you by {@link finish()}.
@@ -162,6 +164,8 @@ class WebAuth extends WebAuthBase
     /**
      * Call this after the user has visited the authorize URL ({@link start()}), approved your app,
      * and was redirected to your redirect URI.
+     *
+     * See <a href="https://www.dropbox.com/developers/core/docs#oa2-token">/oauth2/token</a>.
      *
      * @param array $queryParams
      *    The query parameters on the GET request to your redirect URI.

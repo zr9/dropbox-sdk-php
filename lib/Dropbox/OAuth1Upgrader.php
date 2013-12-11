@@ -24,6 +24,8 @@ class OAuth1Upgrader extends AuthBase
      * Given an existing active OAuth 1 access token, make a Dropbox API call to get a new OAuth 2
      * access token that represents the same user and app.
      *
+     * See <a href="https://www.dropbox.com/developers/core/docs#oa1-from-oa1">/oauth2/token_from_oauth1</a>.
+     *
      * @param OAuth1AccessToken $oauth1AccessToken
      *
      * @return string
@@ -60,6 +62,8 @@ class OAuth1Upgrader extends AuthBase
 
     /**
      * Make a Dropbox API call to disable the given OAuth 1 access token.
+     *
+     * See <a href="https://www.dropbox.com/developers/core/docs#disable-token">/disable_access_token</a>.
      *
      * @param OAuth1AccessToken $oauth1AccessToken
      *
