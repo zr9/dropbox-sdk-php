@@ -28,6 +28,8 @@ If you're not using Composer, download the code, copy the "lib/" folder into you
 require_once "dropbox-sdk/Dropbox/autoload.php";
 ```
 
+IMPORTANT: Many PHP installations have an insecure SSL implementation.  To check if your PHP installation is insecure, run the included "examples/test-ssl.php" script, either on the command line or via your web server.
+
 ## Get a Dropbox API key
 
 You need a Dropbox API key to make API requests.

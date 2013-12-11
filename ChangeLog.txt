@@ -5,6 +5,8 @@
   but the response doesn't get back to us.
 - Add support for "path_prefix" parameter to /delta.
 - Add support for API call that upgrades OAuth 1 tokens to OAuth 2 tokens.
+- Stricter SSL: Use pinned root certificates and a fixed list of ciphersuites.
+  Include "examples/test-ssl.php" to let people check their PHP installation.
 
 ---------------------------------------------
 1.1.1 (2013-08-21)

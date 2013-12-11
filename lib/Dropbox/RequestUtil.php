@@ -72,12 +72,11 @@ final class RequestUtil
     }
 
     /**
-     * @param string $authHeaderValue
      * @param string $clientIdentifier
      * @param string $url
      * @return Curl
      */
-    static function mkCurlWithSpecificAuth($authHeaderValue, $clientIdentifier, $url)
+    static function mkCurl($clientIdentifier, $url)
     {
         $curl = new Curl($url);
 
@@ -90,8 +89,20 @@ final class RequestUtil
         //$curl->set(CURLOPT_VERBOSE, true);  // For debugging.
         // TODO: Figure out how to encode clientIdentifier (urlencode?)
         $curl->addHeader("User-Agent: ".$clientIdentifier." Dropbox-PHP-SDK");
-        $curl->addHeader("Authorization: $authHeaderValue");
 
+        return $curl;
+    }
+
+    /**
+     * @param string $clientIdentifier
+     * @param string $url
+     * @param string $authHeaderValue
+     * @return Curl
+     */
+    static function mkCurlWithAuth($clientIdentifier, $url, $authHeaderValue)
+    {
+        $curl = self::mkCurl($clientIdentifier, $url);
+        $curl->addHeader("Authorization: $authHeaderValue");
         return $curl;
     }
 
@@ -101,9 +112,9 @@ final class RequestUtil
      * @param string $accessToken
      * @return Curl
      */
-    static function mkCurl($clientIdentifier, $url, $accessToken)
+    static function mkCurlWithOAuth($clientIdentifier, $url, $accessToken)
     {
-        return self::mkCurlWithSpecificAuth("Bearer $accessToken", $clientIdentifier, $url);
+        return self::mkCurlWithAuth($clientIdentifier, $url, "Bearer $accessToken");
     }
 
     static function buildPostBody($params)
@@ -150,7 +161,7 @@ final class RequestUtil
         if ($params === null) $params = array();
         $params['locale'] = $userLocale;
 
-        $curl = self::mkCurl($clientIdentifier, $url, $accessToken);
+        $curl = self::mkCurlWithOAuth($clientIdentifier, $url, $accessToken);
         $curl->set(CURLOPT_POST, true);
         $curl->set(CURLOPT_POSTFIELDS, self::buildPostBody($params));
 
@@ -179,7 +190,7 @@ final class RequestUtil
         if ($params === null) $params = array();
         $params['locale'] = $userLocale;
 
-        $curl = self::mkCurlWithSpecificAuth($authHeaderValue, $clientIdentifier, $url);
+        $curl = self::mkCurlWithAuth($clientIdentifier, $url, $authHeaderValue);
         $curl->set(CURLOPT_POST, true);
         $curl->set(CURLOPT_POSTFIELDS, self::buildPostBody($params));
 
@@ -205,7 +216,7 @@ final class RequestUtil
 
         $url = self::buildUrlForGetOrPut($userLocale, $host, $path, $params);
 
-        $curl = self::mkCurl($clientIdentifier, $url, $accessToken);
+        $curl = self::mkCurlWithOAuth($clientIdentifier, $url, $accessToken);
         $curl->set(CURLOPT_HTTPGET, true);
         $curl->set(CURLOPT_RETURNTRANSFER, true);
 

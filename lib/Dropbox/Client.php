@@ -1412,7 +1412,7 @@ class Client
      */
     function mkCurl($url)
     {
-        return RequestUtil::mkCurl($this->clientIdentifier, $url, $this->accessToken);
+        return RequestUtil::mkCurlWithOAuth($this->clientIdentifier, $url, $this->accessToken);
     }
 
     /**

@@ -26,11 +26,40 @@ final class Curl
 
         $this->handle = curl_init($url);
 
+        // NOTE: Though we turn on SSL settings the best we can, PHP doesn't always obey these
+        // settings.  Check out the "ssl-check.php" example to see how well your PHP
+        // installation handles these SSL settings.
+
         // Force SSL and use our own certificate list.
-        $this->set(CURLOPT_SSL_VERIFYPEER, true);
-        $this->set(CURLOPT_SSL_VERIFYHOST, 2);
-        $this->set(CURLOPT_SSLVERSION, 3);  // Force SSL v3.
-        $this->set(CURLOPT_CAINFO, __DIR__."/trusted-certs.crt");
+        $this->set(CURLOPT_SSL_VERIFYPEER, true);   // Enforce certificate validation
+        $this->set(CURLOPT_SSL_VERIFYHOST, 2);      // Enforce hostname validation
+        $this->set(CURLOPT_SSLVERSION, 3);          // Enforce SSL v3.
+
+        // Only allow ciphersuites supported by Dropbox
+        $this->set(CURLOPT_SSL_CIPHER_LIST,
+            'ECDHE-RSA-AES256-GCM-SHA384:'.
+            'ECDHE-RSA-AES128-GCM-SHA256:'.
+            'ECDHE-RSA-AES256-SHA384:'.
+            'ECDHE-RSA-AES128-SHA256:'.
+            'ECDHE-RSA-AES256-SHA:'.
+            'ECDHE-RSA-AES128-SHA:'.
+            'ECDHE-RSA-RC4-SHA:'.
+            'DHE-RSA-AES256-GCM-SHA384:'.
+            'DHE-RSA-AES128-GCM-SHA256:'.
+            'DHE-RSA-AES256-SHA256:'.
+            'DHE-RSA-AES128-SHA256:'.
+            'DHE-RSA-AES256-SHA:'.
+            'DHE-RSA-AES128-SHA:'.
+            'AES256-GCM-SHA384:'.
+            'AES128-GCM-SHA256:'.
+            'AES256-SHA256:'.
+            'AES128-SHA256:'.
+            'AES256-SHA:'.
+            'AES128-SHA'
+        );
+
+        $this->set(CURLOPT_CAINFO, __DIR__.'/certs/trusted-certs.crt'); // Certificate file location
+        $this->set(CURLOPT_CAPATH, __DIR__.'/certs/'); // Certificate folder. Need to specify it to avoid using system default certs on some platforms
 
         // Limit vulnerability surface area.  Supported in cURL 7.19.4+
         if (defined('CURLOPT_PROTOCOLS')) $this->set(CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
