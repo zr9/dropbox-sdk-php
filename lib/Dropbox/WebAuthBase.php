@@ -8,7 +8,7 @@ class WebAuthBase extends AuthBase
 {
     protected function _getAuthorizeUrl($redirectUri, $state)
     {
-        return RequestUtil::buildUrl(
+        return RequestUtil::buildUrlForGetOrPut(
             $this->userLocale,
             $this->appInfo->getHost()->getWeb(),
             "1/oauth2/authorize",

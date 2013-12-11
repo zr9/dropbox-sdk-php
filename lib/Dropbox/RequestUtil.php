@@ -34,7 +34,7 @@ final class RequestUtil
      * @param array $params
      * @return string
      */
-    static function buildUrl($userLocale, $host, $path, $params = null)
+    static function buildUrlForGetOrPut($userLocale, $host, $path, $params = null)
     {
         $url = self::buildUri($host, $path);
         $url .= "?locale=" . rawurlencode($userLocale);
@@ -203,7 +203,7 @@ final class RequestUtil
     {
         Checker::argStringNonEmpty("accessToken", $accessToken);
 
-        $url = self::buildUrl($userLocale, $host, $path, $params);
+        $url = self::buildUrlForGetOrPut($userLocale, $host, $path, $params);
 
         $curl = self::mkCurl($clientIdentifier, $url, $accessToken);
         $curl->set(CURLOPT_HTTPGET, true);

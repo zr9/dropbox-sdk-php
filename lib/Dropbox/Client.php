@@ -57,6 +57,13 @@ class Client
     private $userLocale;
 
     /**
+     * The {@link Host} object that determines the hostnames we make requests to.
+     *
+     * @return Host
+     */
+    function getHost() { return $this->host; }
+
+    /**
      * Constructor.
      *
      * @param string $accessToken
@@ -100,14 +107,26 @@ class Client
     /** @var string */
     private $contentHost;
 
-    private function appendFilePath($base, $path)
+    /**
+     * Given a <code>$base</code> path for an API endpoint (for example, "/files"), append
+     * a Dropbox API file path to the end of that URL.  Special characters in the file will
+     * be encoded properly.
+     *
+     * This is for endpoints like "/files" takes the path on the URL and not as a separate
+     * query or POST parameter.
+     *
+     * @param string $base
+     * @param string $path
+     * @return string
+     */
+    function appendFilePath($base, $path)
     {
         return $base . "/auto/" . rawurlencode(substr($path, 1));
     }
 
     /**
-     * Disable the access token that you constructed this <code>Client</code> with.
-     * After calling this, API calls made with this <code>Client</code> will fail.
+     * Make an API call to disable the access token that you constructed this <code>Client</code>
+     * with.  After calling this, API calls made with this <code>Client</code> will fail.
      *
      * See <a href="https://www.dropbox.com/developers/core/docs#disable-token">/disable_access_token</a>.
      *
@@ -120,7 +139,7 @@ class Client
     }
 
     /**
-     * Returns a basic account and quota information.
+     * Make an API call to get basic account and quota information.
      *
      * <code>
      * $client = ...
@@ -175,8 +194,7 @@ class Client
         Checker::argResource("outStream", $outStream);
         Checker::argStringNonEmptyOrNull("rev", $rev);
 
-        $url = RequestUtil::buildUrl(
-            $this->userLocale,
+        $url = $this->buildUrlForGetOrPut(
             $this->contentHost,
             $this->appendFilePath("1/files", $path),
             array("rev" => $rev));
@@ -492,8 +510,7 @@ class Client
         WriteMode::checkArg("writeMode", $writeMode);
         Checker::argCallable("curlConfigClosure", $curlConfigClosure);
 
-        $url = RequestUtil::buildUrl(
-            $this->userLocale,
+        $url = $this->buildUrlForGetOrPut(
             $this->contentHost,
             $this->appendFilePath("1/files_put", $path),
             $writeMode->getExtraParams());
@@ -688,8 +705,8 @@ class Client
     protected function _chunkedUpload($params, $data)
         // Marked 'protected' so I can override it in testing.
     {
-        $url = RequestUtil::buildUrl(
-            $this->userLocale, $this->contentHost, "1/chunked_upload", $params);
+        $url = $this->buildUrlForGetOrPut(
+            $this->contentHost, "1/chunked_upload", $params);
 
         $curl = $this->mkCurl($url);
 
@@ -1129,8 +1146,7 @@ class Client
             throw new \InvalidArgumentException("Invalid 'size': ".self::q($format));
         }
 
-        $url = RequestUtil::buildUrl(
-            $this->userLocale,
+        $url = $this->buildUrlForGetOrPut(
             $this->contentHost,
             $this->appendFilePath("1/thumbnails", $path),
             array("size" => $size, "format" => $format));
@@ -1323,14 +1339,39 @@ class Client
     }
 
     /**
+     * Build a URL for making a GET or PUT request.  Will add the "locale"
+     * parameter.
+     *
+     * @param $host
+     *    Either the "API" or "API content" hostname from {@link getHost()}.
+     * @param $path
+     *    The "path" part of the URL.  For example, "/account/info".
+     * @param null $params
+     *    URL parameters.  For POST requests, do not put the parameters here.
+     *    Include them in the request body instead.
+     *
+     * @return string
+     */
+    function buildUrlForGetOrPut($host, $path, $params = null)
+    {
+        return RequestUtil::buildUrlForGetOrPut($this->userLocale, $host, $path, $params);
+    }
+
+    /**
+     * Perform an OAuth-2-authorized GET request to the Dropbox API.  Will automatically
+     * fill in "User-Agent" and "locale" as well.
+     *
      * @param string $host
+     *    Either the "API" or "API content" hostname from {@link getHost()}.
      * @param string $path
+     *    The "path" part of the URL.  For example, "/account/info".
      * @param array|null $params
+     *    GET parameters.
      * @return HttpResponse
      *
      * @throws Exception
      */
-    private function doGet($host, $path, $params = null)
+    function doGet($host, $path, $params = null)
     {
         Checker::argString("host", $host);
         Checker::argString("path", $path);
@@ -1339,14 +1380,20 @@ class Client
     }
 
     /**
+     * Perform an OAuth-2-authorized POST request to the Dropbox API.  Will automatically
+     * fill in "User-Agent" and "locale" as well.
+     *
      * @param string $host
+     *    Either the "API" or "API content" hostname from {@link getHost()}.
      * @param string $path
+     *    The "path" part of the URL.  For example, "/commit_chunked_upload".
      * @param array|null $params
+     *    POST parameters.
      * @return HttpResponse
      *
      * @throws Exception
      */
-    private function doPost($host, $path, $params = null)
+    function doPost($host, $path, $params = null)
     {
         Checker::argString("host", $host);
         Checker::argString("path", $path);
@@ -1355,10 +1402,15 @@ class Client
     }
 
     /**
+     * Create a {@link Curl} object that is pre-configured with {@link getClientIdentifier()},
+     * and the proper OAuth 2 "Authorization" header.
+     *
      * @param string $url
+     *    Generate this URL using {@link buildUrl()}.
+     *
      * @return Curl
      */
-    private function mkCurl($url)
+    function mkCurl($url)
     {
         return RequestUtil::mkCurl($this->clientIdentifier, $url, $this->accessToken);
     }
