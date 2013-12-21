@@ -26,9 +26,9 @@ final class Curl
 
         $this->handle = curl_init($url);
 
-        // NOTE: Though we turn on SSL settings the best we can, PHP doesn't always obey these
-        // settings.  Check out the "ssl-check.php" example to see how well your PHP
-        // installation handles these SSL settings.
+        // NOTE: Though we turn on all the correct SSL settings, many PHP installations
+        // don't respect these settings.  Run "examples/test-ssl.php" to run some basic
+        // SSL tests to see how well your PHP implementation behaves.
 
         // Force SSL and use our own certificate list.
         $this->set(CURLOPT_SSL_VERIFYPEER, true);   // Enforce certificate validation
@@ -58,8 +58,11 @@ final class Curl
             'AES128-SHA'
         );
 
-        $this->set(CURLOPT_CAINFO, __DIR__.'/certs/trusted-certs.crt'); // Certificate file location
-        $this->set(CURLOPT_CAPATH, __DIR__.'/certs/'); // Certificate folder. Need to specify it to avoid using system default certs on some platforms
+        // Certificate file.
+        $this->set(CURLOPT_CAINFO, __DIR__.'/certs/trusted-certs.crt');
+        // Certificate folder.  If not specified, some PHP installations will use
+        // the system default, even when CURLOPT_CAINFO is specified.
+        $this->set(CURLOPT_CAPATH, __DIR__.'/certs/');
 
         // Limit vulnerability surface area.  Supported in cURL 7.19.4+
         if (defined('CURLOPT_PROTOCOLS')) $this->set(CURLOPT_PROTOCOLS, CURLPROTO_HTTPS);
