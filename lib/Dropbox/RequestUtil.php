@@ -252,7 +252,7 @@ final class RequestUtil
         if ($sc === 500 || $sc === 502) return new Exception_ServerError($message);
         if ($sc === 503) return new Exception_RetryLater($message);
 
-        return new Exception_BadResponse("Unexpected $message");
+        return new Exception_BadResponseCode("Unexpected $message", $sc);
     }
 
     /**
