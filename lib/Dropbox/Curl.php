@@ -35,28 +35,11 @@ final class Curl
         $this->set(CURLOPT_SSL_VERIFYHOST, 2);      // Enforce hostname validation
         $this->set(CURLOPT_SSLVERSION, 3);          // Enforce SSL v3.
 
-        // Only allow ciphersuites supported by Dropbox
-        $this->set(CURLOPT_SSL_CIPHER_LIST,
-            'ECDHE-RSA-AES256-GCM-SHA384:'.
-            'ECDHE-RSA-AES128-GCM-SHA256:'.
-            'ECDHE-RSA-AES256-SHA384:'.
-            'ECDHE-RSA-AES128-SHA256:'.
-            'ECDHE-RSA-AES256-SHA:'.
-            'ECDHE-RSA-AES128-SHA:'.
-            'ECDHE-RSA-RC4-SHA:'.
-            'DHE-RSA-AES256-GCM-SHA384:'.
-            'DHE-RSA-AES128-GCM-SHA256:'.
-            'DHE-RSA-AES256-SHA256:'.
-            'DHE-RSA-AES128-SHA256:'.
-            'DHE-RSA-AES256-SHA:'.
-            'DHE-RSA-AES128-SHA:'.
-            'AES256-GCM-SHA384:'.
-            'AES128-GCM-SHA256:'.
-            'AES256-SHA256:'.
-            'AES128-SHA256:'.
-            'AES256-SHA:'.
-            'AES128-SHA'
-        );
+        // Limit the set of ciphersuites used.
+        global $sslCiphersuiteList;
+        if ($sslCiphersuiteList !== null) {
+            $this->set(CURLOPT_SSL_CIPHER_LIST, $sslCiphersuiteList);
+        }
 
         // Certificate file.
         $this->set(CURLOPT_CAINFO, __DIR__.'/certs/trusted-certs.crt');
@@ -104,4 +87,36 @@ final class Curl
     {
         curl_close($this->handle);
     }
+}
+
+// Different cURL SSL backends use different names for ciphersuites.
+$curlVersion = \curl_version();
+$curlSslBackend = $curlVersion['ssl_version'];
+if (\substr_compare($curlSslBackend, "NSS/", 0, strlen("NSS/")) === 0) {
+    // Can't figure out how to reliably set ciphersuites for NSS.
+    $sslCiphersuiteList = null;
+}
+else {
+    // Use the OpenSSL names for all other backends.  We may have to
+    // refine this if users report errors.
+    $sslCiphersuiteList =
+        'ECDHE-RSA-AES256-GCM-SHA384:'.
+        'ECDHE-RSA-AES128-GCM-SHA256:'.
+        'ECDHE-RSA-AES256-SHA384:'.
+        'ECDHE-RSA-AES128-SHA256:'.
+        'ECDHE-RSA-AES256-SHA:'.
+        'ECDHE-RSA-AES128-SHA:'.
+        'ECDHE-RSA-RC4-SHA:'.
+        'DHE-RSA-AES256-GCM-SHA384:'.
+        'DHE-RSA-AES128-GCM-SHA256:'.
+        'DHE-RSA-AES256-SHA256:'.
+        'DHE-RSA-AES128-SHA256:'.
+        'DHE-RSA-AES256-SHA:'.
+        'DHE-RSA-AES128-SHA:'.
+        'AES256-GCM-SHA384:'.
+        'AES128-GCM-SHA256:'.
+        'AES256-SHA256:'.
+        'AES128-SHA256:'.
+        'AES256-SHA:'.
+        'AES128-SHA';
 }
