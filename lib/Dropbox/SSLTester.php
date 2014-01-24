@@ -10,9 +10,20 @@ class SSLTester
 {
     static function test()
     {
-        echo "Testing your PHP installation's SSL implementation for a few obvious problems...\n";
+        $hostOs = php_uname('s').' '.php_uname('r');
+        $phpVersion = phpversion();
+        $curlVersionInfo = \curl_version();
+        $curlVersion = $curlVersionInfo['version'];
+        $curlSslBackend = $curlVersionInfo['ssl_version'];
 
         echo "-----------------------------------------------------------------------------\n";
+        echo "Testing your PHP installation's SSL implementation for a few obvious problems...\n";
+        echo "-----------------------------------------------------------------------------\n";
+        echo "- Host OS: $hostOs\n";
+        echo "- PHP version: $phpVersion\n";
+        echo "- cURL version: $curlVersion\n";
+        echo "- cURL SSL backend: $curlSslBackend\n";
+
         echo "Basic SSL tests\n";
         $basicFailures = self::testMulti(array(
             array("www.dropbox.com", 'testAllowed'),
