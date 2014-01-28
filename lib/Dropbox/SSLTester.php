@@ -3,11 +3,18 @@
 namespace Dropbox;
 
 /**
- * Peforms a few basic checks of your PHP installation's SSL implementation to see
- * if it insecure in an obvious way.
+ * Call the <code>test()</code> method.
  */
 class SSLTester
 {
+    /**
+     * Peforms a few basic tests of your PHP installation's SSL implementation to see
+     * if it insecure in an obvious way.  Results are written with "echo" and the output
+     * is HTML-safe.
+     *
+     * @return bool
+     *    Returns <code>true</code> if all the tests passed.
+     */
     static function test()
     {
         $hostOs = php_uname('s').' '.php_uname('r');
@@ -63,7 +70,7 @@ class SSLTester
         }
     }
 
-    static function testMulti($tests)
+    private static function testMulti($tests)
     {
         $anyFailed = false;
         foreach ($tests as $test) {
@@ -82,11 +89,11 @@ class SSLTester
         return $anyFailed;
     }
 
-    static function testPinnedCert()
+    private static function testPinnedCert()
     {
     }
 
-    static function testAllowed($url)
+    private static function testAllowed($url)
     {
         $curl = RequestUtil::mkCurl("test-ssl", $url);
         $curl->set(CURLOPT_RETURNTRANSFER, true);
@@ -94,17 +101,17 @@ class SSLTester
         return true;
     }
 
-    static function testUntrustedCert($url)
+    private static function testUntrustedCert($url)
     {
         return self::testDisallowed($url, 'Error executing HTTP request: SSL certificate problem, verify that the CA cert is OK');
     }
 
-    static function testHostnameMismatch($url)
+    private static function testHostnameMismatch($url)
     {
         return self::testDisallowed($url, 'Error executing HTTP request: SSL certificate problem: Invalid certificate chain');
     }
 
-    static function testDisallowed($url, $expectedExceptionMessage)
+    private static function testDisallowed($url, $expectedExceptionMessage)
     {
         $curl = RequestUtil::mkCurl("test-ssl", $url);
         $curl->set(CURLOPT_RETURNTRANSFER, true);

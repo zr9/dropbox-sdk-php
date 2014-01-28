@@ -1342,11 +1342,11 @@ class Client
      * Build a URL for making a GET or PUT request.  Will add the "locale"
      * parameter.
      *
-     * @param $host
+     * @param string $host
      *    Either the "API" or "API content" hostname from {@link getHost()}.
-     * @param $path
+     * @param string $path
      *    The "path" part of the URL.  For example, "/account/info".
-     * @param null $params
+     * @param array|null $params
      *    URL parameters.  For POST requests, do not put the parameters here.
      *    Include them in the request body instead.
      *
