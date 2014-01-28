@@ -8,7 +8,7 @@
 	<title>File Dropbox/Security.php | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2507320660"></script>
+	<script type="text/javascript" src="elementlist.js?2779543697"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -72,10 +72,6 @@
 			</ul>
 
 
-			<h3>Functions</h3>
-			<ul>
-				<li><a href="function-error_to_exception.html">error_to_exception</a></li>
-			</ul>
 		</div>
 	</div>
 </div>
@@ -158,7 +154,7 @@
 </span><span id="47" class="l"><a class="l" href="#47">47: </a>    {
 </span><span id="48" class="l"><a class="l" href="#48">48: </a>        Checker::argIntPositive(<span class="php-quote">&quot;numBytes&quot;</span>, <span class="php-var">$numBytes</span>);
 </span><span id="49" class="l"><a class="l" href="#49">49: </a>
-</span><span id="50" class="l"><a class="l" href="#50">50: </a>        <span class="php-comment">// openssl_random_pseudo_bytes had some issues prior to PHP 5.3.4 </span>
+</span><span id="50" class="l"><a class="l" href="#50">50: </a>        <span class="php-comment">// openssl_random_pseudo_bytes had some issues prior to PHP 5.3.4</span>
 </span><span id="51" class="l"><a class="l" href="#51">51: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">function_exists</span>(<span class="php-quote">'openssl_random_pseudo_bytes'</span>)
 </span><span id="52" class="l"><a class="l" href="#52">52: </a>                &amp;&amp; <span class="php-keyword2">version_compare</span>(PHP_VERSION, <span class="php-quote">'5.3.4'</span>) &gt;= <span class="php-num">0</span>) {
 </span><span id="53" class="l"><a class="l" href="#53">53: </a>            <span class="php-var">$s</span> = <span class="php-keyword2">openssl_random_pseudo_bytes</span>(<span class="php-var">$numBytes</span>, <span class="php-var">$isCryptoStrong</span>);

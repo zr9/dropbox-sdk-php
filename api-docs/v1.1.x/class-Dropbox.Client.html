@@ -7,7 +7,7 @@
 	<title>Class Dropbox\Client | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2507320660"></script>
+	<script type="text/javascript" src="elementlist.js?2779543697"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -71,10 +71,6 @@
 			</ul>
 
 
-			<h3>Functions</h3>
-			<ul>
-				<li><a href="function-error_to_exception.html">error_to_exception</a></li>
-			</ul>
 		</div>
 	</div>
 </div>
@@ -1965,7 +1961,7 @@ object</a> for the destination file or folder.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_buildUrlForGetOrPut">#</a>
-		<code><a href="source-class-Dropbox.Client.html#1341-1358" title="Go to source code">buildUrlForGetOrPut</a>( <span>mixed <var>$host</var></span>, <span>mixed <var>$path</var></span>, <span>null <var>$params</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.Client.html#1341-1358" title="Go to source code">buildUrlForGetOrPut</a>( <span>string <var>$host</var></span>, <span>string <var>$path</var></span>, <span>array|null <var>$params</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1984,11 +1980,11 @@ parameter.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$host</var></dt>
-					<dd><code>mixed</code><br>$host Either the "API" or "API content" hostname from <code><a href="class-Dropbox.Client.html#_getHost">Dropbox\Client::getHost()</a></code>.</dd>
+					<dd><code>string</code><br>$host Either the "API" or "API content" hostname from <code><a href="class-Dropbox.Client.html#_getHost">Dropbox\Client::getHost()</a></code>.</dd>
 					<dt><var>$path</var></dt>
-					<dd><code>mixed</code><br>$path The "path" part of the URL. For example, "/account/info".</dd>
+					<dd><code>string</code><br>$path The "path" part of the URL. For example, "/account/info".</dd>
 					<dt><var>$params</var></dt>
-					<dd><code>null</code><br>$params URL parameters. For POST requests, do not put the parameters here.
+					<dd><code>array|null</code><br>$params URL parameters. For POST requests, do not put the parameters here.
 Include them in the request body instead.</dd>
 				</dl></div>
 
