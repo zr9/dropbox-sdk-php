@@ -498,6 +498,6 @@ class ClientForChunkedUploadWithFailures extends dbx\Client
         else {
             throw new \InvalidArgumentException("invalid instruction: \"$instruction\"");
         }
-    } 
+    }
 }
 

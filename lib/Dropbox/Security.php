@@ -47,7 +47,7 @@ class Security
     {
         Checker::argIntPositive("numBytes", $numBytes);
 
-        // openssl_random_pseudo_bytes had some issues prior to PHP 5.3.4 
+        // openssl_random_pseudo_bytes had some issues prior to PHP 5.3.4
         if (function_exists('openssl_random_pseudo_bytes')
                 && version_compare(PHP_VERSION, '5.3.4') >= 0) {
             $s = openssl_random_pseudo_bytes($numBytes, $isCryptoStrong);
