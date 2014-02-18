@@ -4,6 +4,8 @@
 require_once __DIR__.'/helper.php';
 use \Dropbox as dbx;
 
+/* @var dbx\Client $client */
+/* @var string $dropboxPath */
 list($client, $dropboxPath) = parseArgs("get-metadata", $argv, array(
         array("dropbox-path", "The path (on Dropbox) that you want metadata for."),
     ));

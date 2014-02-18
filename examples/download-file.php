@@ -4,6 +4,9 @@
 require_once __DIR__.'/helper.php';
 use \Dropbox as dbx;
 
+/* @var dbx\Client $client */
+/* @var string $dropboxPath */
+/* @var string $localPath */
 list($client, $dropboxPath, $localPath) = parseArgs("download-file", $argv,
     // Required parameters
     array(

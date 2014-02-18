@@ -4,6 +4,8 @@
 require_once __DIR__.'/helper.php';
 use \Dropbox as dbx;
 
+/* @var dbx\Client $client */
+/* @var string $cursor */
 list($client, $cursor) = parseArgs("delta", $argv,
     // Required parameters
     array(),
