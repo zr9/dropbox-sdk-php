@@ -367,7 +367,8 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $client = new ClientForChunkedUploadWithFailures(
             $this->client->getAccessToken(),
             $this->client->getClientIdentifier(),
-            $this->client->getUserLocale());
+            $this->client->getUserLocale(),
+            $this->client->getHost());
 
 
         $fd = $this->writeTempFile(10);
