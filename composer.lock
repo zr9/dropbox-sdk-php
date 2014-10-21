@@ -128,16 +128,16 @@
         },
         {
             "name": "dg/texy",
-            "version": "v2.2.0",
+            "version": "v2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dg/texy",
-                "reference": "v2.2.0"
+                "reference": "v2.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/dg/texy/zipball/v2.2.0",
-                "reference": "v2.2.0",
+                "url": "https://github.com/dg/texy/zipball/v2.2",
+                "reference": "v2.2",
                 "shasum": ""
             },
             "type": "library",
