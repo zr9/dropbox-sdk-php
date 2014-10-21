@@ -16,7 +16,8 @@
 
     "require-dev": {
         "phpunit/phpunit": "3.7.*",
-        "apigen/apigen": "2.8.1"
+        "apigen/apigen": "2.8.1",
+        "squizlabs/php_codesniffer": "2.0.0RC3"
     },
 
     "repositories": [
