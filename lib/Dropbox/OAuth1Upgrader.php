@@ -89,10 +89,11 @@ class OAuth1Upgrader extends AuthBase
     private function doPost($oauth1AccessToken, $path)
     {
         // Construct the OAuth 1 header.
+        $signature = rawurlencode($this->appInfo->getSecret()) . "&" . rawurlencode($oauth1AccessToken->getSecret());
         $authHeaderValue = "OAuth oauth_signature_method=\"PLAINTEXT\""
              . ", oauth_consumer_key=\"" . rawurlencode($this->appInfo->getKey()) . "\""
              . ", oauth_token=\"" . rawurlencode($oauth1AccessToken->getKey()) . "\""
-             . ", oauth_signature=\"" . rawurlencode($this->appInfo->getSecret()) . "&" . rawurlencode($oauth1AccessToken->getSecret()) . "\"";
+             . ", oauth_signature=\"" . $signature . "\"";
 
         return RequestUtil::doPostWithSpecificAuth(
             $this->clientIdentifier, $authHeaderValue, $this->userLocale,

@@ -45,7 +45,7 @@ for ($i = 1; $i < $argc; $i++) {
     }
 }
 
-if(count($remainingArgs) !== 3) {
+if (count($remainingArgs) !== 3) {
     fwrite(STDERR, "Expecting exactly 3 non-option arguments, got ".count($remainingArgs)."\n");
     fwrite(STDERR, "Run with no arguments for help\n");
     die;

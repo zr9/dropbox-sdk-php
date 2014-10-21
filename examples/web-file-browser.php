@@ -76,7 +76,7 @@ else if ($requestPath === "/upload") {
     $fp = fopen($_FILES['file']['tmp_name'], "rb");
     $result = $dbxClient->uploadFile($remotePath, dbx\WriteMode::add(), $fp);
     fclose($fp);
-    $str = print_r($result, TRUE);
+    $str = print_r($result, true);
     echo renderHtmlPage("Uploading File", "Result: <pre>$str</pre>");
 }
 else if ($requestPath === "/dropbox-auth-start") {
@@ -157,7 +157,7 @@ function renderFolder($entry)
 HTML;
 
     $listing = '';
-    foreach($entry['contents'] as $child) {
+    foreach ($entry['contents'] as $child) {
         $cp = $child['path'];
         $cn = basename($cp);
         if ($child['is_dir']) $cn .= '/';
@@ -189,7 +189,7 @@ function getAppConfig()
 
 function getClient()
 {
-    if(!isset($_SESSION['access-token'])) {
+    if (!isset($_SESSION['access-token'])) {
         return false;
     }
 

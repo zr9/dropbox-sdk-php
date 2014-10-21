@@ -68,8 +68,7 @@ class ClientTest extends PHPUnit_Framework_TestCase
         $fd = tmpfile();
 
         $chars = "\nabcdefghijklmnopqrstuvwxyz0123456789";
-        for ($i = 0; $i < $size; $i++)
-        {
+        for ($i = 0; $i < $size; $i++) {
             fwrite($fd, $chars[rand() % strlen($chars)]);
         }
 
@@ -370,7 +369,6 @@ class ClientTest extends PHPUnit_Framework_TestCase
             $this->client->getUserLocale(),
             $this->client->getHost());
 
-
         $fd = $this->writeTempFile(10);
         $contents = stream_get_contents($fd);
 
@@ -501,4 +499,3 @@ class ClientForChunkedUploadWithFailures extends dbx\Client
         }
     }
 }
-

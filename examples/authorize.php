@@ -17,7 +17,7 @@ if ($argc === 1) {
     echoHelp($argv[0]);
     die;
 }
-if($argc !== 3) {
+if ($argc !== 3) {
     fwrite(STDERR, "Expecting exactly 2 arguments, got ".($argc - 1)."\n");
     fwrite(STDERR, "Run with no arguments for help\n");
     die;

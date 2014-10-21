@@ -31,7 +31,7 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
     function testNonHashAppJson()
     {
         $this->setExpectedException('\Dropbox\AppInfoLoadException');
-        file_put_contents("test.json", json_encode( 123, TRUE ));
+        file_put_contents("test.json", json_encode(123, true));
         dbx\AppInfo::loadFromJsonFile("test.json");
     }
 
@@ -47,7 +47,7 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
             $tmp = $correct;
             unset($tmp[$key]);
 
-            file_put_contents("test.json", json_encode($tmp, TRUE));
+            file_put_contents("test.json", json_encode($tmp, true));
 
             try {
                 dbx\AppInfo::loadFromJsonFile("test.json");
@@ -63,7 +63,7 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
             $tmp = $correct;
             $tmp[$key] = 123;
 
-            file_put_contents("test.json", json_encode($tmp, TRUE));
+            file_put_contents("test.json", json_encode($tmp, true));
 
             try {
                 dbx\AppInfo::loadFromJsonFile("test.json");
@@ -83,7 +83,7 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
             "host" => "test.droppishbox.com"
         );
 
-        file_put_contents("test.json", json_encode($correct, TRUE));
+        file_put_contents("test.json", json_encode($correct, true));
         $appInfo = dbx\AppInfo::loadFromJsonFile("test.json");
         $this->assertEquals($appInfo->getHost()->getContent(), "api-content-test.droppishbox.com");
         $this->assertEquals($appInfo->getHost()->getApi(), "api-test.droppishbox.com");
@@ -106,7 +106,7 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
     function testNonHashAuthJson()
     {
         $this->setExpectedException('\Dropbox\AuthInfoLoadException');
-        file_put_contents("test.json", json_encode( 123, TRUE ));
+        file_put_contents("test.json", json_encode(123, true));
         dbx\AuthInfo::loadFromJsonFile("test.json");
     }
 
@@ -121,7 +121,7 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
             $tmp = $minimal;
             unset($tmp[$key]);
 
-            file_put_contents("test.json", json_encode($tmp, TRUE));
+            file_put_contents("test.json", json_encode($tmp, true));
 
             try {
                 dbx\AuthInfo::loadFromJsonFile("test.json");
@@ -142,7 +142,7 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
             $tmp = $correct;
             $tmp[$key] = 123;
 
-            file_put_contents("test.json", json_encode($tmp, TRUE));
+            file_put_contents("test.json", json_encode($tmp, true));
 
             try {
                 dbx\AuthInfo::loadFromJsonFile("test.json");
