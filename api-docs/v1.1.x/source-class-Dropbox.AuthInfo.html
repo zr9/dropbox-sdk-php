@@ -134,7 +134,7 @@
 </span><span id="27" class="l"><a class="l" href="#27">27: </a>        }
 </span><span id="28" class="l"><a class="l" href="#28">28: </a>
 </span><span id="29" class="l"><a class="l" href="#29">29: </a>        <span class="php-var">$str</span> = <span class="php-keyword2">file_get_contents</span>(<span class="php-var">$path</span>);
-</span><span id="30" class="l"><a class="l" href="#30">30: </a>        <span class="php-var">$jsonArr</span> = <span class="php-keyword2">json_decode</span>(<span class="php-var">$str</span>, <span class="php-keyword1">TRUE</span>);
+</span><span id="30" class="l"><a class="l" href="#30">30: </a>        <span class="php-var">$jsonArr</span> = <span class="php-keyword2">json_decode</span>(<span class="php-var">$str</span>, <span class="php-keyword1">true</span>);
 </span><span id="31" class="l"><a class="l" href="#31">31: </a>
 </span><span id="32" class="l"><a class="l" href="#32">32: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_null</span>(<span class="php-var">$jsonArr</span>)) {
 </span><span id="33" class="l"><a class="l" href="#33">33: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> AuthInfoLoadException(<span class="php-quote">&quot;JSON parse error: \&quot;</span><span class="php-var">$path</span><span class="php-quote">\&quot;&quot;</span>);
@@ -148,7 +148,7 @@
 </span></span><span id="41" class="l"><a class="l" href="#41">41: </a><span class="php-comment">     * please use the @see loadFromJsonFile method.
 </span></span><span id="42" class="l"><a class="l" href="#42">42: </a><span class="php-comment">     *
 </span></span><span id="43" class="l"><a class="l" href="#43">43: </a><span class="php-comment">     * @param array $jsonArr
-</span></span><span id="44" class="l"><a class="l" href="#44">44: </a><span class="php-comment">     *    A parsed JSON object, typcally the result of json_decode(..., TRUE).
+</span></span><span id="44" class="l"><a class="l" href="#44">44: </a><span class="php-comment">     *    A parsed JSON object, typcally the result of json_decode(..., true).
 </span></span><span id="45" class="l"><a class="l" href="#45">45: </a><span class="php-comment">     * @return array
 </span></span><span id="46" class="l"><a class="l" href="#46">46: </a><span class="php-comment">     *    A &lt;code&gt;list(string $accessToken, Host $host)&lt;/code&gt;.
 </span></span><span id="47" class="l"><a class="l" href="#47">47: </a><span class="php-comment">     *

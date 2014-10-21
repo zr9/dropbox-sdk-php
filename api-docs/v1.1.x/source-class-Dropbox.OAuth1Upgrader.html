@@ -150,11 +150,11 @@
 </span><span id="43" class="l"><a class="l" href="#43"> 43: </a>
 </span><span id="44" class="l"><a class="l" href="#44"> 44: </a>        <span class="php-var">$parts</span> = RequestUtil::parseResponseJson(<span class="php-var">$response</span>-&gt;body);
 </span><span id="45" class="l"><a class="l" href="#45"> 45: </a>
-</span><span id="46" class="l"><a class="l" href="#46"> 46: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">array_key_exists</span>(<span class="php-quote">'token_type'</span>, <span class="php-var">$parts</span>) <span class="php-keyword1">or</span> !<span class="php-keyword2">is_string</span>(<span class="php-var">$parts</span>[<span class="php-quote">'token_type'</span>])) {
+</span><span id="46" class="l"><a class="l" href="#46"> 46: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">array_key_exists</span>(<span class="php-quote">'token_type'</span>, <span class="php-var">$parts</span>) || !<span class="php-keyword2">is_string</span>(<span class="php-var">$parts</span>[<span class="php-quote">'token_type'</span>])) {
 </span><span id="47" class="l"><a class="l" href="#47"> 47: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(<span class="php-quote">&quot;Missing \&quot;token_type\&quot; field.&quot;</span>);
 </span><span id="48" class="l"><a class="l" href="#48"> 48: </a>        }
 </span><span id="49" class="l"><a class="l" href="#49"> 49: </a>        <span class="php-var">$tokenType</span> = <span class="php-var">$parts</span>[<span class="php-quote">'token_type'</span>];
-</span><span id="50" class="l"><a class="l" href="#50"> 50: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">array_key_exists</span>(<span class="php-quote">'access_token'</span>, <span class="php-var">$parts</span>) <span class="php-keyword1">or</span> !<span class="php-keyword2">is_string</span>(<span class="php-var">$parts</span>[<span class="php-quote">'access_token'</span>])) {
+</span><span id="50" class="l"><a class="l" href="#50"> 50: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">array_key_exists</span>(<span class="php-quote">'access_token'</span>, <span class="php-var">$parts</span>) || !<span class="php-keyword2">is_string</span>(<span class="php-var">$parts</span>[<span class="php-quote">'access_token'</span>])) {
 </span><span id="51" class="l"><a class="l" href="#51"> 51: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(<span class="php-quote">&quot;Missing \&quot;access_token\&quot; field.&quot;</span>);
 </span><span id="52" class="l"><a class="l" href="#52"> 52: </a>        }
 </span><span id="53" class="l"><a class="l" href="#53"> 53: </a>        <span class="php-var">$accessToken</span> = <span class="php-var">$parts</span>[<span class="php-quote">'access_token'</span>];
@@ -196,19 +196,20 @@
 </span><span id="89" class="l"><a class="l" href="#89"> 89: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">function</span> <a id="_doPost" href="#_doPost">doPost</a>(<span class="php-var">$oauth1AccessToken</span>, <span class="php-var">$path</span>)
 </span><span id="90" class="l"><a class="l" href="#90"> 90: </a>    {
 </span><span id="91" class="l"><a class="l" href="#91"> 91: </a>        <span class="php-comment">// Construct the OAuth 1 header.</span>
-</span><span id="92" class="l"><a class="l" href="#92"> 92: </a>        <span class="php-var">$authHeaderValue</span> = <span class="php-quote">&quot;OAuth oauth_signature_method=\&quot;PLAINTEXT\&quot;&quot;</span>
-</span><span id="93" class="l"><a class="l" href="#93"> 93: </a>             . <span class="php-quote">&quot;, oauth_consumer_key=\&quot;&quot;</span> . <span class="php-keyword2">rawurlencode</span>(<span class="php-var">$this</span>-&gt;appInfo-&gt;getKey()) . <span class="php-quote">&quot;\&quot;&quot;</span>
-</span><span id="94" class="l"><a class="l" href="#94"> 94: </a>             . <span class="php-quote">&quot;, oauth_token=\&quot;&quot;</span> . <span class="php-keyword2">rawurlencode</span>(<span class="php-var">$oauth1AccessToken</span>-&gt;getKey()) . <span class="php-quote">&quot;\&quot;&quot;</span>
-</span><span id="95" class="l"><a class="l" href="#95"> 95: </a>             . <span class="php-quote">&quot;, oauth_signature=\&quot;&quot;</span> . <span class="php-keyword2">rawurlencode</span>(<span class="php-var">$this</span>-&gt;appInfo-&gt;getSecret()) . <span class="php-quote">&quot;&amp;&quot;</span> . <span class="php-keyword2">rawurlencode</span>(<span class="php-var">$oauth1AccessToken</span>-&gt;getSecret()) . <span class="php-quote">&quot;\&quot;&quot;</span>;
-</span><span id="96" class="l"><a class="l" href="#96"> 96: </a>
-</span><span id="97" class="l"><a class="l" href="#97"> 97: </a>        <span class="php-keyword1">return</span> RequestUtil::doPostWithSpecificAuth(
-</span><span id="98" class="l"><a class="l" href="#98"> 98: </a>            <span class="php-var">$this</span>-&gt;clientIdentifier, <span class="php-var">$authHeaderValue</span>, <span class="php-var">$this</span>-&gt;userLocale,
-</span><span id="99" class="l"><a class="l" href="#99"> 99: </a>            <span class="php-var">$this</span>-&gt;appInfo-&gt;getHost()-&gt;getApi(),
-</span><span id="100" class="l"><a class="l" href="#100">100: </a>            <span class="php-var">$path</span>,
-</span><span id="101" class="l"><a class="l" href="#101">101: </a>            <span class="php-keyword1">null</span>);
-</span><span id="102" class="l"><a class="l" href="#102">102: </a>    }
-</span><span id="103" class="l"><a class="l" href="#103">103: </a>}
-</span><span id="104" class="l"><a class="l" href="#104">104: </a></span></code></pre>
+</span><span id="92" class="l"><a class="l" href="#92"> 92: </a>        <span class="php-var">$signature</span> = <span class="php-keyword2">rawurlencode</span>(<span class="php-var">$this</span>-&gt;appInfo-&gt;getSecret()) . <span class="php-quote">&quot;&amp;&quot;</span> . <span class="php-keyword2">rawurlencode</span>(<span class="php-var">$oauth1AccessToken</span>-&gt;getSecret());
+</span><span id="93" class="l"><a class="l" href="#93"> 93: </a>        <span class="php-var">$authHeaderValue</span> = <span class="php-quote">&quot;OAuth oauth_signature_method=\&quot;PLAINTEXT\&quot;&quot;</span>
+</span><span id="94" class="l"><a class="l" href="#94"> 94: </a>             . <span class="php-quote">&quot;, oauth_consumer_key=\&quot;&quot;</span> . <span class="php-keyword2">rawurlencode</span>(<span class="php-var">$this</span>-&gt;appInfo-&gt;getKey()) . <span class="php-quote">&quot;\&quot;&quot;</span>
+</span><span id="95" class="l"><a class="l" href="#95"> 95: </a>             . <span class="php-quote">&quot;, oauth_token=\&quot;&quot;</span> . <span class="php-keyword2">rawurlencode</span>(<span class="php-var">$oauth1AccessToken</span>-&gt;getKey()) . <span class="php-quote">&quot;\&quot;&quot;</span>
+</span><span id="96" class="l"><a class="l" href="#96"> 96: </a>             . <span class="php-quote">&quot;, oauth_signature=\&quot;&quot;</span> . <span class="php-var">$signature</span> . <span class="php-quote">&quot;\&quot;&quot;</span>;
+</span><span id="97" class="l"><a class="l" href="#97"> 97: </a>
+</span><span id="98" class="l"><a class="l" href="#98"> 98: </a>        <span class="php-keyword1">return</span> RequestUtil::doPostWithSpecificAuth(
+</span><span id="99" class="l"><a class="l" href="#99"> 99: </a>            <span class="php-var">$this</span>-&gt;clientIdentifier, <span class="php-var">$authHeaderValue</span>, <span class="php-var">$this</span>-&gt;userLocale,
+</span><span id="100" class="l"><a class="l" href="#100">100: </a>            <span class="php-var">$this</span>-&gt;appInfo-&gt;getHost()-&gt;getApi(),
+</span><span id="101" class="l"><a class="l" href="#101">101: </a>            <span class="php-var">$path</span>,
+</span><span id="102" class="l"><a class="l" href="#102">102: </a>            <span class="php-keyword1">null</span>);
+</span><span id="103" class="l"><a class="l" href="#103">103: </a>    }
+</span><span id="104" class="l"><a class="l" href="#104">104: </a>}
+</span><span id="105" class="l"><a class="l" href="#105">105: </a></span></code></pre>
 
 	<div id="footer">
 		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
