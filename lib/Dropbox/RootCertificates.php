@@ -24,7 +24,7 @@ class RootCertificates
     {
         if (!self::$useExternalFile and self::$paths !== null) {
             throw new \Exception("You called \"useExternalFile\" too late.  The SDK already used the root ".
-                                 "certificate file (probably to make a network request).");
+                                 "certificate file (probably to make an API call).");
         }
 
         self::$useExternalFile = true;
@@ -52,6 +52,9 @@ class RootCertificates
                 }
             }
             else {
+                if (substr(__DIR__, 0, 7) === 'phar://') {
+                    throw new \Exception("The code appears to be running in a PHAR.  You need to call \\Dropbox\\RootCertificates\\useExternalPaths() before making any API calls.");
+                }
                 $file = __DIR__.self::$originalPath;
                 $folder = \dirname($file);
             }
