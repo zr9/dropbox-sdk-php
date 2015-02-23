@@ -115,7 +115,7 @@ final class AppInfo
             throw new AppInfoLoadException("File doesn't exist: \"$path\"");
         }
 
-        $str = file_get_contents($path);
+        $str = Util::stripUtf8Bom(file_get_contents($path));
         $jsonArr = json_decode($str, true, 10);
 
         if (is_null($jsonArr)) {

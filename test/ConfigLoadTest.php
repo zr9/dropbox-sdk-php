@@ -75,7 +75,8 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    function testAppJsonServer() {
+    function testAppJsonServer()
+    {
         $correct = array(
             "key" => "an_app_key",
             "secret" => "an_app_secret",
@@ -83,7 +84,14 @@ class ConfigLoadTest extends PHPUnit_Framework_TestCase
             "host" => "test.droppishbox.com"
         );
 
-        file_put_contents("test.json", json_encode($correct, true));
+        $str = json_encode($correct, true);
+        self::tryAppJsonServer($str);
+        self::tryAppJsonServer("\xEF\xBB\xBF".$str);  // UTF-8 byte order mark
+    }
+
+    function tryAppJsonServer($str)
+    {
+        file_put_contents("test.json", $str);
         $appInfo = dbx\AppInfo::loadFromJsonFile("test.json");
         $this->assertEquals($appInfo->getHost()->getContent(), "api-content-test.droppishbox.com");
         $this->assertEquals($appInfo->getHost()->getApi(), "api-test.droppishbox.com");
