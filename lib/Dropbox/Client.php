@@ -646,7 +646,7 @@ class Client
     private static function _chunkedUploadCheckForOffsetCorrection($response)
     {
         if ($response->statusCode !== 400) return null;
-        $j = json_decode($response->body, true);
+        $j = json_decode($response->body, true, 10);
         if ($j === null) return null;
         if (!array_key_exists("upload_id", $j) || !array_key_exists("offset", $j)) return null;
         $uploadId = $j["upload_id"];

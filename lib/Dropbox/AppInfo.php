@@ -116,7 +116,7 @@ final class AppInfo
         }
 
         $str = file_get_contents($path);
-        $jsonArr = json_decode($str, true);
+        $jsonArr = json_decode($str, true, 10);
 
         if (is_null($jsonArr)) {
             throw new AppInfoLoadException("JSON parse error: \"$path\"");
