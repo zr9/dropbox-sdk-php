@@ -8,7 +8,7 @@
 	<title>File Dropbox/Client.php | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2779543697"></script>
+	<script type="text/javascript" src="elementlist.js?1953306714"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -35,8 +35,10 @@
 				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
 				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
+				<li><a href="class-Dropbox.RootCertificates.html">Dropbox\RootCertificates</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
 				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
+				<li><a href="class-Dropbox.Util.html">Dropbox\Util</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -716,7 +718,7 @@
 </span><span id="609" class="l"><a class="l" href="#609"> 609: </a>            <span class="php-keyword1">list</span>(<span class="php-var">$correctedUploadId</span>, <span class="php-var">$correctedByteOffset</span>) = <span class="php-var">$correction</span>;
 </span><span id="610" class="l"><a class="l" href="#610"> 610: </a>            <span class="php-keyword1">if</span> (<span class="php-var">$correctedUploadId</span> !== <span class="php-var">$uploadId</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(
 </span><span id="611" class="l"><a class="l" href="#611"> 611: </a>                <span class="php-quote">&quot;Corrective 400 upload_id mismatch: us=&quot;</span>.
-</span><span id="612" class="l"><a class="l" href="#612"> 612: </a>                self::q(<span class="php-var">$uploadId</span>).<span class="php-quote">&quot; server=&quot;</span>.self::q(<span class="php-var">$correctedUploadId</span>));
+</span><span id="612" class="l"><a class="l" href="#612"> 612: </a>                Util::q(<span class="php-var">$uploadId</span>).<span class="php-quote">&quot; server=&quot;</span>.Util::q(<span class="php-var">$correctedUploadId</span>));
 </span><span id="613" class="l"><a class="l" href="#613"> 613: </a>            <span class="php-keyword1">if</span> (<span class="php-var">$correctedByteOffset</span> === <span class="php-var">$byteOffset</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(
 </span><span id="614" class="l"><a class="l" href="#614"> 614: </a>                <span class="php-quote">&quot;Corrective 400 offset is the same as ours: </span><span class="php-var">$byteOffset</span><span class="php-quote">&quot;</span>);
 </span><span id="615" class="l"><a class="l" href="#615"> 615: </a>            <span class="php-keyword1">return</span> <span class="php-var">$correctedByteOffset</span>;
@@ -727,7 +729,7 @@
 </span><span id="620" class="l"><a class="l" href="#620"> 620: </a>
 </span><span id="621" class="l"><a class="l" href="#621"> 621: </a>        <span class="php-var">$nextByteOffset</span> = <span class="php-var">$byteOffset</span> + <span class="php-keyword2">strlen</span>(<span class="php-var">$data</span>);
 </span><span id="622" class="l"><a class="l" href="#622"> 622: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$uploadId</span> !== <span class="php-var">$retUploadId</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(
-</span><span id="623" class="l"><a class="l" href="#623"> 623: </a>                <span class="php-quote">&quot;upload_id mismatch: us=&quot;</span>.self::q(<span class="php-var">$uploadId</span>).<span class="php-quote">&quot;, server=&quot;</span>.self::q(<span class="php-var">$uploadId</span>));
+</span><span id="623" class="l"><a class="l" href="#623"> 623: </a>                <span class="php-quote">&quot;upload_id mismatch: us=&quot;</span>.Util::q(<span class="php-var">$uploadId</span>) .<span class="php-quote">&quot;, server=&quot;</span>.Util::q(<span class="php-var">$uploadId</span>));
 </span><span id="624" class="l"><a class="l" href="#624"> 624: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$nextByteOffset</span> !== <span class="php-var">$retByteOffset</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(
 </span><span id="625" class="l"><a class="l" href="#625"> 625: </a>                <span class="php-quote">&quot;next-offset mismatch: us=</span><span class="php-var">$nextByteOffset</span><span class="php-quote">, server=</span><span class="php-var">$retByteOffset</span><span class="php-quote">&quot;</span>);
 </span><span id="626" class="l"><a class="l" href="#626"> 626: </a>
@@ -753,7 +755,7 @@
 </span><span id="646" class="l"><a class="l" href="#646"> 646: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="__chunkedUploadCheckForOffsetCorrection" href="#__chunkedUploadCheckForOffsetCorrection">_chunkedUploadCheckForOffsetCorrection</a>(<span class="php-var">$response</span>)
 </span><span id="647" class="l"><a class="l" href="#647"> 647: </a>    {
 </span><span id="648" class="l"><a class="l" href="#648"> 648: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$response</span>-&gt;statusCode !== <span class="php-num">400</span>) <span class="php-keyword1">return</span> <span class="php-keyword1">null</span>;
-</span><span id="649" class="l"><a class="l" href="#649"> 649: </a>        <span class="php-var">$j</span> = <span class="php-keyword2">json_decode</span>(<span class="php-var">$response</span>-&gt;body, <span class="php-keyword1">true</span>);
+</span><span id="649" class="l"><a class="l" href="#649"> 649: </a>        <span class="php-var">$j</span> = <span class="php-keyword2">json_decode</span>(<span class="php-var">$response</span>-&gt;body, <span class="php-keyword1">true</span>, <span class="php-num">10</span>);
 </span><span id="650" class="l"><a class="l" href="#650"> 650: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$j</span> === <span class="php-keyword1">null</span>) <span class="php-keyword1">return</span> <span class="php-keyword1">null</span>;
 </span><span id="651" class="l"><a class="l" href="#651"> 651: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">array_key_exists</span>(<span class="php-quote">&quot;upload_id&quot;</span>, <span class="php-var">$j</span>) || !<span class="php-keyword2">array_key_exists</span>(<span class="php-quote">&quot;offset&quot;</span>, <span class="php-var">$j</span>)) <span class="php-keyword1">return</span> <span class="php-keyword1">null</span>;
 </span><span id="652" class="l"><a class="l" href="#652"> 652: </a>        <span class="php-var">$uploadId</span> = <span class="php-var">$j</span>[<span class="php-quote">&quot;upload_id&quot;</span>];
@@ -1247,10 +1249,10 @@
 </span><span id="1140" class="l"><a class="l" href="#1140">1140: </a>        Checker::argString(<span class="php-quote">&quot;format&quot;</span>, <span class="php-var">$format</span>);
 </span><span id="1141" class="l"><a class="l" href="#1141">1141: </a>        Checker::argString(<span class="php-quote">&quot;size&quot;</span>, <span class="php-var">$size</span>);
 </span><span id="1142" class="l"><a class="l" href="#1142">1142: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">in_array</span>(<span class="php-var">$format</span>, <span class="php-keyword1">array</span>(<span class="php-quote">&quot;jpeg&quot;</span>, <span class="php-quote">&quot;png&quot;</span>))) {
-</span><span id="1143" class="l"><a class="l" href="#1143">1143: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;Invalid 'format': &quot;</span>.self::q(<span class="php-var">$format</span>));
+</span><span id="1143" class="l"><a class="l" href="#1143">1143: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;Invalid 'format': &quot;</span>.Util::q(<span class="php-var">$format</span>));
 </span><span id="1144" class="l"><a class="l" href="#1144">1144: </a>        }
 </span><span id="1145" class="l"><a class="l" href="#1145">1145: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">in_array</span>(<span class="php-var">$size</span>, <span class="php-keyword1">array</span>(<span class="php-quote">&quot;xs&quot;</span>, <span class="php-quote">&quot;s&quot;</span>, <span class="php-quote">&quot;m&quot;</span>, <span class="php-quote">&quot;l&quot;</span>, <span class="php-quote">&quot;xl&quot;</span>))) {
-</span><span id="1146" class="l"><a class="l" href="#1146">1146: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;Invalid 'size': &quot;</span>.self::q(<span class="php-var">$format</span>));
+</span><span id="1146" class="l"><a class="l" href="#1146">1146: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;Invalid 'size': &quot;</span>.Util::q(<span class="php-var">$format</span>));
 </span><span id="1147" class="l"><a class="l" href="#1147">1147: </a>        }
 </span><span id="1148" class="l"><a class="l" href="#1148">1148: </a>
 </span><span id="1149" class="l"><a class="l" href="#1149">1149: </a>        <span class="php-var">$url</span> = <span class="php-var">$this</span>-&gt;buildUrlForGetOrPut(
@@ -1539,7 +1541,7 @@
 </span><span id="1432" class="l"><a class="l" href="#1432">1432: </a>    {
 </span><span id="1433" class="l"><a class="l" href="#1433">1433: </a>        <span class="php-var">$dt</span> = \DateTime::createFromFormat(self::<span class="php-var">$dateTimeFormat</span>, <span class="php-var">$apiDateTimeString</span>);
 </span><span id="1434" class="l"><a class="l" href="#1434">1434: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$dt</span> === <span class="php-keyword1">false</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(
-</span><span id="1435" class="l"><a class="l" href="#1435">1435: </a>            <span class="php-quote">&quot;Bad date/time from server: &quot;</span>.self::q(<span class="php-var">$apiDateTimeString</span>));
+</span><span id="1435" class="l"><a class="l" href="#1435">1435: </a>            <span class="php-quote">&quot;Bad date/time from server: &quot;</span>.Util::q(<span class="php-var">$apiDateTimeString</span>));
 </span><span id="1436" class="l"><a class="l" href="#1436">1436: </a>        <span class="php-keyword1">return</span> <span class="php-var">$dt</span>;
 </span><span id="1437" class="l"><a class="l" href="#1437">1437: </a>    }
 </span><span id="1438" class="l"><a class="l" href="#1438">1438: </a>
@@ -1548,64 +1550,59 @@
 </span><span id="1441" class="l"><a class="l" href="#1441">1441: </a>    <span class="php-comment">/**
 </span></span><span id="1442" class="l"><a class="l" href="#1442">1442: </a><span class="php-comment">     * @internal
 </span></span><span id="1443" class="l"><a class="l" href="#1443">1443: </a><span class="php-comment">     */</span>
-</span><span id="1444" class="l"><a class="l" href="#1444">1444: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_q" href="#_q">q</a>(<span class="php-var">$object</span>) { <span class="php-keyword1">return</span> <span class="php-keyword2">var_export</span>(<span class="php-var">$object</span>, <span class="php-keyword1">true</span>); }
-</span><span id="1445" class="l"><a class="l" href="#1445">1445: </a>
-</span><span id="1446" class="l"><a class="l" href="#1446">1446: </a>    <span class="php-comment">/**
-</span></span><span id="1447" class="l"><a class="l" href="#1447">1447: </a><span class="php-comment">     * @internal
-</span></span><span id="1448" class="l"><a class="l" href="#1448">1448: </a><span class="php-comment">     */</span>
-</span><span id="1449" class="l"><a class="l" href="#1449">1449: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getField" href="#_getField">getField</a>(<span class="php-var">$j</span>, <span class="php-var">$fieldName</span>)
-</span><span id="1450" class="l"><a class="l" href="#1450">1450: </a>    {
-</span><span id="1451" class="l"><a class="l" href="#1451">1451: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">array_key_exists</span>(<span class="php-var">$fieldName</span>, <span class="php-var">$j</span>)) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(
-</span><span id="1452" class="l"><a class="l" href="#1452">1452: </a>            <span class="php-quote">&quot;missing field \&quot;</span><span class="php-var">$fieldName</span><span class="php-quote">\&quot; in &quot;</span>.self::q(<span class="php-var">$j</span>));
-</span><span id="1453" class="l"><a class="l" href="#1453">1453: </a>        <span class="php-keyword1">return</span> <span class="php-var">$j</span>[<span class="php-var">$fieldName</span>];
-</span><span id="1454" class="l"><a class="l" href="#1454">1454: </a>    }
-</span><span id="1455" class="l"><a class="l" href="#1455">1455: </a>
-</span><span id="1456" class="l"><a class="l" href="#1456">1456: </a>    <span class="php-comment">/**
-</span></span><span id="1457" class="l"><a class="l" href="#1457">1457: </a><span class="php-comment">     * Given an OAuth 2 access token, returns &lt;code&gt;null&lt;/code&gt; if it is well-formed (though
-</span></span><span id="1458" class="l"><a class="l" href="#1458">1458: </a><span class="php-comment">     * not necessarily valid).  Otherwise, returns a string describing what's wrong with it.
-</span></span><span id="1459" class="l"><a class="l" href="#1459">1459: </a><span class="php-comment">     *
-</span></span><span id="1460" class="l"><a class="l" href="#1460">1460: </a><span class="php-comment">     * @param string $s
-</span></span><span id="1461" class="l"><a class="l" href="#1461">1461: </a><span class="php-comment">     *
-</span></span><span id="1462" class="l"><a class="l" href="#1462">1462: </a><span class="php-comment">     * @return string
-</span></span><span id="1463" class="l"><a class="l" href="#1463">1463: </a><span class="php-comment">     */</span>
-</span><span id="1464" class="l"><a class="l" href="#1464">1464: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getAccessTokenError" href="#_getAccessTokenError">getAccessTokenError</a>(<span class="php-var">$s</span>)
-</span><span id="1465" class="l"><a class="l" href="#1465">1465: </a>    {
-</span><span id="1466" class="l"><a class="l" href="#1466">1466: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$s</span> === <span class="php-keyword1">null</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;can't be null&quot;</span>;
-</span><span id="1467" class="l"><a class="l" href="#1467">1467: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">strlen</span>(<span class="php-var">$s</span>) === <span class="php-num">0</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;can't be empty&quot;</span>;
-</span><span id="1468" class="l"><a class="l" href="#1468">1468: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">preg_match</span>(<span class="php-quote">'@[^-=_~/A-Za-z0-9\.\+]@'</span>, <span class="php-var">$s</span>) === <span class="php-num">1</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;contains invalid character&quot;</span>;
-</span><span id="1469" class="l"><a class="l" href="#1469">1469: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">null</span>;
-</span><span id="1470" class="l"><a class="l" href="#1470">1470: </a>    }
-</span><span id="1471" class="l"><a class="l" href="#1471">1471: </a>
-</span><span id="1472" class="l"><a class="l" href="#1472">1472: </a>    <span class="php-comment">/**
-</span></span><span id="1473" class="l"><a class="l" href="#1473">1473: </a><span class="php-comment">     * @internal
-</span></span><span id="1474" class="l"><a class="l" href="#1474">1474: </a><span class="php-comment">     */</span>
-</span><span id="1475" class="l"><a class="l" href="#1475">1475: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_checkAccessTokenArg" href="#_checkAccessTokenArg">checkAccessTokenArg</a>(<span class="php-var">$argName</span>, <span class="php-var">$accessToken</span>)
-</span><span id="1476" class="l"><a class="l" href="#1476">1476: </a>    {
-</span><span id="1477" class="l"><a class="l" href="#1477">1477: </a>        <span class="php-var">$error</span> = self::getAccessTokenError(<span class="php-var">$accessToken</span>);
-</span><span id="1478" class="l"><a class="l" href="#1478">1478: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$error</span> !== <span class="php-keyword1">null</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">' invalid: </span><span class="php-var">$error</span><span class="php-quote">&quot;</span>);
-</span><span id="1479" class="l"><a class="l" href="#1479">1479: </a>    }
-</span><span id="1480" class="l"><a class="l" href="#1480">1480: </a>
-</span><span id="1481" class="l"><a class="l" href="#1481">1481: </a>    <span class="php-comment">/**
-</span></span><span id="1482" class="l"><a class="l" href="#1482">1482: </a><span class="php-comment">     * @internal
-</span></span><span id="1483" class="l"><a class="l" href="#1483">1483: </a><span class="php-comment">     */</span>
-</span><span id="1484" class="l"><a class="l" href="#1484">1484: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getClientIdentifierError" href="#_getClientIdentifierError">getClientIdentifierError</a>(<span class="php-var">$s</span>)
-</span><span id="1485" class="l"><a class="l" href="#1485">1485: </a>    {
-</span><span id="1486" class="l"><a class="l" href="#1486">1486: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$s</span> === <span class="php-keyword1">null</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;can't be null&quot;</span>;
-</span><span id="1487" class="l"><a class="l" href="#1487">1487: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">strlen</span>(<span class="php-var">$s</span>) === <span class="php-num">0</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;can't be empty&quot;</span>;
-</span><span id="1488" class="l"><a class="l" href="#1488">1488: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">preg_match</span>(<span class="php-quote">'@[\x00-\x1f\x7f]@'</span>, <span class="php-var">$s</span>) === <span class="php-num">1</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;contains control character&quot;</span>;
-</span><span id="1489" class="l"><a class="l" href="#1489">1489: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">null</span>;
-</span><span id="1490" class="l"><a class="l" href="#1490">1490: </a>    }
-</span><span id="1491" class="l"><a class="l" href="#1491">1491: </a>
-</span><span id="1492" class="l"><a class="l" href="#1492">1492: </a>    <span class="php-comment">/**
-</span></span><span id="1493" class="l"><a class="l" href="#1493">1493: </a><span class="php-comment">     * @internal
-</span></span><span id="1494" class="l"><a class="l" href="#1494">1494: </a><span class="php-comment">     */</span>
-</span><span id="1495" class="l"><a class="l" href="#1495">1495: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_checkClientIdentifierArg" href="#_checkClientIdentifierArg">checkClientIdentifierArg</a>(<span class="php-var">$argName</span>, <span class="php-var">$accessToken</span>)
-</span><span id="1496" class="l"><a class="l" href="#1496">1496: </a>    {
-</span><span id="1497" class="l"><a class="l" href="#1497">1497: </a>        <span class="php-var">$error</span> = self::getClientIdentifierError(<span class="php-var">$accessToken</span>);
-</span><span id="1498" class="l"><a class="l" href="#1498">1498: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$error</span> !== <span class="php-keyword1">null</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">' invalid: </span><span class="php-var">$error</span><span class="php-quote">&quot;</span>);
-</span><span id="1499" class="l"><a class="l" href="#1499">1499: </a>    }
-</span><span id="1500" class="l"><a class="l" href="#1500">1500: </a>}
-</span><span id="1501" class="l"><a class="l" href="#1501">1501: </a></span></code></pre>
+</span><span id="1444" class="l"><a class="l" href="#1444">1444: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getField" href="#_getField">getField</a>(<span class="php-var">$j</span>, <span class="php-var">$fieldName</span>)
+</span><span id="1445" class="l"><a class="l" href="#1445">1445: </a>    {
+</span><span id="1446" class="l"><a class="l" href="#1446">1446: </a>        <span class="php-keyword1">if</span> (!<span class="php-keyword2">array_key_exists</span>(<span class="php-var">$fieldName</span>, <span class="php-var">$j</span>)) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> Exception_BadResponse(
+</span><span id="1447" class="l"><a class="l" href="#1447">1447: </a>            <span class="php-quote">&quot;missing field \&quot;</span><span class="php-var">$fieldName</span><span class="php-quote">\&quot; in &quot;</span>.Util::q(<span class="php-var">$j</span>));
+</span><span id="1448" class="l"><a class="l" href="#1448">1448: </a>        <span class="php-keyword1">return</span> <span class="php-var">$j</span>[<span class="php-var">$fieldName</span>];
+</span><span id="1449" class="l"><a class="l" href="#1449">1449: </a>    }
+</span><span id="1450" class="l"><a class="l" href="#1450">1450: </a>
+</span><span id="1451" class="l"><a class="l" href="#1451">1451: </a>    <span class="php-comment">/**
+</span></span><span id="1452" class="l"><a class="l" href="#1452">1452: </a><span class="php-comment">     * Given an OAuth 2 access token, returns &lt;code&gt;null&lt;/code&gt; if it is well-formed (though
+</span></span><span id="1453" class="l"><a class="l" href="#1453">1453: </a><span class="php-comment">     * not necessarily valid).  Otherwise, returns a string describing what's wrong with it.
+</span></span><span id="1454" class="l"><a class="l" href="#1454">1454: </a><span class="php-comment">     *
+</span></span><span id="1455" class="l"><a class="l" href="#1455">1455: </a><span class="php-comment">     * @param string $s
+</span></span><span id="1456" class="l"><a class="l" href="#1456">1456: </a><span class="php-comment">     *
+</span></span><span id="1457" class="l"><a class="l" href="#1457">1457: </a><span class="php-comment">     * @return string
+</span></span><span id="1458" class="l"><a class="l" href="#1458">1458: </a><span class="php-comment">     */</span>
+</span><span id="1459" class="l"><a class="l" href="#1459">1459: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getAccessTokenError" href="#_getAccessTokenError">getAccessTokenError</a>(<span class="php-var">$s</span>)
+</span><span id="1460" class="l"><a class="l" href="#1460">1460: </a>    {
+</span><span id="1461" class="l"><a class="l" href="#1461">1461: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$s</span> === <span class="php-keyword1">null</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;can't be null&quot;</span>;
+</span><span id="1462" class="l"><a class="l" href="#1462">1462: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">strlen</span>(<span class="php-var">$s</span>) === <span class="php-num">0</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;can't be empty&quot;</span>;
+</span><span id="1463" class="l"><a class="l" href="#1463">1463: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">preg_match</span>(<span class="php-quote">'@[^-=_~/A-Za-z0-9\.\+]@'</span>, <span class="php-var">$s</span>) === <span class="php-num">1</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;contains invalid character&quot;</span>;
+</span><span id="1464" class="l"><a class="l" href="#1464">1464: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">null</span>;
+</span><span id="1465" class="l"><a class="l" href="#1465">1465: </a>    }
+</span><span id="1466" class="l"><a class="l" href="#1466">1466: </a>
+</span><span id="1467" class="l"><a class="l" href="#1467">1467: </a>    <span class="php-comment">/**
+</span></span><span id="1468" class="l"><a class="l" href="#1468">1468: </a><span class="php-comment">     * @internal
+</span></span><span id="1469" class="l"><a class="l" href="#1469">1469: </a><span class="php-comment">     */</span>
+</span><span id="1470" class="l"><a class="l" href="#1470">1470: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_checkAccessTokenArg" href="#_checkAccessTokenArg">checkAccessTokenArg</a>(<span class="php-var">$argName</span>, <span class="php-var">$accessToken</span>)
+</span><span id="1471" class="l"><a class="l" href="#1471">1471: </a>    {
+</span><span id="1472" class="l"><a class="l" href="#1472">1472: </a>        <span class="php-var">$error</span> = self::getAccessTokenError(<span class="php-var">$accessToken</span>);
+</span><span id="1473" class="l"><a class="l" href="#1473">1473: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$error</span> !== <span class="php-keyword1">null</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">' invalid: </span><span class="php-var">$error</span><span class="php-quote">&quot;</span>);
+</span><span id="1474" class="l"><a class="l" href="#1474">1474: </a>    }
+</span><span id="1475" class="l"><a class="l" href="#1475">1475: </a>
+</span><span id="1476" class="l"><a class="l" href="#1476">1476: </a>    <span class="php-comment">/**
+</span></span><span id="1477" class="l"><a class="l" href="#1477">1477: </a><span class="php-comment">     * @internal
+</span></span><span id="1478" class="l"><a class="l" href="#1478">1478: </a><span class="php-comment">     */</span>
+</span><span id="1479" class="l"><a class="l" href="#1479">1479: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_getClientIdentifierError" href="#_getClientIdentifierError">getClientIdentifierError</a>(<span class="php-var">$s</span>)
+</span><span id="1480" class="l"><a class="l" href="#1480">1480: </a>    {
+</span><span id="1481" class="l"><a class="l" href="#1481">1481: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$s</span> === <span class="php-keyword1">null</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;can't be null&quot;</span>;
+</span><span id="1482" class="l"><a class="l" href="#1482">1482: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">strlen</span>(<span class="php-var">$s</span>) === <span class="php-num">0</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;can't be empty&quot;</span>;
+</span><span id="1483" class="l"><a class="l" href="#1483">1483: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">preg_match</span>(<span class="php-quote">'@[\x00-\x1f\x7f]@'</span>, <span class="php-var">$s</span>) === <span class="php-num">1</span>) <span class="php-keyword1">return</span> <span class="php-quote">&quot;contains control character&quot;</span>;
+</span><span id="1484" class="l"><a class="l" href="#1484">1484: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">null</span>;
+</span><span id="1485" class="l"><a class="l" href="#1485">1485: </a>    }
+</span><span id="1486" class="l"><a class="l" href="#1486">1486: </a>
+</span><span id="1487" class="l"><a class="l" href="#1487">1487: </a>    <span class="php-comment">/**
+</span></span><span id="1488" class="l"><a class="l" href="#1488">1488: </a><span class="php-comment">     * @internal
+</span></span><span id="1489" class="l"><a class="l" href="#1489">1489: </a><span class="php-comment">     */</span>
+</span><span id="1490" class="l"><a class="l" href="#1490">1490: </a>    <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_checkClientIdentifierArg" href="#_checkClientIdentifierArg">checkClientIdentifierArg</a>(<span class="php-var">$argName</span>, <span class="php-var">$accessToken</span>)
+</span><span id="1491" class="l"><a class="l" href="#1491">1491: </a>    {
+</span><span id="1492" class="l"><a class="l" href="#1492">1492: </a>        <span class="php-var">$error</span> = self::getClientIdentifierError(<span class="php-var">$accessToken</span>);
+</span><span id="1493" class="l"><a class="l" href="#1493">1493: </a>        <span class="php-keyword1">if</span> (<span class="php-var">$error</span> !== <span class="php-keyword1">null</span>) <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> \InvalidArgumentException(<span class="php-quote">&quot;'</span><span class="php-var">$argName</span><span class="php-quote">' invalid: </span><span class="php-var">$error</span><span class="php-quote">&quot;</span>);
+</span><span id="1494" class="l"><a class="l" href="#1494">1494: </a>    }
+</span><span id="1495" class="l"><a class="l" href="#1495">1495: </a>}
+</span><span id="1496" class="l"><a class="l" href="#1496">1496: </a></span></code></pre>
 
 	<div id="footer">
 		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>

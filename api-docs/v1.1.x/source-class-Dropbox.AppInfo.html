@@ -8,7 +8,7 @@
 	<title>File Dropbox/AppInfo.php | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2779543697"></script>
+	<script type="text/javascript" src="elementlist.js?1953306714"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -35,8 +35,10 @@
 				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
 				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
+				<li><a href="class-Dropbox.RootCertificates.html">Dropbox\RootCertificates</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
 				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
+				<li><a href="class-Dropbox.Util.html">Dropbox\Util</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -222,8 +224,8 @@
 </span><span id="115" class="l"><a class="l" href="#115">115: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> AppInfoLoadException(<span class="php-quote">&quot;File doesn't exist: \&quot;</span><span class="php-var">$path</span><span class="php-quote">\&quot;&quot;</span>);
 </span><span id="116" class="l"><a class="l" href="#116">116: </a>        }
 </span><span id="117" class="l"><a class="l" href="#117">117: </a>
-</span><span id="118" class="l"><a class="l" href="#118">118: </a>        <span class="php-var">$str</span> = <span class="php-keyword2">file_get_contents</span>(<span class="php-var">$path</span>);
-</span><span id="119" class="l"><a class="l" href="#119">119: </a>        <span class="php-var">$jsonArr</span> = <span class="php-keyword2">json_decode</span>(<span class="php-var">$str</span>, <span class="php-keyword1">true</span>);
+</span><span id="118" class="l"><a class="l" href="#118">118: </a>        <span class="php-var">$str</span> = Util::stripUtf8Bom(<span class="php-keyword2">file_get_contents</span>(<span class="php-var">$path</span>));
+</span><span id="119" class="l"><a class="l" href="#119">119: </a>        <span class="php-var">$jsonArr</span> = <span class="php-keyword2">json_decode</span>(<span class="php-var">$str</span>, <span class="php-keyword1">true</span>, <span class="php-num">10</span>);
 </span><span id="120" class="l"><a class="l" href="#120">120: </a>
 </span><span id="121" class="l"><a class="l" href="#121">121: </a>        <span class="php-keyword1">if</span> (<span class="php-keyword2">is_null</span>(<span class="php-var">$jsonArr</span>)) {
 </span><span id="122" class="l"><a class="l" href="#122">122: </a>            <span class="php-keyword1">throw</span> <span class="php-keyword1">new</span> AppInfoLoadException(<span class="php-quote">&quot;JSON parse error: \&quot;</span><span class="php-var">$path</span><span class="php-quote">\&quot;&quot;</span>);

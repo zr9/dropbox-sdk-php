@@ -8,7 +8,7 @@
 	<title>File Dropbox/SSLTester.php | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
-	<script type="text/javascript" src="elementlist.js?2779543697"></script>
+	<script type="text/javascript" src="elementlist.js?1953306714"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -35,8 +35,10 @@
 				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
 				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
+				<li><a href="class-Dropbox.RootCertificates.html">Dropbox\RootCertificates</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
 				<li class="active"><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
+				<li><a href="class-Dropbox.Util.html">Dropbox\Util</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
 				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
@@ -198,46 +200,42 @@
 </span><span id="91" class="l"><a class="l" href="#91"> 91: </a>        <span class="php-keyword1">return</span> <span class="php-var">$anyFailed</span>;
 </span><span id="92" class="l"><a class="l" href="#92"> 92: </a>    }
 </span><span id="93" class="l"><a class="l" href="#93"> 93: </a>
-</span><span id="94" class="l"><a class="l" href="#94"> 94: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testPinnedCert" href="#_testPinnedCert">testPinnedCert</a>()
+</span><span id="94" class="l"><a class="l" href="#94"> 94: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testAllowed" href="#_testAllowed">testAllowed</a>(<span class="php-var">$url</span>)
 </span><span id="95" class="l"><a class="l" href="#95"> 95: </a>    {
-</span><span id="96" class="l"><a class="l" href="#96"> 96: </a>    }
-</span><span id="97" class="l"><a class="l" href="#97"> 97: </a>
-</span><span id="98" class="l"><a class="l" href="#98"> 98: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testAllowed" href="#_testAllowed">testAllowed</a>(<span class="php-var">$url</span>)
-</span><span id="99" class="l"><a class="l" href="#99"> 99: </a>    {
-</span><span id="100" class="l"><a class="l" href="#100">100: </a>        <span class="php-var">$curl</span> = RequestUtil::mkCurl(<span class="php-quote">&quot;test-ssl&quot;</span>, <span class="php-var">$url</span>);
-</span><span id="101" class="l"><a class="l" href="#101">101: </a>        <span class="php-var">$curl</span>-&gt;set(CURLOPT_RETURNTRANSFER, <span class="php-keyword1">true</span>);
-</span><span id="102" class="l"><a class="l" href="#102">102: </a>        <span class="php-var">$curl</span>-&gt;<span class="php-keyword2">exec</span>();
-</span><span id="103" class="l"><a class="l" href="#103">103: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
-</span><span id="104" class="l"><a class="l" href="#104">104: </a>    }
-</span><span id="105" class="l"><a class="l" href="#105">105: </a>
-</span><span id="106" class="l"><a class="l" href="#106">106: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testUntrustedCert" href="#_testUntrustedCert">testUntrustedCert</a>(<span class="php-var">$url</span>)
-</span><span id="107" class="l"><a class="l" href="#107">107: </a>    {
-</span><span id="108" class="l"><a class="l" href="#108">108: </a>        <span class="php-keyword1">return</span> self::testDisallowed(<span class="php-var">$url</span>, <span class="php-quote">'Error executing HTTP request: SSL certificate problem, verify that the CA cert is OK'</span>);
-</span><span id="109" class="l"><a class="l" href="#109">109: </a>    }
-</span><span id="110" class="l"><a class="l" href="#110">110: </a>
-</span><span id="111" class="l"><a class="l" href="#111">111: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testHostnameMismatch" href="#_testHostnameMismatch">testHostnameMismatch</a>(<span class="php-var">$url</span>)
-</span><span id="112" class="l"><a class="l" href="#112">112: </a>    {
-</span><span id="113" class="l"><a class="l" href="#113">113: </a>        <span class="php-keyword1">return</span> self::testDisallowed(<span class="php-var">$url</span>, <span class="php-quote">'Error executing HTTP request: SSL certificate problem: Invalid certificate chain'</span>);
-</span><span id="114" class="l"><a class="l" href="#114">114: </a>    }
-</span><span id="115" class="l"><a class="l" href="#115">115: </a>
-</span><span id="116" class="l"><a class="l" href="#116">116: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testDisallowed" href="#_testDisallowed">testDisallowed</a>(<span class="php-var">$url</span>, <span class="php-var">$expectedExceptionMessage</span>)
-</span><span id="117" class="l"><a class="l" href="#117">117: </a>    {
-</span><span id="118" class="l"><a class="l" href="#118">118: </a>        <span class="php-var">$curl</span> = RequestUtil::mkCurl(<span class="php-quote">&quot;test-ssl&quot;</span>, <span class="php-var">$url</span>);
-</span><span id="119" class="l"><a class="l" href="#119">119: </a>        <span class="php-var">$curl</span>-&gt;set(CURLOPT_RETURNTRANSFER, <span class="php-keyword1">true</span>);
-</span><span id="120" class="l"><a class="l" href="#120">120: </a>        <span class="php-keyword1">try</span> {
-</span><span id="121" class="l"><a class="l" href="#121">121: </a>            <span class="php-var">$curl</span>-&gt;<span class="php-keyword2">exec</span>();
-</span><span id="122" class="l"><a class="l" href="#122">122: </a>        }
-</span><span id="123" class="l"><a class="l" href="#123">123: </a>        <span class="php-keyword1">catch</span> (Exception_NetworkIO <span class="php-var">$ex</span>) {
-</span><span id="124" class="l"><a class="l" href="#124">124: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">strpos</span>(<span class="php-var">$ex</span>-&gt;getMessage(), <span class="php-var">$expectedExceptionMessage</span>) == <span class="php-num">0</span>) {
-</span><span id="125" class="l"><a class="l" href="#125">125: </a>                <span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
-</span><span id="126" class="l"><a class="l" href="#126">126: </a>            } <span class="php-keyword1">else</span> {
-</span><span id="127" class="l"><a class="l" href="#127">127: </a>                <span class="php-keyword1">throw</span> <span class="php-var">$ex</span>;
-</span><span id="128" class="l"><a class="l" href="#128">128: </a>            }
-</span><span id="129" class="l"><a class="l" href="#129">129: </a>        }
-</span><span id="130" class="l"><a class="l" href="#130">130: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">false</span>;
-</span><span id="131" class="l"><a class="l" href="#131">131: </a>    }
-</span><span id="132" class="l"><a class="l" href="#132">132: </a>}
-</span><span id="133" class="l"><a class="l" href="#133">133: </a></span></code></pre>
+</span><span id="96" class="l"><a class="l" href="#96"> 96: </a>        <span class="php-var">$curl</span> = RequestUtil::mkCurl(<span class="php-quote">&quot;test-ssl&quot;</span>, <span class="php-var">$url</span>);
+</span><span id="97" class="l"><a class="l" href="#97"> 97: </a>        <span class="php-var">$curl</span>-&gt;set(CURLOPT_RETURNTRANSFER, <span class="php-keyword1">true</span>);
+</span><span id="98" class="l"><a class="l" href="#98"> 98: </a>        <span class="php-var">$curl</span>-&gt;<span class="php-keyword2">exec</span>();
+</span><span id="99" class="l"><a class="l" href="#99"> 99: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
+</span><span id="100" class="l"><a class="l" href="#100">100: </a>    }
+</span><span id="101" class="l"><a class="l" href="#101">101: </a>
+</span><span id="102" class="l"><a class="l" href="#102">102: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testUntrustedCert" href="#_testUntrustedCert">testUntrustedCert</a>(<span class="php-var">$url</span>)
+</span><span id="103" class="l"><a class="l" href="#103">103: </a>    {
+</span><span id="104" class="l"><a class="l" href="#104">104: </a>        <span class="php-keyword1">return</span> self::testDisallowed(<span class="php-var">$url</span>, <span class="php-quote">'Error executing HTTP request: SSL certificate problem, verify that the CA cert is OK'</span>);
+</span><span id="105" class="l"><a class="l" href="#105">105: </a>    }
+</span><span id="106" class="l"><a class="l" href="#106">106: </a>
+</span><span id="107" class="l"><a class="l" href="#107">107: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testHostnameMismatch" href="#_testHostnameMismatch">testHostnameMismatch</a>(<span class="php-var">$url</span>)
+</span><span id="108" class="l"><a class="l" href="#108">108: </a>    {
+</span><span id="109" class="l"><a class="l" href="#109">109: </a>        <span class="php-keyword1">return</span> self::testDisallowed(<span class="php-var">$url</span>, <span class="php-quote">'Error executing HTTP request: SSL certificate problem: Invalid certificate chain'</span>);
+</span><span id="110" class="l"><a class="l" href="#110">110: </a>    }
+</span><span id="111" class="l"><a class="l" href="#111">111: </a>
+</span><span id="112" class="l"><a class="l" href="#112">112: </a>    <span class="php-keyword1">private</span> <span class="php-keyword1">static</span> <span class="php-keyword1">function</span> <a id="_testDisallowed" href="#_testDisallowed">testDisallowed</a>(<span class="php-var">$url</span>, <span class="php-var">$expectedExceptionMessage</span>)
+</span><span id="113" class="l"><a class="l" href="#113">113: </a>    {
+</span><span id="114" class="l"><a class="l" href="#114">114: </a>        <span class="php-var">$curl</span> = RequestUtil::mkCurl(<span class="php-quote">&quot;test-ssl&quot;</span>, <span class="php-var">$url</span>);
+</span><span id="115" class="l"><a class="l" href="#115">115: </a>        <span class="php-var">$curl</span>-&gt;set(CURLOPT_RETURNTRANSFER, <span class="php-keyword1">true</span>);
+</span><span id="116" class="l"><a class="l" href="#116">116: </a>        <span class="php-keyword1">try</span> {
+</span><span id="117" class="l"><a class="l" href="#117">117: </a>            <span class="php-var">$curl</span>-&gt;<span class="php-keyword2">exec</span>();
+</span><span id="118" class="l"><a class="l" href="#118">118: </a>        }
+</span><span id="119" class="l"><a class="l" href="#119">119: </a>        <span class="php-keyword1">catch</span> (Exception_NetworkIO <span class="php-var">$ex</span>) {
+</span><span id="120" class="l"><a class="l" href="#120">120: </a>            <span class="php-keyword1">if</span> (<span class="php-keyword2">strpos</span>(<span class="php-var">$ex</span>-&gt;getMessage(), <span class="php-var">$expectedExceptionMessage</span>) == <span class="php-num">0</span>) {
+</span><span id="121" class="l"><a class="l" href="#121">121: </a>                <span class="php-keyword1">return</span> <span class="php-keyword1">true</span>;
+</span><span id="122" class="l"><a class="l" href="#122">122: </a>            } <span class="php-keyword1">else</span> {
+</span><span id="123" class="l"><a class="l" href="#123">123: </a>                <span class="php-keyword1">throw</span> <span class="php-var">$ex</span>;
+</span><span id="124" class="l"><a class="l" href="#124">124: </a>            }
+</span><span id="125" class="l"><a class="l" href="#125">125: </a>        }
+</span><span id="126" class="l"><a class="l" href="#126">126: </a>        <span class="php-keyword1">return</span> <span class="php-keyword1">false</span>;
+</span><span id="127" class="l"><a class="l" href="#127">127: </a>    }
+</span><span id="128" class="l"><a class="l" href="#128">128: </a>}
+</span><span id="129" class="l"><a class="l" href="#129">129: </a></span></code></pre>
 
 	<div id="footer">
 		Dropbox SDK for PHP API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
