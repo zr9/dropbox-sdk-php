@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class Dropbox\WebAuthBase | Dropbox SDK for PHP</title>
+	<title>Class Dropbox\Util | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
 	<script type="text/javascript" src="elementlist.js?1953306714"></script>
@@ -37,9 +37,9 @@
 				<li><a href="class-Dropbox.RootCertificates.html">Dropbox\RootCertificates</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
 				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
-				<li><a href="class-Dropbox.Util.html">Dropbox\Util</a></li>
+				<li class="active"><a href="class-Dropbox.Util.html">Dropbox\Util</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
-				<li class="active"><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
+				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
 				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
 			</ul>
@@ -106,36 +106,12 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class WebAuthBase</h1>
+	<h1>Class Util</h1>
 
 
-	<div class="description">
-	
-<p>The base class for the two auth options.</p>
-
-	</div>
-
-	<dl class="tree">
-		<dd style="padding-left:0px">
-			<a href="class-Dropbox.AuthBase.html"><span>Dropbox\AuthBase</span></a>
-			
-			
-			
-		</dd>
-		<dd style="padding-left:30px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>Dropbox\WebAuthBase</span></b>			
-			
-			
-		</dd>
-	</dl>
 
 
-	<div>
-		<h4>Direct known subclasses</h4>
-			<a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a>, 
-			<a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a>
-	</div>
+
 
 
 
@@ -148,23 +124,64 @@
 		<b>Namespace:</b> Dropbox<br />
 		
 
-		<b>Located at</b> <a href="source-class-Dropbox.WebAuthBase.html#4-67" title="Go to source code">Dropbox/WebAuthBase.php</a><br />
+		<b>Located at</b> <a href="source-class-Dropbox.Util.html#4-33" title="Go to source code">Dropbox/Util.php</a><br />
 	</div>
 
 
 
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="stripUtf8Bom" id="_stripUtf8Bom">
 
-	<table class="summary inherited">
-	<caption>Methods inherited from <a href="class-Dropbox.AuthBase.html#methods">Dropbox\AuthBase</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-Dropbox.AuthBase.html#___construct">__construct()</a>, 
-			<a href="class-Dropbox.AuthBase.html#_getAppInfo">getAppInfo()</a>, 
-			<a href="class-Dropbox.AuthBase.html#_getClientIdentifier">getClientIdentifier()</a>, 
-			<a href="class-Dropbox.AuthBase.html#_getUserLocale">getUserLocale()</a>
-		</code></td>
+		<td class="attributes"><code>
+			 public static
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_stripUtf8Bom">#</a>
+		<code><a href="source-class-Dropbox.Util.html#14-32" title="Go to source code">stripUtf8Bom</a>( <span>string <var>$string</var></span> )</code>
+
+		<div class="description short">
+			
+<p>If the given string begins with the UTF-8 BOM (byte order mark), remove it
+and return whatever is left. Otherwise, return the original string
+untouched.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>If the given string begins with the UTF-8 BOM (byte order mark), remove it
+and return whatever is left. Otherwise, return the original string
+untouched.</p>
+
+<p>Though it's not recommended for UTF-8 to have a BOM, the standard allows it
+to support software that isn't Unicode-aware.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$string</var></dt>
+					<dd><code>string</code><br>$string A UTF-8 encoded string.</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
 	</tr>
 	</table>
+
 
 
 

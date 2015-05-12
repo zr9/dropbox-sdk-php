@@ -278,7 +278,7 @@ class="php-var">$accessToken</span>, ...);
 		<b>Namespace:</b> Dropbox<br />
 		
 
-		<b>Located at</b> <a href="source-class-Dropbox.WebAuth.html#4-273" title="Go to source code">Dropbox/WebAuth.php</a><br />
+		<b>Located at</b> <a href="source-class-Dropbox.WebAuth.html#4-278" title="Go to source code">Dropbox/WebAuth.php</a><br />
 	</div>
 
 
@@ -440,7 +440,7 @@ methods as <code><a href="class-Dropbox.ArrayEntryStore.html">Dropbox\ArrayEntry
 
 		<td class="name"><div>
 		<a class="anchor" href="#_start">#</a>
-		<code><a href="source-class-Dropbox.WebAuth.html#122-157" title="Go to source code">start</a>( <span>string|null <var>$urlState</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><a href="source-class-Dropbox.WebAuth.html#122-162" title="Go to source code">start</a>( <span>string|null <var>$urlState</var> = <span class="php-keyword1">null</span></span>, <span>boolean|null <var>$forceReapprove</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -476,6 +476,11 @@ href="https://www.dropbox.com/developers/core/docs#oa2-authorize">/oauth2/author
 					<dt><var>$urlState</var></dt>
 					<dd><code>string|null</code><br>$urlState Any data you would like to keep in the URL through the authorization
 process. This exact state will be returned to you by <code><a href="class-Dropbox.WebAuth.html#_finish">Dropbox\WebAuth::finish()</a></code>.</dd>
+					<dt><var>$forceReapprove</var></dt>
+					<dd><code>boolean|null</code><br>$forceReapprove If a user has already approved your app, Dropbox may skip the
+"approve" step and redirect immediately to your callback URL. Setting this to
+<code><span class="php-keyword1">true</span></code> tells Dropbox to never skip
+the "approve" step.</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -504,7 +509,7 @@ process. This exact state will be returned to you by <code><a href="class-Dropbo
 
 		<td class="name"><div>
 		<a class="anchor" href="#_finish">#</a>
-		<code><a href="source-class-Dropbox.WebAuth.html#164-272" title="Go to source code">finish</a>( <span>array <var>$queryParams</var></span> )</code>
+		<code><a href="source-class-Dropbox.WebAuth.html#169-277" title="Go to source code">finish</a>( <span>array <var>$queryParams</var></span> )</code>
 
 		<div class="description short">
 			

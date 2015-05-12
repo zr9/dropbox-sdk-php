@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class Dropbox\WebAuthBase | Dropbox SDK for PHP</title>
+	<title>Class Dropbox\RootCertificates | Dropbox SDK for PHP</title>
 
 	<script type="text/javascript" src="resources/combined.js?152231664"></script>
 	<script type="text/javascript" src="elementlist.js?1953306714"></script>
@@ -34,12 +34,12 @@
 				<li><a href="class-Dropbox.OAuth1AccessToken.html">Dropbox\OAuth1AccessToken</a></li>
 				<li><a href="class-Dropbox.OAuth1Upgrader.html">Dropbox\OAuth1Upgrader</a></li>
 				<li><a href="class-Dropbox.Path.html">Dropbox\Path</a></li>
-				<li><a href="class-Dropbox.RootCertificates.html">Dropbox\RootCertificates</a></li>
+				<li class="active"><a href="class-Dropbox.RootCertificates.html">Dropbox\RootCertificates</a></li>
 				<li><a href="class-Dropbox.Security.html">Dropbox\Security</a></li>
 				<li><a href="class-Dropbox.SSLTester.html">Dropbox\SSLTester</a></li>
 				<li><a href="class-Dropbox.Util.html">Dropbox\Util</a></li>
 				<li><a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a></li>
-				<li class="active"><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
+				<li><a href="class-Dropbox.WebAuthBase.html">Dropbox\WebAuthBase</a></li>
 				<li><a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a></li>
 				<li><a href="class-Dropbox.WriteMode.html">Dropbox\WriteMode</a></li>
 			</ul>
@@ -106,36 +106,17 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class WebAuthBase</h1>
+	<h1>Class RootCertificates</h1>
 
 
 	<div class="description">
 	
-<p>The base class for the two auth options.</p>
+<p>See: <code><a href="class-Dropbox.RootCertificates.html#_useExternalPaths">Dropbox\RootCertificates::useExternalPaths()</a></code></p>
 
 	</div>
 
-	<dl class="tree">
-		<dd style="padding-left:0px">
-			<a href="class-Dropbox.AuthBase.html"><span>Dropbox\AuthBase</span></a>
-			
-			
-			
-		</dd>
-		<dd style="padding-left:30px">
-			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>Dropbox\WebAuthBase</span></b>			
-			
-			
-		</dd>
-	</dl>
 
 
-	<div>
-		<h4>Direct known subclasses</h4>
-			<a href="class-Dropbox.WebAuth.html">Dropbox\WebAuth</a>, 
-			<a href="class-Dropbox.WebAuthNoRedirect.html">Dropbox\WebAuthNoRedirect</a>
-	</div>
 
 
 
@@ -148,23 +129,54 @@
 		<b>Namespace:</b> Dropbox<br />
 		
 
-		<b>Located at</b> <a href="source-class-Dropbox.WebAuthBase.html#4-67" title="Go to source code">Dropbox/WebAuthBase.php</a><br />
+		<b>Located at</b> <a href="source-class-Dropbox.RootCertificates.html#4-144" title="Go to source code">Dropbox/RootCertificates.php</a><br />
 	</div>
 
 
 
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="useExternalPaths" id="_useExternalPaths">
 
-	<table class="summary inherited">
-	<caption>Methods inherited from <a href="class-Dropbox.AuthBase.html#methods">Dropbox\AuthBase</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-Dropbox.AuthBase.html#___construct">__construct()</a>, 
-			<a href="class-Dropbox.AuthBase.html#_getAppInfo">getAppInfo()</a>, 
-			<a href="class-Dropbox.AuthBase.html#_getClientIdentifier">getClientIdentifier()</a>, 
-			<a href="class-Dropbox.AuthBase.html#_getUserLocale">getUserLocale()</a>
-		</code></td>
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_useExternalPaths">#</a>
+		<code><a href="source-class-Dropbox.RootCertificates.html#15-31" title="Go to source code">useExternalPaths</a>( )</code>
+
+		<div class="description short">
+			
+<p>If you're running within a PHAR, call this method before you use the SDK to
+make any network requests.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>If you're running within a PHAR, call this method before you use the SDK to
+make any network requests.</p>
+
+<p>Normally, the SDK tells cURL to look in the "certs" folder for root
+certificate information. But this won't work if this SDK is running from within
+a PHAR because cURL won't read files that are packaged in a PHAR.</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
 	</tr>
 	</table>
+
 
 
 
