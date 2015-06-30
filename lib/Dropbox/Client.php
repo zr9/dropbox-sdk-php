@@ -708,7 +708,7 @@ class Client
         $url = $this->buildUrlForGetOrPut(
             $this->contentHost, "1/chunked_upload", $params);
 
-        $curl = $this->mkCurl($url);
+        $curl = $this->mkCurl($url, true);
 
         // We can't use CURLOPT_PUT because it wants a stream, but we already have $data in memory.
         $curl->set(CURLOPT_CUSTOMREQUEST, "PUT");
@@ -1410,8 +1410,12 @@ class Client
      *
      * @return Curl
      */
-    function mkCurl($url)
+    function mkCurl($url, $reuse = false)
     {
+        if($reuse){
+          RequestUtil::$curl_reuse = true;
+        }
+
         return RequestUtil::mkCurlWithOAuth($this->clientIdentifier, $url, $this->accessToken);
     }
 

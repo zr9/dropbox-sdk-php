@@ -56,6 +56,12 @@ final class Curl
         if (defined('CURLOPT_REDIR_PROTOCOLS')) $this->set(CURLOPT_REDIR_PROTOCOLS, CURLPROTO_HTTPS);
     }
 
+    //clear header since we reuse
+    function clearHeaders()
+    {
+        $this->headers = array();
+    }
+
     /**
      * @param string $header
      */

@@ -27,6 +27,9 @@ if (strlen((string) PHP_INT_MAX) < 19) {
  */
 final class RequestUtil
 {
+    static $curl_instance = false;
+    static $curl_reuse = false;
+
     /**
      * @param string $userLocale
      * @param string $host
@@ -78,17 +81,28 @@ final class RequestUtil
      */
     static function mkCurl($clientIdentifier, $url)
     {
-        $curl = new Curl($url);
+        //reuse
+        if(self::$curl_reuse && self::$curl_instance){
+          $curl = self::$curl_instance;
+          $curl->clearHeaders();
+          $curl->set(CURLOPT_URL, $url);
 
-        $curl->set(CURLOPT_CONNECTTIMEOUT, 10);
+          self::$curl_reuse = false;
+        }else{
+          $curl = new Curl($url);
 
-        // If the transfer speed is below 1kB/sec for 10 sec, abort.
-        $curl->set(CURLOPT_LOW_SPEED_LIMIT, 1024);
-        $curl->set(CURLOPT_LOW_SPEED_TIME, 10);
+          $curl->set(CURLOPT_CONNECTTIMEOUT, 10);
 
-        //$curl->set(CURLOPT_VERBOSE, true);  // For debugging.
-        // TODO: Figure out how to encode clientIdentifier (urlencode?)
-        $curl->addHeader("User-Agent: ".$clientIdentifier." Dropbox-PHP-SDK");
+          // If the transfer speed is below 1kB/sec for 10 sec, abort.
+          $curl->set(CURLOPT_LOW_SPEED_LIMIT, 1024);
+          $curl->set(CURLOPT_LOW_SPEED_TIME, 10);
+
+          //$curl->set(CURLOPT_VERBOSE, true);  // For debugging.
+          // TODO: Figure out how to encode clientIdentifier (urlencode?)
+          $curl->addHeader("User-Agent: ".$clientIdentifier." Dropbox-PHP-SDK");
+
+          self::$curl_instance = $curl;
+        }
 
         return $curl;
     }
